@@ -1,15 +1,16 @@
 import {createElement} from '../render.js';
 
-const createNewTopRatedContainerTemplate = () => '' +
-  '<section class="films-list films-list--extra" id="top-rated">\n' +
-  '  <h2 class="films-list__title">Top Rated</h2>\n' +
+const createMostCommentedContainerTemplate = () => '' +
+  '<section class="films-list films-list--extra" id="most-commented">\n' +
+  '  <h2 class="films-list__title">Most Commented</h2>\n' +
   '\n' +
   '  <div class="films-list__container"></div>' +
   '</section>';
 
-export default class NewTopRatedContainerView {
+
+export default class MostCommentedContainerView {
   getTemplate() {
-    return createNewTopRatedContainerTemplate();
+    return createMostCommentedContainerTemplate();
   }
 
   getElement() {

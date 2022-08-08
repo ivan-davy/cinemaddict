@@ -1,11 +1,11 @@
 import {createElement} from '../render.js';
 
-const createNewFilmDatabaseStatsTemplate = () => '' +
-  '<p>130 291 movies inside</p>';
+const createShowMoreButtonTemplate = () => '' +
+  '<button class="films-list__show-more">Show more</button>';
 
-export default class NewFilmDatabaseStatsView {
+export default class ShowMoreButtonView {
   getTemplate() {
-    return createNewFilmDatabaseStatsTemplate();
+    return createShowMoreButtonTemplate();
   }
 
   getElement() {

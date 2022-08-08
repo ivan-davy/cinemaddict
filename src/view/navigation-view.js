@@ -1,6 +1,6 @@
 import {createElement} from '../render.js';
 
-const createNewNavigationTemplate = () => '' +
+const createNavigationTemplate = () => '' +
   '<nav class="main-navigation">\n' +
   '  <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>\n' +
   '  <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">13</span></a>\n' +
@@ -9,9 +9,9 @@ const createNewNavigationTemplate = () => '' +
   '</nav>';
 
 
-export default class NewNavigationView {
+export default class NavigationView {
   getTemplate() {
-    return createNewNavigationTemplate();
+    return createNavigationTemplate();
   }
 
   getElement() {

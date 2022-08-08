@@ -1,14 +1,14 @@
 import {createElement} from '../render.js';
 
-const createNewRankTemplate = () => '' +
+const createRankTemplate = () => '' +
   '<section class="header__profile profile">\n' +
   '  <p class="profile__rating">Movie Buff</p>\n' +
   '  <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">\n' +
   '</section>';
 
-export default class NewRankView {
+export default class RankView {
   getTemplate() {
-    return createNewRankTemplate();
+    return createRankTemplate();
   }
 
   getElement() {
