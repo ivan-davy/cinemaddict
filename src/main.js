@@ -14,5 +14,7 @@ render(new RankView(), siteHeaderElement);
 render(new FilmDatabaseStatsView(), siteFooterElement.querySelector('.footer__statistics'));
 
 const mainComponentsPresenter = new MainComponentsPresenter;
-mainComponentsPresenter.init(siteMainElement);
+const movieModel = new MovieModel;
+const commentModel = new CommentModel;
+mainComponentsPresenter.init(siteMainElement, movieModel, commentModel);
 
