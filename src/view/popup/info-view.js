@@ -1,7 +1,7 @@
 import {createElement} from '../../render.js';
 import {getPrettyDate} from '../../utility/date-time-format';
 
-const createPopupTemplate = (film) => {
+const createInfoTemplate = (film) => {
   const poster = film.filmInfo.poster;
   const title = film.filmInfo.title;
   const ageRating = film.filmInfo.ageRating;
@@ -32,7 +32,7 @@ const createPopupTemplate = (film) => {
           <div class="film-details__poster">
             <img class="film-details__poster-img" src=${poster} alt="${title}">
 
-            <p class="film-details__age">${ageRating}</p>
+            <p class="film-details__age">${ageRating}+</p>
           </div>
 
           <div class="film-details__info">
@@ -98,7 +98,7 @@ export default class InfoView {
   }
 
   getTemplate() {
-    return createPopupTemplate(this.movie);
+    return createInfoTemplate(this.movie);
   }
 
   getElement() {

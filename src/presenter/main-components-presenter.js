@@ -6,7 +6,7 @@ import ShowMoreButtonView from '../view/show-more-button-view.js';
 import FilmListContainerView from '../view/film-list-container-view.js';
 import TopRatedContainerView from '../view/top-rated-container-view.js';
 import MostCommentedContainerView from '../view/most-commented-container-view.js';
-import PopupPresenter from './popup-presenter';
+//import PopupPresenter from './popup-presenter';
 
 
 export default class MainComponentsPresenter {
@@ -28,19 +28,20 @@ export default class MainComponentsPresenter {
     }
     render(new ShowMoreButtonView(), this.filmListElement);
 
-    /*this.filmsElement = this.mainElement.querySelector('.films');
+    this.filmsElement = this.mainElement.querySelector('.films');
     render(new TopRatedContainerView(), this.filmsElement);
     this.topRatedElement = this.filmsElement.querySelector('#top-rated');
     for (let i = 0; i < 2; i++) {
-      render(new FilmCardView(), this.topRatedElement.querySelector('.films-list__container'));
+      render(new FilmCardView(this.movies[i]), this.topRatedElement.querySelector('.films-list__container'));
     }
     render(new MostCommentedContainerView(), this.filmsElement);
     this.mostCommentedElement = this.filmsElement.querySelector('#most-commented');
-    for (let i = 0; i < 2; i++) {
-      render(new FilmCardView(), this.mostCommentedElement.querySelector('.films-list__container'));
-    }*/
+    for (let i = 2; i < 4; i++) {
+      render(new FilmCardView(this.movies[i]), this.mostCommentedElement.querySelector('.films-list__container'));
+    }
 
-    const popupPresenter = new PopupPresenter;
-    popupPresenter.init(this.mainElement, this.movies[0], this.comments);
+    //const popupPresenter = new PopupPresenter;
+    //popupPresenter.init(this.mainElement, this.movies[0], this.comments);
+    // ^^ расскоментируй это (и import), чтобы проверить popup!
   };
 }
