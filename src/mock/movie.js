@@ -1,11 +1,10 @@
-import {getRandomFloat, getRandomInteger, getRandomItem, getRandomSample} from '../random';
+import {getRandomFloat, getRandomInteger, getRandomItem, getRandomSample} from '../utility/random';
 
 
 const MOCK_LONG = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.',
   'Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
-  'Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus.',
-  ''
+  'Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus.'
 ];
 
 const MOCK_SHORT = [
@@ -13,13 +12,13 @@ const MOCK_SHORT = [
 ];
 
 const POSTERS = [
-  'markup/images/posters/made-for-each-other.png',
-  'markup/images/posters/popeye-meets-sinbad.png',
-  'markup/images/posters/sagebrush-trail.jpg',
-  'markup/images/posters/santa-claus-conquers-the-martians.jpg',
-  'markup/images/posters/the-dance-of-life.jpg',
-  'markup/images/posters/the-great-flamarion.jpg',
-  'markup/images/posters/the-man-with-the-golden-arm.jpg',
+  './images/posters/made-for-each-other.png',
+  './images/posters/popeye-meets-sinbad.png',
+  './images/posters/sagebrush-trail.jpg',
+  './images/posters/santa-claus-conquers-the-martians.jpg',
+  './images/posters/the-dance-of-life.jpg',
+  './images/posters/the-great-flamarion.jpg',
+  './images/posters/the-man-with-the-golden-arm.jpg',
 ];
 
 
@@ -29,7 +28,7 @@ export const generateMovie = () => ({
   filmInfo: {
     title: getRandomItem(MOCK_SHORT),
     alternativeTitle: getRandomItem(MOCK_SHORT),
-    totalRating: getRandomFloat(0, 10),
+    totalRating: getRandomFloat(0, 10).toPrecision(2),
     poster: getRandomItem(POSTERS),
     ageRating: getRandomInteger(0, 18),
     director: getRandomItem(MOCK_SHORT),
@@ -40,7 +39,7 @@ export const generateMovie = () => ({
       releaseCountry: getRandomItem(MOCK_SHORT),
     },
     runtime: getRandomInteger(30, 180),
-    genre: getRandomSample(MOCK_SHORT, getRandomInteger(1, 5)),
+    genre: getRandomSample(MOCK_SHORT, getRandomInteger(1, 3)),
     description: getRandomItem(MOCK_LONG),
   },
   userDetails: {

@@ -10,27 +10,34 @@ import MostCommentedContainerView from '../view/most-commented-container-view.js
 
 
 export default class MainComponentsPresenter {
-  init = (mainElement) => {
-    render(new NavigationView(), mainElement);
-    render(new SortView(), mainElement);
+  init = (mainElement, movieModel, commentModel) => {
+    this.mainElement = mainElement;
+    this.movieModel = movieModel;
+    this.commentModel = commentModel;
+    this.movies = [...this.movieModel.movies];
+    this.comments = [...this.commentModel.comments];
 
-    render(new FilmListContainerView(), mainElement);
-    const filmListContainerElement = mainElement.querySelector('.films-list__container');
-    for (let i = 0; i < 5; i++) {
-      render(new FilmCardView(), filmListContainerElement);
-    }
-    render(new ShowMoreButtonView(), mainElement.querySelector('.films-list'));
 
-    const filmsElement = mainElement.querySelector('.films');
-    render(new TopRatedContainerView(), filmsElement);
-    const topRatedElement = filmsElement.querySelector('#top-rated');
-    for (let i = 0; i < 2; i++) {
-      render(new FilmCardView(), topRatedElement.querySelector('.films-list__container'));
+    render(new NavigationView(), this.mainElement);
+    render(new SortView(), this.mainElement);
+
+    render(new FilmListContainerView(), this.mainElement);
+    this.filmListElement = this.mainElement.querySelector('.films-list');
+    for (const movie of this.movies) {
+      render(new FilmCardView(movie), this.filmListElement.querySelector('.films-list__container'));
     }
-    render(new MostCommentedContainerView(), filmsElement);
-    const mostCommentedElement = filmsElement.querySelector('#most-commented');
+    render(new ShowMoreButtonView(), this.filmListElement);
+
+    this.filmsElement = this.mainElement.querySelector('.films');
+    render(new TopRatedContainerView(), this.filmsElement);
+    this.topRatedElement = this.filmsElement.querySelector('#top-rated');
     for (let i = 0; i < 2; i++) {
-      render(new FilmCardView(), mostCommentedElement.querySelector('.films-list__container'));
+      render(new FilmCardView(), this.topRatedElement.querySelector('.films-list__container'));
+    }
+    render(new MostCommentedContainerView(), this.filmsElement);
+    this.mostCommentedElement = this.filmsElement.querySelector('#most-commented');
+    for (let i = 0; i < 2; i++) {
+      render(new FilmCardView(), this.mostCommentedElement.querySelector('.films-list__container'));
     }
 
     //render(new PopupView(), siteMainElement);

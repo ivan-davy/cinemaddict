@@ -1,29 +1,60 @@
 import {createElement} from '../render.js';
+import {getYear} from '../utility/date-time-format.js';
 
-const createFilmCardTemplate = () => '' +
-  '<article class="film-card">\n' +
-  '  <a class="film-card__link">\n' +
-  '    <h3 class="film-card__title">The Dance of Life</h3>\n' +
-  '    <p class="film-card__rating">8.3</p>\n' +
-  '    <p class="film-card__info">\n' +
-  '      <span class="film-card__year">1929</span>\n' +
-  '      <span class="film-card__duration">1h 55m</span>\n' +
-  '      <span class="film-card__genre">Musical</span>\n' +
-  '    </p>\n' +
-  '    <img src="./images/posters/the-dance-of-life.jpg" alt="" class="film-card__poster">\n' +
-  '    <p class="film-card__description">Burlesque comic Ralph "Skid" Johnson (Skelly), and specialty dancer Bonny Lee King (Carroll), end up together on a cold, rainy night at a tr…</p>\n' +
-  '    <span class="film-card__comments">5 comments</span>\n' +
-  '  </a>\n' +
-  '  <div class="film-card__controls">\n' +
-  '    <button class="film-card__controls-item film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>\n' +
-  '    <button class="film-card__controls-item film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>\n' +
-  '    <button class="film-card__controls-item film-card__controls-item--favorite" type="button">Mark as favorite</button>\n' +
-  '  </div>\n' +
-  '</article>';
+const createFilmCardTemplate = (film) => {
+  const poster = film.filmInfo.poster;
+  const title = film.filmInfo.title;
+  const rating = film.filmInfo.totalRating;
+  const releaseYear = getYear(film.filmInfo.release.date);
+  const runtime = film.filmInfo.runtime;
+  const genre = film.filmInfo.genre[0];
+
+  let description = film.filmInfo.description;
+  if (description.length > 140) {
+    description = description.substring(0, 140).concat('…');
+  }
+
+  let commentsQty;
+  if (!film.comments) {
+    commentsQty = '0 comments';
+  } else if (film.comments.length === 1) {
+    commentsQty = '1 comment';
+  } else {
+    commentsQty = `${film.comments.length} comments`;
+  }
+
+  const inWatchlistClass = film.userDetails.watchlist ? 'film-card__controls-item--active' : '' ;
+  const inWatchedClass = film.userDetails.alreadyWatched ? 'film-card__controls-item--active' : '' ;
+  const inFavouritesClass = film.userDetails.favorite ? 'film-card__controls-item--active' : '' ;
+
+  return `<article class="film-card">
+    <a class="film-card__link">
+      <h3 class="film-card__title">${title}</h3>
+      <p class="film-card__rating">${rating}</p>
+      <p class="film-card__info">
+        <span class="film-card__year">${releaseYear}</span>
+        <span class="film-card__duration">${runtime} min</span>
+        <span class="film-card__genre">${genre}</span>
+      </p>
+      <img src=${poster} alt=${title} class="film-card__poster">
+      <p class="film-card__description">${description}</p>
+      <span class="film-card__comments">${commentsQty}</span>
+    </a>
+    <div class="film-card__controls">
+      <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${inWatchlistClass}" type="button">Add to watchlist</button>
+      <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${inWatchedClass}" type="button">Mark as watched</button>
+      <button class="film-card__controls-item film-card__controls-item--favorite ${inFavouritesClass}" type="button">Mark as favorite</button>
+    </div>
+  </article>`;
+};
 
 export default class FilmCardView {
+  constructor(film) {
+    this.film = film;
+  }
+
   getTemplate() {
-    return createFilmCardTemplate();
+    return createFilmCardTemplate(this.film);
   }
 
   getElement() {

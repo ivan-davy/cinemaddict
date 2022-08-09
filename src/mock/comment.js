@@ -1,4 +1,4 @@
-import {getRandomItem} from '../random';
+import {getRandomItem} from '../utility/random';
 
 
 const MOCK_LONG = [
