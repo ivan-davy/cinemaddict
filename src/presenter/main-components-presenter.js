@@ -3,10 +3,10 @@ import NavigationView from '../view/navigation-view.js';
 import SortView from '../view/sort-view.js';
 import FilmCardView from '../view/film-card-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
-//import PopupView from '../view/popup-view.js';
 import FilmListContainerView from '../view/film-list-container-view.js';
 import TopRatedContainerView from '../view/top-rated-container-view.js';
 import MostCommentedContainerView from '../view/most-commented-container-view.js';
+import PopupPresenter from './popup-presenter';
 
 
 export default class MainComponentsPresenter {
@@ -28,7 +28,7 @@ export default class MainComponentsPresenter {
     }
     render(new ShowMoreButtonView(), this.filmListElement);
 
-    this.filmsElement = this.mainElement.querySelector('.films');
+    /*this.filmsElement = this.mainElement.querySelector('.films');
     render(new TopRatedContainerView(), this.filmsElement);
     this.topRatedElement = this.filmsElement.querySelector('#top-rated');
     for (let i = 0; i < 2; i++) {
@@ -38,9 +38,9 @@ export default class MainComponentsPresenter {
     this.mostCommentedElement = this.filmsElement.querySelector('#most-commented');
     for (let i = 0; i < 2; i++) {
       render(new FilmCardView(), this.mostCommentedElement.querySelector('.films-list__container'));
-    }
+    }*/
 
-    //render(new PopupView(), siteMainElement);
-
+    const popupPresenter = new PopupPresenter;
+    popupPresenter.init(this.mainElement, this.movies[0], this.comments);
   };
 }
