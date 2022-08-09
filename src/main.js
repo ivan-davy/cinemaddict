@@ -1,7 +1,9 @@
 import {render} from './render.js';
 import RankView from './view/rank-view.js';
-import FilmDatabaseStatsView from './view/film-database-stats-view';
-import MainComponentsPresenter from './presenter/main-components-presenter';
+import FilmDatabaseStatsView from './view/film-database-stats-view.js';
+import MainComponentsPresenter from './presenter/main-components-presenter.js';
+import MovieModel from './model/movie-model.js';
+import CommentModel from './model/comment-model.js';
 
 
 const siteHeaderElement = document.querySelector('.header');
