@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 
-const getYear = (year) => dayjs(year).format('YYYY');
+const getPrettyYear = (year) => dayjs(year).format('YYYY');
+const getPrettyDate = (date) => dayjs(date).format('D MMMM YYYY');
 
-export {getYear};
+export {getPrettyYear, getPrettyDate};

@@ -1,11 +1,11 @@
 import {createElement} from '../render.js';
-import {getYear} from '../utility/date-time-format.js';
+import {getPrettyYear} from '../utility/date-time-format.js';
 
 const createFilmCardTemplate = (film) => {
   const poster = film.filmInfo.poster;
   const title = film.filmInfo.title;
   const rating = film.filmInfo.totalRating;
-  const releaseYear = getYear(film.filmInfo.release.date);
+  const releaseYear = getPrettyYear(film.filmInfo.release.date);
   const runtime = film.filmInfo.runtime;
   const genre = film.filmInfo.genre[0];
 
@@ -23,9 +23,9 @@ const createFilmCardTemplate = (film) => {
     commentsQty = `${film.comments.length} comments`;
   }
 
-  const inWatchlistClass = film.userDetails.watchlist ? 'film-card__controls-item--active' : '' ;
-  const inWatchedClass = film.userDetails.alreadyWatched ? 'film-card__controls-item--active' : '' ;
-  const inFavouritesClass = film.userDetails.favorite ? 'film-card__controls-item--active' : '' ;
+  const inWatchlistClass = film.userDetails.watchlist ? 'film-card__controls-item--active' : '';
+  const inWatchedClass = film.userDetails.alreadyWatched ? 'film-card__controls-item--active' : '';
+  const inFavouritesClass = film.userDetails.favorite ? 'film-card__controls-item--active' : '';
 
   return `<article class="film-card">
     <a class="film-card__link">
@@ -33,7 +33,7 @@ const createFilmCardTemplate = (film) => {
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${releaseYear}</span>
-        <span class="film-card__duration">${runtime} min</span>
+        <span class="film-card__duration">${runtime}m</span>
         <span class="film-card__genre">${genre}</span>
       </p>
       <img src=${poster} alt=${title} class="film-card__poster">
