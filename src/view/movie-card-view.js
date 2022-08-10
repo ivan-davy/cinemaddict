@@ -2,7 +2,7 @@ import {createElement} from '../render.js';
 import {getPrettyYear} from '../utility/date-time-format.js';
 
 const createFilmCardTemplate = (movie) => {
-  const {poster, title, rating, runtime} = movie.filmInfo;
+  const {poster, title, totalRating, runtime} = movie.filmInfo;
   const releaseYear = getPrettyYear(movie.filmInfo.release.date);
   const genre = movie.filmInfo.genre[0];
 
@@ -27,7 +27,7 @@ const createFilmCardTemplate = (movie) => {
   return `<article class="film-card">
     <a class="film-card__link">
       <h3 class="film-card__title">${title}</h3>
-      <p class="film-card__rating">${rating}</p>
+      <p class="film-card__rating">${totalRating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${releaseYear}</span>
         <span class="film-card__duration">${runtime}m</span>

@@ -1,11 +1,15 @@
 import {createElement} from '../render.js';
 
-const createFilmDatabaseStatsTemplate = () => '' +
-  '<p>130 291 movies inside</p>';
+const createFilmDatabaseStatsTemplate = (moviesQty) => '' +
+`<p>${moviesQty} movies inside</p>`;
 
 export default class MovieDatabaseStatsView {
+  constructor(moviesQty) {
+    this.moviesQty = moviesQty;
+  }
+
   getTemplate() {
-    return createFilmDatabaseStatsTemplate();
+    return createFilmDatabaseStatsTemplate(this.moviesQty);
   }
 
   getElement() {

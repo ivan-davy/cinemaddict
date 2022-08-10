@@ -9,13 +9,11 @@ import MostCommentedContainerView from '../view/most-commented-container-view.js
 //import PopupPresenter from './popup-presenter';
 
 
-export default class MainComponentsPresenter {
-  init = (mainElement, movieModel, commentModel) => {
+export default class MoviesPresenter {
+  init = (mainElement, movies, comments) => {
     this.mainElement = mainElement;
-    this.movieModel = movieModel;
-    this.commentModel = commentModel;
-    this.movies = [...this.movieModel.movies];
-    this.comments = [...this.commentModel.comments];
+    this.movies = movies;
+    this.comments = comments;
 
 
     render(new NavigationView(), this.mainElement);

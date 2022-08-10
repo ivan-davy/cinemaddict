@@ -1,22 +1,17 @@
-import {render} from './render.js';
-import RankView from './view/rank-view.js';
-import MovieDatabaseStatsView from './view/movie-database-stats-view.js';
-import MainComponentsPresenter from './presenter/main-components-presenter.js';
+import MainPresenter from './presenter/main-presenter.js';
 import MovieModel from './model/movie-model.js';
 import CommentModel from './model/comment-model.js';
 
-
-const siteHeaderElement = document.querySelector('.header');
-const siteMainElement = document.querySelector('.main');
-const siteFooterElement = document.querySelector('.footer');
-
-render(new RankView(), siteHeaderElement);
-render(new MovieDatabaseStatsView(), siteFooterElement.querySelector('.footer__statistics'));
-
-const mainComponentsPresenter = new MainComponentsPresenter;
+const siteElements = {
+  siteHeaderElement: document.querySelector('.header'),
+  siteMainElement: document.querySelector('.main'),
+  siteFooterElement: document.querySelector('.footer'),
+};
 
 const movieModel = new MovieModel;
 const commentModel = new CommentModel;
-mainComponentsPresenter.init(siteMainElement, movieModel, commentModel);
+const mainPresenter = new MainPresenter;
+
+mainPresenter.init(siteElements, movieModel, commentModel);
 
 
