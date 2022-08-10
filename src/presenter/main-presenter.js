@@ -5,7 +5,7 @@ import RankView from '../view/rank-view';
 
 
 export default class MainPresenter {
-  init = (siteElements, movieModel, commentModel) => {
+  constructor(siteElements, movieModel, commentModel) {
     this.headerElement = siteElements.siteHeaderElement;
     this.mainElement = siteElements.siteMainElement;
     this.footerElement = siteElements.siteFooterElement;
@@ -14,11 +14,13 @@ export default class MainPresenter {
     this.commentModel = commentModel;
     this.movies = [...this.movieModel.movies];
     this.comments = [...this.commentModel.comments];
+  }
 
+  init = () => {
     render(new RankView(), this.headerElement);
 
-    const moviesPresenter = new MoviesPresenter;
-    moviesPresenter.init(this.mainElement, this.movies, this.comments);
+    const moviesPresenter = new MoviesPresenter(this.mainElement, this.movies, this.comments);
+    moviesPresenter.init();
 
     render(new MovieDatabaseStatsView(this.movies.length), this.footerElement.querySelector('.footer__statistics'));
   };

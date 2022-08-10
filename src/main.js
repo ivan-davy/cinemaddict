@@ -10,8 +10,8 @@ const siteElements = {
 
 const movieModel = new MovieModel;
 const commentModel = new CommentModel;
-const mainPresenter = new MainPresenter;
+const mainPresenter = new MainPresenter(siteElements, movieModel, commentModel);
 
-mainPresenter.init(siteElements, movieModel, commentModel);
+mainPresenter.init();
 
 
