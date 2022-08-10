@@ -2,11 +2,10 @@ import {createElement} from '../../render.js';
 import {getCommentDate} from '../../utility/date-time-format';
 
 const createCommentsTemplate = (comments) => {
+  const commentsQty = comments.length;
   let commentsTemplate = '';
   for (const commentEntry of comments) {
-    const emotion = commentEntry.emotion;
-    const author = commentEntry.author;
-    const comment = commentEntry.comment;
+    const {emotion, author, comment} = commentEntry;
     const date = getCommentDate(comment.date);
 
     commentsTemplate += `<li class="film-details__comment">
@@ -26,7 +25,7 @@ const createCommentsTemplate = (comments) => {
 
   return `<div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsQty}</span></h3>
             <ul class="film-details__comments-list">${commentsTemplate}</ul>
 
             <form class="film-details__new-comment" action="" method="get">

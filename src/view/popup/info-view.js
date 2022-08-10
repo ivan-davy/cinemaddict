@@ -1,28 +1,20 @@
 import {createElement} from '../../render.js';
 import {getPrettyDate} from '../../utility/date-time-format';
 
-const createInfoTemplate = (film) => {
-  const poster = film.filmInfo.poster;
-  const title = film.filmInfo.title;
-  const ageRating = film.filmInfo.ageRating;
-  const altTitle = film.filmInfo.alternativeTitle;
-  const rating = film.filmInfo.totalRating;
-  const director = film.filmInfo.director;
-  const writers = film.filmInfo.writers.join(', ');
-  const actors = film.filmInfo.actors.join(', ');
-  const releaseDate = getPrettyDate(film.filmInfo.release.date);
-  const runtime = film.filmInfo.runtime;
-  const country = film.filmInfo.release.releaseCountry;
-  const description = film.filmInfo.description;
-
+const createInfoTemplate = (movie) => {
+  const {poster, title, ageRating, alternativeTitle, totalRating, director, runtime, description} = movie.filmInfo;
+  const writers = movie.filmInfo.writers.join(', ');
+  const actors = movie.filmInfo.actors.join(', ');
+  const releaseDate = getPrettyDate(movie.filmInfo.release.date);
+  const country = movie.filmInfo.release.releaseCountry;
   let genres = '';
-  for (const genre of film.filmInfo.genre) {
+  for (const genre of movie.filmInfo.genre) {
     genres += (`<span class="film-details__genre">${genre}</span>\n`);
   }
 
-  const inWatchlistClass = film.userDetails.watchlist ? 'film-details__control-button--active' : '';
-  const inWatchedClass = film.userDetails.alreadyWatched ? 'film-details__control-button--active' : '';
-  const inFavouritesClass = film.userDetails.favorite ? 'film-details__control-button--active' : '';
+  const inWatchlistClass = movie.userDetails.watchlist ? 'film-details__control-button--active' : '';
+  const inWatchedClass = movie.userDetails.alreadyWatched ? 'film-details__control-button--active' : '';
+  const inFavouritesClass = movie.userDetails.favorite ? 'film-details__control-button--active' : '';
 
   return `<div class="film-details__top-container">
         <div class="film-details__close">
@@ -39,11 +31,11 @@ const createInfoTemplate = (film) => {
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
                 <h3 class="film-details__title">${title}</h3>
-                <p class="film-details__title-original">Original: ${altTitle}</p>
+                <p class="film-details__title-original">Original: ${alternativeTitle}</p>
               </div>
 
               <div class="film-details__rating">
-                <p class="film-details__total-rating">${rating}</p>
+                <p class="film-details__total-rating">${totalRating}</p>
               </div>
             </div>
 

@@ -3,7 +3,7 @@ import {createElement} from '../render.js';
 const createFilmDatabaseStatsTemplate = () => '' +
   '<p>130 291 movies inside</p>';
 
-export default class FilmDatabaseStatsView {
+export default class MovieDatabaseStatsView {
   getTemplate() {
     return createFilmDatabaseStatsTemplate();
   }

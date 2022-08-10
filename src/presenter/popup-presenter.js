@@ -6,7 +6,7 @@ import CommentsView from '../view/popup/comments-view';
 export default class PopupPresenter {
   init = (mainElement, movie, comments) => {
     this.mainElement = mainElement;
-    this.movies = movie;
+    this.movie = movie;
     this.comments = comments;
 
     render(new PopupContainerView(), this.mainElement);
