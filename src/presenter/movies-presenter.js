@@ -34,7 +34,7 @@ export default class MoviesPresenter {
     }
 
     if (!this.movies) {
-      const message = 'Bruh';
+      const message = 'WIP';
       render(new MovieListEmptyView(message), this.movieListElement);
     } else {
       const showMoreButtonComponent = new ShowMoreButtonView();
