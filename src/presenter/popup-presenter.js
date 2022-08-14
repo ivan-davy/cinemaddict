@@ -27,10 +27,8 @@ export default class PopupPresenter {
       document.removeEventListener('keydown', popupKeydownHandler);
     };
 
-    this.infoView.element.querySelector('.film-details__close-btn')
-      .addEventListener('click', popupClickHandler, {once: true});
-    document
-      .addEventListener('keydown', popupKeydownHandler, {once: true});
+    this.infoView.setKeydownHandler(popupKeydownHandler);
+    this.infoView.setClickHandler(popupClickHandler);
 
     render(this.popupContainerView, this.mainElement);
     render(this.infoView, this.popupContainerView.element);

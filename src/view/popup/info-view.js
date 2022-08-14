@@ -85,7 +85,6 @@ const createInfoTemplate = (movie) => {
 };
 
 export default class InfoView extends AbstractView {
-  #element = null;
   #movie = null;
 
   constructor(movie) {
@@ -96,4 +95,26 @@ export default class InfoView extends AbstractView {
   get template() {
     return createInfoTemplate(this.#movie);
   }
+
+  setClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.film-details__close-btn')
+      .addEventListener('click', this.#clickHandler, {once: true});
+  };
+
+  setKeydownHandler = (callback) => {
+    this._callback.keydown = callback;
+    document
+      .addEventListener('keydown', this.#keydownHandler, {once: true});
+  };
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  };
+
+  #keydownHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.keydown(evt);
+  };
 }
