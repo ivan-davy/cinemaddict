@@ -1,5 +1,5 @@
-import {createElement} from '../framework/render';
 import {getPrettyYear} from '../utility/date-time-format.js';
+import AbstractView from '../framework/view/abstract-view';
 
 
 const createFilmCardTemplate = (movie) => {
@@ -46,27 +46,16 @@ const createFilmCardTemplate = (movie) => {
   </article>`;
 };
 
-export default class MovieCardView {
+export default class MovieCardView extends AbstractView {
   #element = null;
   #movie = null;
 
   constructor(movie) {
+    super();
     this.#movie = movie;
   }
 
   get template() {
     return createFilmCardTemplate(this.#movie);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-    this.#movie = null;
   }
 }

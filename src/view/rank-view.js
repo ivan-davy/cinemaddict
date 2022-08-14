@@ -1,25 +1,14 @@
-import {createElement} from '../framework/render';
+import AbstractView from '../framework/view/abstract-view';
 
 const createRankTemplate = () => `<section class="header__profile profile">
     <p class="profile__rating">Movie Buff</p>
     <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
   </section>`;
 
-export default class RankView {
+export default class RankView extends AbstractView{
   #element = null;
 
   get template() {
     return createRankTemplate();
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

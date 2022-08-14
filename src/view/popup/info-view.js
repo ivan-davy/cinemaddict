@@ -1,5 +1,5 @@
-import {createElement} from '../../framework/render';
 import {getPrettyDate} from '../../utility/date-time-format';
+import AbstractView from '../../framework/view/abstract-view';
 
 const createInfoTemplate = (movie) => {
   const {poster, title, ageRating, alternativeTitle, totalRating, director, runtime, description} = movie.filmInfo;
@@ -84,27 +84,16 @@ const createInfoTemplate = (movie) => {
       </div>`;
 };
 
-export default class InfoView {
+export default class InfoView extends AbstractView {
   #element = null;
   #movie = null;
 
   constructor(movie) {
+    super();
     this.#movie = movie;
   }
 
   get template() {
     return createInfoTemplate(this.#movie);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-    this.#movie = null;
   }
 }

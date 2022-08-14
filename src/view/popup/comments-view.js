@@ -66,22 +66,11 @@ export default class CommentsView extends AbstractView {
   #comments = null;
 
   constructor(comments) {
+    super();
     this.#comments = comments;
   }
 
   get template() {
     return createCommentsTemplate(this.#comments);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-    this.#comments = null;
   }
 }
