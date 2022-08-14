@@ -1,4 +1,4 @@
-import {createElement} from '../../render.js';
+import {createElement} from '../../framework/render';
 
 const createPopupContainerTemplate = () =>
   `<section class="film-details">

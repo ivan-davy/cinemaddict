@@ -1,4 +1,4 @@
-import {createElement} from '../../render.js';
+import {createElement} from '../../framework/render';
 import {getPrettyDate} from '../../utility/date-time-format';
 
 const createInfoTemplate = (movie) => {

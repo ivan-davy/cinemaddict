@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import {createElement} from '../framework/render';
 
 const createMostCommentedContainerTemplate = () => '' +
   '<section class="films-list films-list--extra" id="most-commented">\n' +

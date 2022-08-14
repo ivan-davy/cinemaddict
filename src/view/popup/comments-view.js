@@ -1,4 +1,4 @@
-import {createElement} from '../../render.js';
+import AbstractView from '../../framework/view/abstract-view';
 import {getCommentDate} from '../../utility/date-time-format';
 
 const createCommentsTemplate = (comments) => {
@@ -61,7 +61,7 @@ const createCommentsTemplate = (comments) => {
       </div>`;
 };
 
-export default class CommentsView {
+export default class CommentsView extends AbstractView {
   #element = null;
   #comments = null;
 

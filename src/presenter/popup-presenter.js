@@ -1,4 +1,4 @@
-import {render} from '../render.js';
+import {render} from '../framework/render';
 import InfoView from '../view/popup/info-view.js';
 import PopupContainerView from '../view/popup/popup-container-view';
 import CommentsView from '../view/popup/comments-view';

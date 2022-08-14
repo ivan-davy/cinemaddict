@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import {createElement} from '../framework/render';
 
 const createFilmDatabaseStatsTemplate = (moviesQty) => '' +
 `<p>${moviesQty} movies inside</p>`;

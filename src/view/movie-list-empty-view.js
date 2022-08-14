@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import {createElement} from '../framework/render';
 
 const createMovieListEmptyTemplate = (message) => `<h2 class="films-list__title visually-hidden">${message}</h2>`;
 

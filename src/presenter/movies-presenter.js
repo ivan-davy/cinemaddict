@@ -1,4 +1,4 @@
-import {render} from '../render.js';
+import {render} from '../framework/render';
 import NavigationView from '../view/navigation-view.js';
 import SortView from '../view/sort-view.js';
 import MovieCardView from '../view/movie-card-view.js';

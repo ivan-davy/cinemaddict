@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import {createElement} from '../framework/render';
 
 const createTopRatedContainerTemplate = () => `<section class="films-list films-list--extra" id="top-rated">
     <h2 class="films-list__title">Top Rated</h2>

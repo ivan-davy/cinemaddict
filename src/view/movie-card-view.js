@@ -1,5 +1,6 @@
-import {createElement} from '../render.js';
+import {createElement} from '../framework/render';
 import {getPrettyYear} from '../utility/date-time-format.js';
+
 
 const createFilmCardTemplate = (movie) => {
   const {poster, title, totalRating, runtime} = movie.filmInfo;
