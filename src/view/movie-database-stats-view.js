@@ -4,7 +4,6 @@ const createFilmDatabaseStatsTemplate = (moviesQty) => '' +
 `<p>${moviesQty} movies inside</p>`;
 
 export default class MovieDatabaseStatsView extends AbstractView {
-  #element = null;
   #moviesQty = null;
 
   constructor(moviesQty) {

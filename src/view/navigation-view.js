@@ -9,8 +9,6 @@ const createNavigationTemplate = () => `<nav class="main-navigation">
 
 
 export default class NavigationView extends AbstractView {
-  #element = null;
-
   get template() {
     return createNavigationTemplate();
   }

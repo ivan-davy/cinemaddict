@@ -8,8 +8,6 @@ const createMostCommentedContainerTemplate = () => `<section class="films-list f
 
 
 export default class MostCommentedContainerView extends AbstractView {
-  #element = null;
-
   get template() {
     return createMostCommentedContainerTemplate();
   }

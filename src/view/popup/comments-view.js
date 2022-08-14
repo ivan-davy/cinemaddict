@@ -62,7 +62,6 @@ const createCommentsTemplate = (comments) => {
 };
 
 export default class CommentsView extends AbstractView {
-  #element = null;
   #comments = null;
 
   constructor(comments) {

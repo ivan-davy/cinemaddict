@@ -9,29 +9,28 @@ export default class PopupPresenter {
     this.movie = movie;
     this.comments = comments;
 
-    this.popupContainerView = new PopupContainerView();
-    this.infoView = new InfoView(movie);
-    this.commentsView = new CommentsView(comments);
+    this.popupContainerComponent = new PopupContainerView();
+    this.infoComponent = new InfoView(movie);
+    this.commentsComponent = new CommentsView(comments);
   }
 
   init = () => {
-    const popupKeydownHandler = (evt) => {
+    const closeKeydownHandler = (evt) => {
       if (evt.key === 'Escape') {
-        this.popupContainerView.removeElement();
+        this.popupContainerComponent.removeElement();
         this.mainElement.querySelector('.film-details').remove();
       }
     };
-    const popupClickHandler = () => {
-      this.popupContainerView.removeElement();
+    const closeClickHandler = () => {
+      this.popupContainerComponent.removeElement();
       this.mainElement.querySelector('.film-details').remove();
-      document.removeEventListener('keydown', popupKeydownHandler);
     };
 
-    this.infoView.setKeydownHandler(popupKeydownHandler);
-    this.infoView.setClickHandler(popupClickHandler);
+    this.infoComponent.setKeydownHandler(closeKeydownHandler);
+    this.infoComponent.setClickHandler(closeClickHandler);
 
-    render(this.popupContainerView, this.mainElement);
-    render(this.infoView, this.popupContainerView.element);
-    render(this.commentsView, this.popupContainerView.element);
+    render(this.popupContainerComponent, this.mainElement);
+    render(this.infoComponent, this.popupContainerComponent.element);
+    render(this.commentsComponent, this.popupContainerComponent.element);
   };
 }

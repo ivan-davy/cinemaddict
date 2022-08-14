@@ -9,8 +9,6 @@ const createMovieListContainerTemplate = () => `<section class="films">
   </section>`;
 
 export default class MovieListContainerView extends AbstractView {
-  #element = null;
-
   get template() {
     return createMovieListContainerTemplate();
   }

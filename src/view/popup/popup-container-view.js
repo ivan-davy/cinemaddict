@@ -7,8 +7,6 @@ const createPopupContainerTemplate = () =>
   </section>`;
 
 export default class PopupContainerView extends AbstractView {
-  #element = null;
-
   get template() {
     return createPopupContainerTemplate();
   }

@@ -1,4 +1,3 @@
-import {createElement} from '../framework/render';
 import AbstractView from '../framework/view/abstract-view';
 
 const createSortTemplate = () => `<ul class="sort">
@@ -8,8 +7,6 @@ const createSortTemplate = () => `<ul class="sort">
   </ul>`;
 
 export default class SortView extends AbstractView {
-  #element = null;
-
   get template() {
     return createSortTemplate();
   }

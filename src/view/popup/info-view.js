@@ -111,6 +111,7 @@ export default class InfoView extends AbstractView {
   #clickHandler = (evt) => {
     evt.preventDefault();
     this._callback.click();
+    document.removeEventListener('keydown', this.#keydownHandler);
   };
 
   #keydownHandler = (evt) => {

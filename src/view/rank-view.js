@@ -6,8 +6,6 @@ const createRankTemplate = () => `<section class="header__profile profile">
   </section>`;
 
 export default class RankView extends AbstractView{
-  #element = null;
-
   get template() {
     return createRankTemplate();
   }
