@@ -1,12 +1,12 @@
 import AbstractView from '../../framework/view/abstract-view';
-import {getCommentDate} from '../../utility/date-time-format';
+import {getCommentPrettyDate} from '../../utility/date-time-format';
 
 const createCommentsTemplate = (comments) => {
   const commentsQty = comments.length;
   let commentsTemplate = '';
   for (const commentEntry of comments) {
-    const {emotion, author, comment} = commentEntry;
-    const date = getCommentDate(comment.date);
+    const {emotion, author, date, comment} = commentEntry;
+    const timePassed = getCommentPrettyDate(date);
 
     commentsTemplate += `<li class="film-details__comment">
               <span class="film-details__comment-emoji">
@@ -16,7 +16,7 @@ const createCommentsTemplate = (comments) => {
                 <p class="film-details__comment-text">${comment}</p>
                 <p class="film-details__comment-info">
                   <span class="film-details__comment-author">${author}</span>
-                  <span class="film-details__comment-day">${date}</span>
+                  <span class="film-details__comment-day">${timePassed}</span>
                   <button class="film-details__comment-delete">Delete</button>
                 </p>
               </div>
