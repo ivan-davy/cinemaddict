@@ -15,16 +15,20 @@ export default class PopupPresenter {
   }
 
   init = () => {
+    this.mainElement.classList.add('hide-overflow');
+
     const popupKeydownHandler = (evt) => {
       if (evt.key === 'Escape') {
         this.popupContainerView.removeElement();
         this.mainElement.querySelector('.film-details').remove();
+        this.mainElement.classList.remove('hide-overflow');
       }
     };
     const popupClickHandler = () => {
       this.popupContainerView.removeElement();
       this.mainElement.querySelector('.film-details').remove();
       document.removeEventListener('keydown', popupKeydownHandler);
+      this.mainElement.classList.remove('hide-overflow');
     };
 
     this.infoView.element.querySelector('.film-details__close-btn')
