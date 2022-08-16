@@ -14,4 +14,9 @@ export default class MovieDatabaseStatsView extends AbstractView {
   get template() {
     return createFilmDatabaseStatsTemplate(this.#moviesQty);
   }
+
+  removeElement() {
+    super.removeElement();
+    this.#moviesQty = null;
+  }
 }

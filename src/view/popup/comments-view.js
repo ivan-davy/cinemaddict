@@ -72,4 +72,9 @@ export default class CommentsView extends AbstractView {
   get template() {
     return createCommentsTemplate(this.#comments);
   }
+
+  removeElement() {
+    super.removeElement();
+    this.#comments = null;
+  }
 }

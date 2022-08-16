@@ -14,4 +14,9 @@ export default class MovieListEmptyView extends AbstractView {
   get template() {
     return createMovieListEmptyTemplate(this.#message);
   }
+
+  removeElement() {
+    super.removeElement();
+    this.#message = null;
+  }
 }

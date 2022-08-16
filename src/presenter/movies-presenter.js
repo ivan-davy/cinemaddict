@@ -1,4 +1,4 @@
-import {render} from '../framework/render';
+import {render, remove} from '../framework/render';
 import NavigationView from '../view/navigation-view.js';
 import SortView from '../view/sort-view.js';
 import MovieCardView from '../view/movie-card-view.js';
@@ -48,8 +48,7 @@ export default class MoviesPresenter {
 
           this.moviesShown += MOVIES_SHOWN_STEP;
           if (this.moviesShown >= this.movies.length) {
-            showMoreButtonComponent.element.remove();
-            showMoreButtonComponent.removeElement();
+            remove(showMoreButtonComponent);
           }
         };
 
@@ -88,7 +87,7 @@ export default class MoviesPresenter {
       openPopup();
     };
 
-    movieCardComponent.setClickHandler(popupClickHandler);
+    movieCardComponent.setMovieClickHandler(popupClickHandler);
     render(movieCardComponent, targetElement);
   };
 }
