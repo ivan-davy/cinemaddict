@@ -20,7 +20,7 @@ export const generateComment = (id) => ({
   id,
   author: getRandomItem(MOCK_SHORT),
   comment: getRandomItem(MOCK_LONG),
-  date: '2019-05-11T16:12:32.554Z',
+  date: '2018-05-11T16:12:32.554Z',
   emotion: getRandomItem(EMOTIONS)
 });
 
