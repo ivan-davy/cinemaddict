@@ -16,6 +16,7 @@ export default class PopupPresenter {
 
   init = () => {
     this.mainElement.classList.add('hide-overflow');
+
     const closeKeydownHandler = (evt) => {
       if (evt.key === 'Escape') {
         remove(this.popupContainerComponent);
