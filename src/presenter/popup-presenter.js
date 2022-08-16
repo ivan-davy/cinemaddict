@@ -15,22 +15,22 @@ export default class PopupPresenter {
   }
 
   init = () => {
-    const popupKeydownHandler = (evt) => {
+    const closeKeydownHandler = (evt) => {
       if (evt.key === 'Escape') {
         this.popupContainerView.removeElement();
         this.mainElement.querySelector('.film-details').remove();
       }
     };
-    const popupClickHandler = () => {
+    const closeClickHandler = () => {
       this.popupContainerView.removeElement();
       this.mainElement.querySelector('.film-details').remove();
-      document.removeEventListener('keydown', popupKeydownHandler);
+      document.removeEventListener('keydown', closeKeydownHandler);
     };
 
     this.infoView.element.querySelector('.film-details__close-btn')
-      .addEventListener('click', popupClickHandler, {once: true});
+      .addEventListener('click', closeClickHandler, {once: true});
     document
-      .addEventListener('keydown', popupKeydownHandler, {once: true});
+      .addEventListener('keydown', closeKeydownHandler, {once: true});
 
     render(this.popupContainerView, this.mainElement);
     render(this.infoView, this.popupContainerView.element);
