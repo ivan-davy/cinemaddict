@@ -1,5 +1,5 @@
 import {render, remove} from '../framework/render';
-import NavigationView from '../view/navigation-view.js';
+import FilterView from '../view/filter-view.js';
 import SortView from '../view/sort-view.js';
 import MovieCardView from '../view/movie-card-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
@@ -8,6 +8,7 @@ import TopRatedContainerView from '../view/top-rated-container-view.js';
 import MostCommentedContainerView from '../view/most-commented-container-view.js';
 import PopupPresenter from './popup-presenter';
 import MovieListEmptyView from '../view/movie-list-empty-view';
+import {generateFilter} from '../mock/filter';
 
 
 const MOVIES_SHOWN_STEP = 5;
@@ -21,8 +22,9 @@ export default class MoviesPresenter {
     this.comments = comments;
     this.moviesShown = Math.min(this.movies.length, MOVIES_SHOWN_STEP);
     this.currentStep = 0;
+    this.filters = generateFilter(this.movies);
 
-    render(new NavigationView(), this.mainElement);
+    render(new FilterView(this.filters), this.mainElement);
     render(new SortView(), this.mainElement);
   }
 

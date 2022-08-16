@@ -18,6 +18,7 @@ export default class PopupPresenter {
     this.mainElement.classList.add('hide-overflow');
     const closeKeydownHandler = (evt) => {
       if (evt.key === 'Escape') {
+        this.infoComponent.closeKeydownSuccessful();
         remove(this.popupContainerComponent);
         this.mainElement.classList.remove('hide-overflow');
       }
@@ -27,8 +28,8 @@ export default class PopupPresenter {
       this.mainElement.classList.remove('hide-overflow');
     };
 
-    this.infoComponent.setKeydownHandler(closeKeydownHandler);
-    this.infoComponent.setClickHandler(closeClickHandler);
+    this.infoComponent.setCloseKeydownHandler(closeKeydownHandler);
+    this.infoComponent.setCloseClickHandler(closeClickHandler);
 
     render(this.popupContainerComponent, this.mainElement);
     render(this.infoComponent, this.popupContainerComponent.element);

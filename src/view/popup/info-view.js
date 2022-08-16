@@ -96,16 +96,20 @@ export default class InfoView extends AbstractView {
     return createInfoTemplate(this.#movie);
   }
 
-  setClickHandler = (callback) => {
+  setCloseClickHandler = (callback) => {
     this._callback.click = callback;
     this.element.querySelector('.film-details__close-btn')
       .addEventListener('click', this.#clickHandler, {once: true});
   };
 
-  setKeydownHandler = (callback) => {
+  setCloseKeydownHandler = (callback) => {
     this._callback.keydown = callback;
     document
-      .addEventListener('keydown', this.#keydownHandler, {once: true});
+      .addEventListener('keydown', this.#keydownHandler);
+  };
+
+  closeKeydownSuccessful = () => {
+    document.removeEventListener('keydown', this.#keydownHandler);
   };
 
   #clickHandler = (evt) => {
