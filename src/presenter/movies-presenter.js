@@ -92,4 +92,8 @@ export default class MoviesPresenter {
     movieCardComponent.setMovieClickHandler(popupClickHandler);
     render(movieCardComponent, targetElement);
   };
+
+  #renderMovieList = () => {
+
+  };
 }
