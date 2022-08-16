@@ -36,7 +36,7 @@ export default class MoviesPresenter {
     }
 
     if (!this.movies) {
-      const message = 'WIP';
+      const message = 'WIPPP';
       render(new MovieListEmptyView(message), this.movieListElement);
     } else {
       const showMoreButtonComponent = new ShowMoreButtonView();
@@ -91,5 +91,9 @@ export default class MoviesPresenter {
 
     movieCardComponent.setMovieClickHandler(popupClickHandler);
     render(movieCardComponent, targetElement);
+  };
+
+  #renderMovieList = () => {
+
   };
 }
