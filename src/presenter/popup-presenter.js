@@ -24,6 +24,7 @@ export default class PopupPresenter {
     };
     const closeClickHandler = () => {
       remove(this.popupContainerComponent);
+=
       this.mainElement.classList.remove('hide-overflow');
     };
 
