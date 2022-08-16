@@ -1,4 +1,4 @@
-import {render} from '../render.js';
+import {render, remove} from '../framework/render';
 import NavigationView from '../view/navigation-view.js';
 import SortView from '../view/sort-view.js';
 import MovieCardView from '../view/movie-card-view.js';
@@ -34,28 +34,25 @@ export default class MoviesPresenter {
     }
 
     if (!this.movies) {
-      const message = 'Bruh';
+      const message = 'WIP';
       render(new MovieListEmptyView(message), this.movieListElement);
     } else {
       const showMoreButtonComponent = new ShowMoreButtonView();
       if (this.moviesShown < this.movies.length) {
         render(showMoreButtonComponent, this.movieListElement);
 
-        const showMoreClickHandler = (evt) => {
-          evt.preventDefault();
+        const showMoreClickHandler = () => {
           for (let i = this.moviesShown; i < Math.min(this.moviesShown + MOVIES_SHOWN_STEP, this.movies.length); i++) {
             this.#renderMovieCard(this.movies[i], this.movieListElement.querySelector('.films-list__container'));
           }
 
           this.moviesShown += MOVIES_SHOWN_STEP;
           if (this.moviesShown >= this.movies.length) {
-            showMoreButtonComponent.element.remove();
-            showMoreButtonComponent.removeElement();
+            remove(showMoreButtonComponent);
           }
         };
 
-        showMoreButtonComponent.element
-          .addEventListener('click', showMoreClickHandler);
+        showMoreButtonComponent.setClickHandler(showMoreClickHandler);
       }
     }
 
@@ -86,10 +83,11 @@ export default class MoviesPresenter {
       popupPresenter.init();
     };
 
-    movieCardComponent.element.querySelector('.film-card__link').addEventListener('click', () => {
+    const popupClickHandler = () => {
       openPopup();
-    });
+    };
 
+    movieCardComponent.setMovieClickHandler(popupClickHandler);
     render(movieCardComponent, targetElement);
   };
 }
