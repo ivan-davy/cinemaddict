@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 
+
 const FILTER_UI_NAMES = {
   'all': 'All movies',
   'watchlist': 'Watchlist',

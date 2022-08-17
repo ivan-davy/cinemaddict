@@ -2,6 +2,7 @@ import {render} from '../framework/render';
 import MovieDatabaseStatsView from '../view/movie-database-stats-view';
 import MoviesPresenter from './movies-presenter';
 import RankView from '../view/rank-view';
+import {generateFilter} from '../mock/filter';
 
 
 export default class MainPresenter {
@@ -13,13 +14,15 @@ export default class MainPresenter {
     this.movieModel = movieModel;
     this.commentModel = commentModel;
     this.movies = [...this.movieModel.movies];
+    this.filters = generateFilter(this.movies);
     this.comments = [...this.commentModel.comments];
   }
 
   init = () => {
-    render(new RankView(), this.headerElement);
+    const rankComponent = new RankView(this.filters[2].count);
+    render(rankComponent, this.headerElement);
 
-    const moviesPresenter = new MoviesPresenter(this.mainElement, this.movies, this.comments);
+    const moviesPresenter = new MoviesPresenter(this.mainElement, this.movies, this.filters, this.comments);
     moviesPresenter.init();
 
     render(new MovieDatabaseStatsView(this.movies.length), this.footerElement.querySelector('.footer__statistics'));

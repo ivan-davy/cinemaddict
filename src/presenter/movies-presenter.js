@@ -8,13 +8,12 @@ import TopRatedView from '../view/top-rated-view.js';
 import MostCommentedView from '../view/most-commented-view.js';
 import PopupPresenter from './popup-presenter';
 import MovieListEmptyView from '../view/movie-list-empty-view';
-import {generateFilter} from '../mock/filter';
 
 
 const MOVIES_SHOWN_STEP = 5;
 
 export default class MoviesPresenter {
-  constructor(mainElement, movies, comments) {
+  constructor(mainElement, movies, filters, comments) {
     this.mainElement = mainElement;
     this.movies = movies;
     this.topRatedMovies = [movies[0]];
@@ -22,7 +21,7 @@ export default class MoviesPresenter {
     this.comments = comments;
     this.moviesShown = Math.min(this.movies.length, MOVIES_SHOWN_STEP);
     this.currentStep = 0;
-    this.filters = generateFilter(this.movies);
+    this.filters = filters;
 
     render(new FilterView(this.filters), this.mainElement);
     render(new SortView(), this.mainElement);
