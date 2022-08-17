@@ -1,13 +1,13 @@
-import AbstractView from '../framework/view/abstract-view';
+import {createElement} from '../render.js';
 
 const createFilmDatabaseStatsTemplate = (moviesQty) => '' +
 `<p>${moviesQty} movies inside</p>`;
 
-export default class MovieDatabaseStatsView extends AbstractView {
+export default class MovieDatabaseStatsView {
+  #element = null;
   #moviesQty = null;
 
   constructor(moviesQty) {
-    super();
     this.#moviesQty = moviesQty;
   }
 
@@ -15,8 +15,15 @@ export default class MovieDatabaseStatsView extends AbstractView {
     return createFilmDatabaseStatsTemplate(this.#moviesQty);
   }
 
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
   removeElement() {
-    super.removeElement();
+    this.#element = null;
     this.#moviesQty = null;
   }
 }

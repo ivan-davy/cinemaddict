@@ -1,12 +1,12 @@
-import AbstractView from '../../framework/view/abstract-view';
-import {getCommentPrettyDate} from '../../utility/date-time-format';
+import {createElement} from '../../render.js';
+import {getCommentDate} from '../../utility/date-time-format';
 
 const createCommentsTemplate = (comments) => {
   const commentsQty = comments.length;
   let commentsTemplate = '';
   for (const commentEntry of comments) {
-    const {emotion, author, date, comment} = commentEntry;
-    const timePassed = getCommentPrettyDate(date);
+    const {emotion, author, comment} = commentEntry;
+    const date = getCommentDate(comment.date);
 
     commentsTemplate += `<li class="film-details__comment">
               <span class="film-details__comment-emoji">
@@ -16,7 +16,7 @@ const createCommentsTemplate = (comments) => {
                 <p class="film-details__comment-text">${comment}</p>
                 <p class="film-details__comment-info">
                   <span class="film-details__comment-author">${author}</span>
-                  <span class="film-details__comment-day">${timePassed}</span>
+                  <span class="film-details__comment-day">${date}</span>
                   <button class="film-details__comment-delete">Delete</button>
                 </p>
               </div>
@@ -61,11 +61,11 @@ const createCommentsTemplate = (comments) => {
       </div>`;
 };
 
-export default class CommentsView extends AbstractView {
+export default class CommentsView {
+  #element = null;
   #comments = null;
 
   constructor(comments) {
-    super();
     this.#comments = comments;
   }
 
@@ -73,8 +73,15 @@ export default class CommentsView extends AbstractView {
     return createCommentsTemplate(this.#comments);
   }
 
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
   removeElement() {
-    super.removeElement();
+    this.#element = null;
     this.#comments = null;
   }
 }

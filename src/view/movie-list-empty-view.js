@@ -1,13 +1,12 @@
-import AbstractView from '../framework/view/abstract-view';
+import {createElement} from '../render.js';
 
+const createMovieListEmptyTemplate = (message) => `<h2 class="films-list__title visually-hidden">${message}</h2>`;
 
-const createMovieListEmptyTemplate = (message) => `<h2 class="films-list__title">${message}</h2>`;
-
-export default class MovieListEmptyView extends AbstractView {
+export default class MovieListEmptyView {
+  #element = null;
   #message = null;
 
   constructor(message) {
-    super();
     this.#message = message;
   }
 
@@ -15,8 +14,14 @@ export default class MovieListEmptyView extends AbstractView {
     return createMovieListEmptyTemplate(this.#message);
   }
 
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
   removeElement() {
-    super.removeElement();
-    this.#message = null;
+    this.#element = null;
   }
 }
