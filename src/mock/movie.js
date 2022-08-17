@@ -24,7 +24,7 @@ const POSTERS = [
 
 export const generateMovie = () => ({
   id: getRandomInteger(0, 100),
-  comments: getRandomSample([...Array(10).keys()], getRandomInteger(0, 5)),
+  comments: getRandomSample([...Array(50).keys()], getRandomInteger(0, 5)),
   filmInfo: {
     title: getRandomItem(MOCK_SHORT),
     alternativeTitle: getRandomItem(MOCK_SHORT),
