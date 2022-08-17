@@ -1,6 +1,5 @@
+import {createElement} from '../render.js';
 import {getPrettyYear} from '../utility/date-time-format.js';
-import AbstractView from '../framework/view/abstract-view';
-
 
 const createFilmCardTemplate = (movie) => {
   const {poster, title, totalRating, runtime} = movie.filmInfo;
@@ -46,11 +45,11 @@ const createFilmCardTemplate = (movie) => {
   </article>`;
 };
 
-export default class MovieCardView extends AbstractView {
+export default class MovieCardView {
+  #element = null;
   #movie = null;
 
   constructor(movie) {
-    super();
     this.#movie = movie;
   }
 
@@ -58,18 +57,15 @@ export default class MovieCardView extends AbstractView {
     return createFilmCardTemplate(this.#movie);
   }
 
-  setMovieClickHandler = (callback) => {
-    this._callback.click = callback;
-    this.element.querySelector('.film-card__link').addEventListener('click', this.#movieClickHandler);
-  };
-
-  #movieClickHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.click();
-  };
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
 
   removeElement() {
-    super.removeElement();
+    this.#element = null;
     this.#movie = null;
   }
 }

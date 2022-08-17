@@ -1,4 +1,4 @@
-import {render} from '../framework/render';
+import {render} from '../render.js';
 import MovieDatabaseStatsView from '../view/movie-database-stats-view';
 import MoviesPresenter from './movies-presenter';
 import RankView from '../view/rank-view';
