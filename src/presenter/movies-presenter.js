@@ -3,9 +3,9 @@ import FilterView from '../view/filter-view.js';
 import SortView from '../view/sort-view.js';
 import MovieCardView from '../view/movie-card-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
-import MovieListContainerView from '../view/movie-list-container-view.js';
-import TopRatedContainerView from '../view/top-rated-container-view.js';
-import MostCommentedContainerView from '../view/most-commented-container-view.js';
+import MovieListView from '../view/movie-list-view.js';
+import TopRatedView from '../view/top-rated-view.js';
+import MostCommentedView from '../view/most-commented-view.js';
 import PopupPresenter from './popup-presenter';
 import MovieListEmptyView from '../view/movie-list-empty-view';
 import {generateFilter} from '../mock/filter';
@@ -29,23 +29,23 @@ export default class MoviesPresenter {
   }
 
   init = () => {
-    render(new MovieListContainerView(), this.mainElement);
-    this.movieListElement = this.mainElement.querySelector('.films-list');
+    const movieListComponent = new MovieListView();
+    render(movieListComponent, this.mainElement);
     for (let i = this.currentStep * MOVIES_SHOWN_STEP; i < this.moviesShown; i++) {
-      this.#renderMovieCard(this.movies[i], this.movieListElement.querySelector('.films-list__container'));
+      this.#renderMovieCard(this.movies[i], movieListComponent.containerElement);
     }
 
     if (!this.movies) {
       const message = 'WIPPPPP';
-      render(new MovieListEmptyView(message), this.movieListElement);
+      render(new MovieListEmptyView(message), movieListComponent.listElement);
     } else {
       const showMoreButtonComponent = new ShowMoreButtonView();
       if (this.moviesShown < this.movies.length) {
-        render(showMoreButtonComponent, this.movieListElement);
+        render(showMoreButtonComponent, movieListComponent.listElement);
 
         const showMoreClickHandler = () => {
           for (let i = this.moviesShown; i < Math.min(this.moviesShown + MOVIES_SHOWN_STEP, this.movies.length); i++) {
-            this.#renderMovieCard(this.movies[i], this.movieListElement.querySelector('.films-list__container'));
+            this.#renderMovieCard(this.movies[i], movieListComponent.containerElement);
           }
 
           this.moviesShown += MOVIES_SHOWN_STEP;
@@ -59,20 +59,19 @@ export default class MoviesPresenter {
     }
 
 
-    this.moviesElement = this.mainElement.querySelector('.films');
     if (this.topRatedMovies.length) {
-      render(new TopRatedContainerView(), this.moviesElement);
-      this.topRatedElement = this.moviesElement.querySelector('#top-rated');
+      const topRatedComponent = new TopRatedView();
+      render(topRatedComponent, movieListComponent.filmsElement);
       for (const movie of this.topRatedMovies) {
-        this.#renderMovieCard(movie, this.topRatedElement.querySelector('.films-list__container'));
+        this.#renderMovieCard(movie, topRatedComponent.containerElement);
       }
     }
 
     if (this.mostCommentedMovies.length) {
-      render(new MostCommentedContainerView(), this.moviesElement);
-      this.mostCommentedElement = this.moviesElement.querySelector('#most-commented');
+      const mostCommentedComponent = new MostCommentedView();
+      render(mostCommentedComponent, movieListComponent.filmsElement);
       for (const movie of this.mostCommentedMovies) {
-        this.#renderMovieCard(movie, this.mostCommentedElement.querySelector('.films-list__container'));
+        this.#renderMovieCard(movie, mostCommentedComponent.containerElement);
       }
     }
   };
@@ -91,9 +90,5 @@ export default class MoviesPresenter {
 
     movieCardComponent.setMovieClickHandler(popupClickHandler);
     render(movieCardComponent, targetElement);
-  };
-
-  #renderMovieList = () => {
-
   };
 }
