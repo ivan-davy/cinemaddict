@@ -36,7 +36,7 @@ export default class MoviesPresenter {
     }
 
     if (!this.movies) {
-      const message = 'WIPPP';
+      const message = 'WIPPPPP';
       render(new MovieListEmptyView(message), this.movieListElement);
     } else {
       const showMoreButtonComponent = new ShowMoreButtonView();
