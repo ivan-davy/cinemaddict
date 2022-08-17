@@ -1,5 +1,5 @@
-import {createElement} from '../../render.js';
 import {getPrettyDate} from '../../utility/date-time-format';
+import AbstractView from '../../framework/view/abstract-view';
 
 const createInfoTemplate = (movie) => {
   const {poster, title, ageRating, alternativeTitle, totalRating, director, runtime, description} = movie.filmInfo;
@@ -84,11 +84,11 @@ const createInfoTemplate = (movie) => {
       </div>`;
 };
 
-export default class InfoView {
-  #element = null;
+export default class InfoView extends AbstractView {
   #movie = null;
 
   constructor(movie) {
+    super();
     this.#movie = movie;
   }
 
@@ -96,15 +96,30 @@ export default class InfoView {
     return createInfoTemplate(this.#movie);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
+  setCloseClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.film-details__close-btn')
+      .addEventListener('click', this.#clickHandler, {once: true});
+  };
 
-  removeElement() {
-    this.#element = null;
-    this.#movie = null;
-  }
+  setCloseKeydownHandler = (callback) => {
+    this._callback.keydown = callback;
+    document
+      .addEventListener('keydown', this.#keydownHandler);
+  };
+
+  closeKeydownSuccessful = () => {
+    document.removeEventListener('keydown', this.#keydownHandler);
+  };
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+    document.removeEventListener('keydown', this.#keydownHandler);
+  };
+
+  #keydownHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.keydown(evt);
+  };
 }

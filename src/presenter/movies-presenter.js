@@ -1,5 +1,5 @@
-import {render} from '../render.js';
-import NavigationView from '../view/navigation-view.js';
+import {render, remove} from '../framework/render';
+import FilterView from '../view/filter-view.js';
 import SortView from '../view/sort-view.js';
 import MovieCardView from '../view/movie-card-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
@@ -8,6 +8,7 @@ import TopRatedContainerView from '../view/top-rated-container-view.js';
 import MostCommentedContainerView from '../view/most-commented-container-view.js';
 import PopupPresenter from './popup-presenter';
 import MovieListEmptyView from '../view/movie-list-empty-view';
+import {generateFilter} from '../mock/filter';
 
 
 const MOVIES_SHOWN_STEP = 5;
@@ -21,8 +22,9 @@ export default class MoviesPresenter {
     this.comments = comments;
     this.moviesShown = Math.min(this.movies.length, MOVIES_SHOWN_STEP);
     this.currentStep = 0;
+    this.filters = generateFilter(this.movies);
 
-    render(new NavigationView(), this.mainElement);
+    render(new FilterView(this.filters), this.mainElement);
     render(new SortView(), this.mainElement);
   }
 
@@ -41,21 +43,18 @@ export default class MoviesPresenter {
       if (this.moviesShown < this.movies.length) {
         render(showMoreButtonComponent, this.movieListElement);
 
-        const showMoreClickHandler = (evt) => {
-          evt.preventDefault();
+        const showMoreClickHandler = () => {
           for (let i = this.moviesShown; i < Math.min(this.moviesShown + MOVIES_SHOWN_STEP, this.movies.length); i++) {
             this.#renderMovieCard(this.movies[i], this.movieListElement.querySelector('.films-list__container'));
           }
 
           this.moviesShown += MOVIES_SHOWN_STEP;
           if (this.moviesShown >= this.movies.length) {
-            showMoreButtonComponent.element.remove();
-            showMoreButtonComponent.removeElement();
+            remove(showMoreButtonComponent);
           }
         };
 
-        showMoreButtonComponent.element
-          .addEventListener('click', showMoreClickHandler);
+        showMoreButtonComponent.setClickHandler(showMoreClickHandler);
       }
     }
 
@@ -86,10 +85,15 @@ export default class MoviesPresenter {
       popupPresenter.init();
     };
 
-    movieCardComponent.element.querySelector('.film-card__link').addEventListener('click', () => {
+    const popupClickHandler = () => {
       openPopup();
-    });
+    };
 
+    movieCardComponent.setMovieClickHandler(popupClickHandler);
     render(movieCardComponent, targetElement);
+  };
+
+  #renderMovieList = () => {
+
   };
 }
