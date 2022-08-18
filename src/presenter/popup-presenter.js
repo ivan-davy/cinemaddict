@@ -15,8 +15,6 @@ export default class PopupPresenter {
   }
 
   init = () => {
-    this.popupContainerComponent.restrictOverflow(this.mainElement);
-
     const closeKeydownHandler = (evt) => {
       if (evt.key === 'Escape') {
         this.infoComponent.closeKeydownSuccessful();
@@ -29,6 +27,7 @@ export default class PopupPresenter {
       this.popupContainerComponent.allowOverflow(this.mainElement);
     };
 
+    this.popupContainerComponent.restrictOverflow(this.mainElement);
     this.infoComponent.setCloseKeydownHandler(closeKeydownHandler);
     this.infoComponent.setCloseClickHandler(closeClickHandler);
 

@@ -23,71 +23,91 @@ export default class MoviesPresenter {
     this.currentStep = 0;
     this.filters = filters;
 
-    render(new FilterView(this.filters), this.mainElement);
-    render(new SortView(), this.mainElement);
+    this.movieListComponent = new MovieListView();
+    this.movieListEmptyContainer = new MovieListEmptyView();
+    this.filterComponent = new FilterView(this.filters);
+    this.sortComponent = new SortView();
+    this.showMoreButtonComponent = new ShowMoreButtonView();
+    this.topRatedComponent = new TopRatedView();
+    this.mostCommentedComponent = new MostCommentedView();
   }
 
   init = () => {
-    const movieListComponent = new MovieListView();
-    render(movieListComponent, this.mainElement);
-    for (let i = this.currentStep * MOVIES_SHOWN_STEP; i < this.moviesShown; i++) {
-      this.#renderMovieCard(this.movies[i], movieListComponent.containerElement);
-    }
+    render(this.filterComponent, this.mainElement);
+    render(this.sortComponent, this.mainElement);
+    render(this.movieListComponent, this.mainElement);
 
     if (!this.movies) {
-      const message = 'WIPPPPP';
-      render(new MovieListEmptyView(message), movieListComponent.listElement);
+      this.#renderEmptyList();
     } else {
-      const showMoreButtonComponent = new ShowMoreButtonView();
+      this.#renderMovies(this.currentStep * MOVIES_SHOWN_STEP, this.moviesShown);
       if (this.moviesShown < this.movies.length) {
-        render(showMoreButtonComponent, movieListComponent.listElement);
-
-        const showMoreClickHandler = () => {
-          for (let i = this.moviesShown; i < Math.min(this.moviesShown + MOVIES_SHOWN_STEP, this.movies.length); i++) {
-            this.#renderMovieCard(this.movies[i], movieListComponent.containerElement);
-          }
-
-          this.moviesShown += MOVIES_SHOWN_STEP;
-          if (this.moviesShown >= this.movies.length) {
-            remove(showMoreButtonComponent);
-          }
-        };
-
-        showMoreButtonComponent.setClickHandler(showMoreClickHandler);
+        this.#renderShowMoreButton();
       }
     }
-
-
-    if (this.topRatedMovies.length) {
-      const topRatedComponent = new TopRatedView();
-      render(topRatedComponent, movieListComponent.filmsElement);
-      for (const movie of this.topRatedMovies) {
-        this.#renderMovieCard(movie, topRatedComponent.containerElement);
-      }
-    }
-
-    if (this.mostCommentedMovies.length) {
-      const mostCommentedComponent = new MostCommentedView();
-      render(mostCommentedComponent, movieListComponent.filmsElement);
-      for (const movie of this.mostCommentedMovies) {
-        this.#renderMovieCard(movie, mostCommentedComponent.containerElement);
-      }
-    }
+    this.#renderTopRatedList();
+    this.#renderMostCommentedList();
   };
 
   #renderMovieCard = (movie, targetElement) => {
     const movieCardComponent = new MovieCardView(movie);
-
-    const openPopup = () => {
+    const movieClickHandler = () => {
       const popupPresenter = new PopupPresenter(this.mainElement, movie, this.comments);
       popupPresenter.init();
     };
-
-    const popupClickHandler = () => {
-      openPopup();
+    const watchlistClickHandler = () => {
+      movie.userDetails.watchlist = !movie.userDetails.watchlist;
     };
-
-    movieCardComponent.setMovieClickHandler(popupClickHandler);
+    const historyClickHandler = () => {
+      movie.userDetails.alreadyWatched = !movie.userDetails.alreadyWatched;
+    };
+    const favoriteClickHandler = () => {
+      movie.userDetails.favorite = !movie.userDetails.favorite;
+    };
+    movieCardComponent.setMovieClickHandler(movieClickHandler);
+    movieCardComponent.setWatchlistClickHandler(watchlistClickHandler);
+    movieCardComponent.setHistoryClickHandler(historyClickHandler);
+    movieCardComponent.setFavoriteClickHandler(favoriteClickHandler);
     render(movieCardComponent, targetElement);
+  };
+
+  #renderMovies = (from, to) => {
+    for (let i = from; i < to; i++) {
+      this.#renderMovieCard(this.movies[i], this.movieListComponent.containerElement);
+    }
+  };
+
+  #renderShowMoreButton = () => {
+    render(this.showMoreButtonComponent, this.movieListComponent.listElement);
+    const showMoreClickHandler = () => {
+      this.#renderMovies(this.moviesShown, Math.min(this.moviesShown + MOVIES_SHOWN_STEP, this.movies.length));
+      this.moviesShown += MOVIES_SHOWN_STEP;
+      if (this.moviesShown >= this.movies.length) {
+        remove(this.showMoreButtonComponent);
+      }
+    };
+    this.showMoreButtonComponent.setClickHandler(showMoreClickHandler);
+  };
+
+  #renderEmptyList = () => {
+    render(this.movieListEmptyContainer, this.movieListComponent.listElement);
+  };
+
+  #renderTopRatedList = () => {
+    if (this.topRatedMovies.length) {
+      render(this.topRatedComponent, this.movieListComponent.filmsElement);
+      for (const movie of this.topRatedMovies) {
+        this.#renderMovieCard(movie, this.topRatedComponent.containerElement);
+      }
+    }
+  };
+
+  #renderMostCommentedList = () => {
+    if (this.mostCommentedMovies.length) {
+      render(this.mostCommentedComponent, this.movieListComponent.filmsElement);
+      for (const movie of this.mostCommentedMovies) {
+        this.#renderMovieCard(movie, this.mostCommentedComponent.containerElement);
+      }
+    }
   };
 }

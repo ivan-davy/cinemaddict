@@ -11,11 +11,11 @@ export default class PopupContainerView extends AbstractView {
     return createPopupContainerTemplate();
   }
 
-  restrictOverflow(element) {
+  restrictOverflow = (element) => {
     element.classList.add('hide-overflow');
-  }
+  };
 
-  allowOverflow(element) {
+  allowOverflow = (element) => {
     element.classList.remove('hide-overflow');
-  }
+  };
 }
