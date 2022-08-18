@@ -1,4 +1,4 @@
-import {remove, render} from '../framework/render';
+import {remove, render, replace} from '../framework/render';
 import InfoView from '../view/popup/info-view.js';
 import ContainerView from '../view/popup/container-view';
 import CommentsView from '../view/popup/comments-view';
@@ -8,53 +8,55 @@ export default class PopupPresenter {
 
   #mainElement = null;
   #comments = null;
-  #updateCards = null;
+  #updateData = null;
 
   #containerComponent = null;
   #infoComponent = null;
   #commentsComponent = null;
 
-  constructor(mainElement, comments, updateCards) {
+  constructor(mainElement, movie, comments, updateData) {
     this.#mainElement = mainElement;
-    this.#comments = comments;
-    this.#updateCards = updateCards;
-  }
-
-  init(movie) {
     this.#movie = movie;
+    this.#comments = comments;
+    this.#updateData = updateData;
 
     this.#containerComponent = new ContainerView();
     this.#infoComponent = new InfoView(this.#movie);
     this.#commentsComponent = new CommentsView(this.#comments);
-
-    this.#containerComponent.restrictOverflow(this.#mainElement);
-    this.#infoComponent.setCloseKeydownHandler(this.#closeKeydownHandler);
-    this.#infoComponent.setCloseClickHandler(this.#closeClickHandler);
-    this.#infoComponent.setWatchlistClickHandler(this.#watchlistClickHandler);
-    this.#infoComponent.setHistoryClickHandler(this.#historyClickHandler);
-    this.#infoComponent.setFavoriteClickHandler(this.#favoriteClickHandler);
-
-    this.renderPopup();
   }
 
-  renderPopup = () => {
-    render(this.#containerComponent, this.#mainElement);
-    render(this.#infoComponent, this.#containerComponent.element);
-    render(this.#commentsComponent, this.#containerComponent.element);
-  };
+  init() {
+    const prevInfoComponent = this.#infoComponent;
+    this.#infoComponent = new InfoView(this.#movie);
+
+    if (this.#infoComponent !== prevInfoComponent) {
+      remove(prevInfoComponent);
+      this.#containerComponent.restrictOverflow(this.#mainElement);
+      render(this.#containerComponent, this.#mainElement);
+      render(this.#infoComponent, this.#containerComponent.element);
+      render(this.#commentsComponent, this.#containerComponent.element);
+      this.#containerComponent.setCloseKeydownHandler(this.#closeKeydownHandler);
+      this.#containerComponent.setCloseClickHandler(this.#closeClickHandler);
+      this.#infoComponent.setWatchlistClickHandler(this.#watchlistClickHandler);
+      this.#infoComponent.setHistoryClickHandler(this.#historyClickHandler);
+      this.#infoComponent.setFavoriteClickHandler(this.#favoriteClickHandler);
+      return;
+    }
+
+    if (this.#containerComponent.element.contains(this.#infoComponent.element)) {
+      replace(this.#infoComponent, prevInfoComponent);
+    }
+
+  }
 
   destroy = () => {
-    if (this.#containerComponent !== null) {
-      remove(this.#containerComponent);
-      //remove(this.#infoComponent);
-      //remove(this.#commentsComponent);
-    }
+    remove(this.#containerComponent);
   };
 
 
   #closeKeydownHandler = (evt) => {
     if (evt.key === 'Escape') {
-      this.#infoComponent.closeKeydownSuccessful();
+      this.#containerComponent.closeKeydownSuccessful();
       this.destroy();
       this.#containerComponent.allowOverflow(this.#mainElement);
     }
@@ -67,17 +69,20 @@ export default class PopupPresenter {
 
   #watchlistClickHandler = () => {
     this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
-    this.#updateCards(this.#movie);
+    this.#updateData(this.#movie);
+    this.init();
   };
 
   #historyClickHandler = () => {
     this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
-    this.#updateCards(this.#movie);
+    this.#updateData(this.#movie);
+    this.init();
   };
 
   #favoriteClickHandler = () => {
     this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
-    this.#updateCards(this.#movie);
+    this.#updateData(this.#movie);
+    this.init();
   };
 }
 

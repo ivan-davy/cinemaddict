@@ -8,6 +8,7 @@ import MostCommentedView from '../view/most-commented-view.js';
 import MovieListEmptyView from '../view/movie-list-empty-view';
 import MoviePresenter from './movie-presenter';
 import {updateItem} from '../utility/update-item';
+import PopupPresenter from './popup-presenter';
 
 
 const MOVIES_SHOWN_STEP = 5;
@@ -31,9 +32,10 @@ export default class MoviesPresenter {
     this.topRatedComponent = new TopRatedView();
     this.mostCommentedComponent = new MostCommentedView();
 
-    this.mainMovieCardsPresenters = new Map();
+    this.mainMovieCardPresenters = new Map();
     this.topRatedMovieCardsPresenters = new Map();
     this.mostCommentedMovieCardsPresenters = new Map();
+    this.popupPresenters = new Map();
   }
 
   init() {
@@ -55,7 +57,8 @@ export default class MoviesPresenter {
 
   #movieChangeHandler = (updatedMovie) => {
     this.movies = updateItem(this.movies, updatedMovie);
-    this.mainMovieCardsPresenters.get(updatedMovie.id).init(updatedMovie);
+    this.mainMovieCardPresenters.get(updatedMovie.id).init(updatedMovie);
+    //this.popupPresenters.get(updatedMovie.id).init();
     if (this.topRatedMovieCardsPresenters.has(updatedMovie.id)){
       this.topRatedMovieCardsPresenters.get(updatedMovie.id).init(updatedMovie);
     }
@@ -64,9 +67,11 @@ export default class MoviesPresenter {
     }
   };
 
-  #renderMovieCard = (movie, targetElement, presenterGroup = this.mainMovieCardsPresenters) => {
-    const moviePresenter = new MoviePresenter(targetElement, this.mainElement, this.comments, this.#movieChangeHandler);
-    presenterGroup.set(movie.id, moviePresenter);
+  #renderMovieCard = (movie, targetElement, cardPresentersGroup = this.mainMovieCardPresenters) => {
+    const popupPresenter = new PopupPresenter(this.mainElement, movie, this.comments, this.#movieChangeHandler);
+    const moviePresenter = new MoviePresenter(targetElement, this.comments, popupPresenter, this.#movieChangeHandler);
+    cardPresentersGroup.set(movie.id, moviePresenter);
+    this.popupPresenters.set(movie.id, popupPresenter);
     moviePresenter.init(movie);
   };
 
@@ -89,8 +94,8 @@ export default class MoviesPresenter {
   };
 
   #clearMovieList = () => {
-    this.mainMovieCardsPresenters.forEach((presenter) => presenter.destroy());
-    this.mainMovieCardsPresenters.clear();
+    this.mainMovieCardPresenters.forEach((presenter) => presenter.destroy());
+    this.mainMovieCardPresenters.clear();
     this.moviesShown = MOVIES_SHOWN_STEP;
     remove(this.showMoreButtonComponent);
   };

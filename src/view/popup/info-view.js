@@ -1,5 +1,6 @@
 import {getPrettyDate} from '../../utility/date-time-format';
 import AbstractView from '../../framework/view/abstract-view';
+import {createElement} from '../../framework/render';
 
 const createInfoTemplate = (movie) => {
   const {poster, title, ageRating, alternativeTitle, totalRating, director, runtime, description} = movie.filmInfo;
@@ -96,21 +97,6 @@ export default class InfoView extends AbstractView {
     return createInfoTemplate(this.#movie);
   }
 
-  closeKeydownSuccessful = () => {
-    document.removeEventListener('keydown', this.#closeKeydownHandler);
-  };
-
-  setCloseClickHandler = (callback) => {
-    this._callback.closeClick = callback;
-    this.element.querySelector('.film-details__close-btn')
-      .addEventListener('click', this.#closeClickHandler, {once: true});
-  };
-
-  setCloseKeydownHandler = (callback) => {
-    this._callback.closeKeydown = callback;
-    document
-      .addEventListener('keydown', this.#closeKeydownHandler);
-  };
 
   setWatchlistClickHandler(callback) {
     this._callback.watchlistClick = callback;
@@ -129,17 +115,6 @@ export default class InfoView extends AbstractView {
     this.element.querySelector('.film-details__control-button--favorite')
       .addEventListener('click', this.#favoriteClickHandler);
   }
-
-  #closeClickHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.closeClick();
-    document.removeEventListener('keydown', this.#closeKeydownHandler);
-  };
-
-  #closeKeydownHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.closeKeydown(evt);
-  };
 
   #watchlistClickHandler = (evt) => {
     evt.preventDefault();
