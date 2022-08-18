@@ -58,30 +58,29 @@ export default class MovieCardView extends AbstractView {
     return createFilmCardTemplate(this.#movie);
   }
 
-
-  setMovieClickHandler = (callback) => {
+  setMovieClickHandler(callback) {
     this._callback.movieClick = callback;
     this.element.querySelector('.film-card__link')
       .addEventListener('click', this.#movieClickHandler);
-  };
+  }
 
-  setWatchlistClickHandler = (callback) => {
+  setWatchlistClickHandler(callback) {
     this._callback.watchlistClick = callback;
     this.element.querySelector('.film-card__controls-item--add-to-watchlist')
       .addEventListener('click', this.#watchlistClickHandler);
-  };
+  }
 
-  setHistoryClickHandler = (callback) => {
+  setHistoryClickHandler(callback) {
     this._callback.historyClick = callback;
     this.element.querySelector('.film-card__controls-item--mark-as-watched')
       .addEventListener('click', this.#historyClickHandler);
-  };
+  }
 
-  setFavoriteClickHandler = (callback) => {
+  setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.element.querySelector('.film-card__controls-item--favorite')
       .addEventListener('click', this.#favoriteClickHandler);
-  };
+  }
 
 
   #movieClickHandler = (evt) => {
@@ -91,22 +90,22 @@ export default class MovieCardView extends AbstractView {
 
   #watchlistClickHandler = (evt) => {
     evt.preventDefault();
-    this.element.querySelector('.film-card__controls-item--add-to-watchlist')
-      .classList.toggle('film-card__controls-item--active');
+    //this.element.querySelector('.film-card__controls-item--add-to-watchlist')
+    //  .classList.toggle('film-card__controls-item--active');
     this._callback.watchlistClick();
   };
 
   #historyClickHandler = (evt) => {
     evt.preventDefault();
-    this.element.querySelector('.film-card__controls-item--mark-as-watched')
-      .classList.toggle('film-card__controls-item--active');
+    //this.element.querySelector('.film-card__controls-item--mark-as-watched')
+    //  .classList.toggle('film-card__controls-item--active');
     this._callback.historyClick();
   };
 
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
-    this.element.querySelector('.film-card__controls-item--favorite')
-      .classList.toggle('film-card__controls-item--active');
+    //this.element.querySelector('.film-card__controls-item--favorite')
+    //  .classList.toggle('film-card__controls-item--active');
     this._callback.favoriteClick();
   };
 

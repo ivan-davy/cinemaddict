@@ -2,7 +2,7 @@ import AbstractView from '../framework/view/abstract-view';
 
 
 const createMovieListTemplate = () => `<section class="films">
-      <section class="films-list">
+      <section class="films-list" id="main-list">
         <div class="films-list__container"></div>
       </section>
   </section>`;
@@ -13,15 +13,15 @@ export default class MovieListView extends AbstractView {
   }
 
   get filmsElement() {
-    return document.querySelector('.films');
+    return this.element;
   }
 
   get listElement() {
-    return document.querySelector('.films-list');
+    return this.filmsElement.querySelector('#main-list');
   }
 
   get containerElement() {
-    return document.querySelector('.films-list__container');
+    return this.listElement.querySelector('.films-list__container');
   }
 
 

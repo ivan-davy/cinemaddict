@@ -14,7 +14,7 @@ export default class PopupPresenter {
     this.commentsComponent = new CommentsView(comments);
   }
 
-  init = () => {
+  init() {
     const closeKeydownHandler = (evt) => {
       if (evt.key === 'Escape') {
         this.infoComponent.closeKeydownSuccessful();
@@ -34,5 +34,5 @@ export default class PopupPresenter {
     render(this.popupContainerComponent, this.mainElement);
     render(this.infoComponent, this.popupContainerComponent.element);
     render(this.commentsComponent, this.popupContainerComponent.element);
-  };
+  }
 }
