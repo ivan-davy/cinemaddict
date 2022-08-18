@@ -90,22 +90,16 @@ export default class MovieCardView extends AbstractView {
 
   #watchlistClickHandler = (evt) => {
     evt.preventDefault();
-    //this.element.querySelector('.film-card__controls-item--add-to-watchlist')
-    //  .classList.toggle('film-card__controls-item--active');
     this._callback.watchlistClick();
   };
 
   #historyClickHandler = (evt) => {
     evt.preventDefault();
-    //this.element.querySelector('.film-card__controls-item--mark-as-watched')
-    //  .classList.toggle('film-card__controls-item--active');
     this._callback.historyClick();
   };
 
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
-    //this.element.querySelector('.film-card__controls-item--favorite')
-    //  .classList.toggle('film-card__controls-item--active');
     this._callback.favoriteClick();
   };
 

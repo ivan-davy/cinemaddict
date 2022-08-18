@@ -6,15 +6,18 @@ export default class MoviePresenter {
   #movieContainerElement = null;
   #movie = null;
   #comments = null;
-  #changeData = null;
+  #updateCards = null;
 
   #movieCardComponent = null;
+  #popupPresenter = null;
 
-  constructor(movieContainerElement, mainElement, comments, changeData) {
+  constructor(movieContainerElement, mainElement, comments, updateCards) {
     this.mainElement = mainElement;
     this.#movieContainerElement = movieContainerElement;
     this.#comments = comments;
-    this.#changeData = changeData;
+    this.#updateCards = updateCards;
+
+    this.#popupPresenter = new PopupPresenter(this.mainElement, this.#comments, this.#updateCards);
   }
 
   init(movie) {
@@ -44,23 +47,24 @@ export default class MoviePresenter {
     remove(this.#movieCardComponent);
   };
 
+
   #movieClickHandler = () => {
-    const popupPresenter = new PopupPresenter(this.mainElement, this.#movie, this.#comments);
-    popupPresenter.init();
+    this.#popupPresenter.init(this.#movie);
   };
 
   #watchlistClickHandler = () => {
     this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
-    this.#changeData(this.#movie);
+    this.#updateCards(this.#movie);
+    this.#popupPresenter.renderPopup();
   };
 
   #historyClickHandler = () => {
     this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
-    this.#changeData(this.#movie);
+    this.#updateCards(this.#movie);
   };
 
   #favoriteClickHandler = () => {
     this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
-    this.#changeData(this.#movie);
+    this.#updateCards(this.#movie);
   };
 }

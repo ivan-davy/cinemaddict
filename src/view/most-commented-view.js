@@ -13,7 +13,7 @@ export default class MostCommentedView extends AbstractView {
   }
 
   get listElement() {
-    return document.querySelector('#most-commented');
+    return this.element;
   }
 
   get containerElement() {

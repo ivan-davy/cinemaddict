@@ -31,7 +31,9 @@ export default class MoviesPresenter {
     this.topRatedComponent = new TopRatedView();
     this.mostCommentedComponent = new MostCommentedView();
 
-    this.movieCardsPresenters = new Map();
+    this.mainMovieCardsPresenters = new Map();
+    this.topRatedMovieCardsPresenters = new Map();
+    this.mostCommentedMovieCardsPresenters = new Map();
   }
 
   init() {
@@ -47,19 +49,25 @@ export default class MoviesPresenter {
         this.#renderShowMoreButton();
       }
     }
-    //this.#renderTopRatedList();
-    //this.#renderMostCommentedList();
+    this.#renderTopRatedList();
+    this.#renderMostCommentedList();
   }
 
   #movieChangeHandler = (updatedMovie) => {
     this.movies = updateItem(this.movies, updatedMovie);
-    this.movieCardsPresenters.get(updatedMovie.id).init(updatedMovie);
+    this.mainMovieCardsPresenters.get(updatedMovie.id).init(updatedMovie);
+    if (this.topRatedMovieCardsPresenters.has(updatedMovie.id)){
+      this.topRatedMovieCardsPresenters.get(updatedMovie.id).init(updatedMovie);
+    }
+    if (this.mostCommentedMovieCardsPresenters.has(updatedMovie.id)) {
+      this.mostCommentedMovieCardsPresenters.get(updatedMovie.id).init(updatedMovie);
+    }
   };
 
-  #renderMovieCard = (movie, targetElement) => {
+  #renderMovieCard = (movie, targetElement, presenterGroup = this.mainMovieCardsPresenters) => {
     const moviePresenter = new MoviePresenter(targetElement, this.mainElement, this.comments, this.#movieChangeHandler);
-    this.movieCardsPresenters.set(movie.id, moviePresenter);
-    moviePresenter.init(movie, this.comments);
+    presenterGroup.set(movie.id, moviePresenter);
+    moviePresenter.init(movie);
   };
 
   #renderMovies = (from, to) => {
@@ -81,8 +89,8 @@ export default class MoviesPresenter {
   };
 
   #clearMovieList = () => {
-    this.movieCardsPresenters.forEach((presenter) => presenter.destroy());
-    this.movieCardsPresenters.clear();
+    this.mainMovieCardsPresenters.forEach((presenter) => presenter.destroy());
+    this.mainMovieCardsPresenters.clear();
     this.moviesShown = MOVIES_SHOWN_STEP;
     remove(this.showMoreButtonComponent);
   };
@@ -95,7 +103,7 @@ export default class MoviesPresenter {
     if (this.topRatedMovies.length) {
       render(this.topRatedComponent, this.movieListComponent.filmsElement);
       for (const movie of this.topRatedMovies) {
-        this.#renderMovieCard(movie, this.topRatedComponent.containerElement);
+        this.#renderMovieCard(movie, this.topRatedComponent.containerElement, this.topRatedMovieCardsPresenters);
       }
     }
   };
@@ -104,7 +112,7 @@ export default class MoviesPresenter {
     if (this.mostCommentedMovies.length) {
       render(this.mostCommentedComponent, this.movieListComponent.filmsElement);
       for (const movie of this.mostCommentedMovies) {
-        this.#renderMovieCard(movie, this.mostCommentedComponent.containerElement);
+        this.#renderMovieCard(movie, this.mostCommentedComponent.containerElement, this.mostCommentedMovieCardsPresenters);
       }
     }
   };

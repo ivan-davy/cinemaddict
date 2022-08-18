@@ -96,30 +96,63 @@ export default class InfoView extends AbstractView {
     return createInfoTemplate(this.#movie);
   }
 
+  closeKeydownSuccessful = () => {
+    document.removeEventListener('keydown', this.#closeKeydownHandler);
+  };
+
   setCloseClickHandler = (callback) => {
-    this._callback.click = callback;
+    this._callback.closeClick = callback;
     this.element.querySelector('.film-details__close-btn')
-      .addEventListener('click', this.#clickHandler, {once: true});
+      .addEventListener('click', this.#closeClickHandler, {once: true});
   };
 
   setCloseKeydownHandler = (callback) => {
-    this._callback.keydown = callback;
+    this._callback.closeKeydown = callback;
     document
-      .addEventListener('keydown', this.#keydownHandler);
+      .addEventListener('keydown', this.#closeKeydownHandler);
   };
 
-  closeKeydownSuccessful = () => {
-    document.removeEventListener('keydown', this.#keydownHandler);
-  };
+  setWatchlistClickHandler(callback) {
+    this._callback.watchlistClick = callback;
+    this.element.querySelector('.film-details__control-button--watchlist')
+      .addEventListener('click', this.#watchlistClickHandler);
+  }
 
-  #clickHandler = (evt) => {
+  setHistoryClickHandler(callback) {
+    this._callback.historyClick = callback;
+    this.element.querySelector('.film-details__control-button--watched')
+      .addEventListener('click', this.#historyClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.film-details__control-button--favorite')
+      .addEventListener('click', this.#favoriteClickHandler);
+  }
+
+  #closeClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.click();
-    document.removeEventListener('keydown', this.#keydownHandler);
+    this._callback.closeClick();
+    document.removeEventListener('keydown', this.#closeKeydownHandler);
   };
 
-  #keydownHandler = (evt) => {
+  #closeKeydownHandler = (evt) => {
     evt.preventDefault();
-    this._callback.keydown(evt);
+    this._callback.closeKeydown(evt);
+  };
+
+  #watchlistClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.watchlistClick();
+  };
+
+  #historyClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.historyClick();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   };
 }

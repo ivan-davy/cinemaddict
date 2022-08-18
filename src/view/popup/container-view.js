@@ -6,7 +6,7 @@ const createPopupContainerTemplate = () =>
     <div class="film-details__inner"></div>
   </section>`;
 
-export default class PopupContainerView extends AbstractView {
+export default class ContainerView extends AbstractView {
   get template() {
     return createPopupContainerTemplate();
   }

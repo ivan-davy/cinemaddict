@@ -13,7 +13,7 @@ export default class TopRatedView extends AbstractView {
   }
 
   get listElement() {
-    return document.querySelector('#top-rated');
+    return this.element;
   }
 
   get containerElement() {
