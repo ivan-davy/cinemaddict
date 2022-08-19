@@ -110,8 +110,12 @@ export default class MoviesPresenter {
   };
 
   #renderMovieCard = (movie, targetElement, cardPresentersGroup = this.mainMovieCardPresenters) => {
-    const popupPresenter = new PopupPresenter(this.mainElement, movie, this.comments, this.#movieChangeHandler);
-    const moviePresenter = new MoviePresenter(targetElement, this.comments, popupPresenter, this.#movieChangeHandler);
+    //const movieComments = this.comments.slice().filter((comment) => {
+    //  movie.comments.includes(comment.id);
+    //}); WIP
+    const movieComments = this.comments;
+    const popupPresenter = new PopupPresenter(this.mainElement, movie, movieComments, this.#movieChangeHandler);
+    const moviePresenter = new MoviePresenter(targetElement, popupPresenter, this.#movieChangeHandler);
     cardPresentersGroup.set(movie.id, moviePresenter);
     this.popupPresenters.set(movie.id, popupPresenter);
     moviePresenter.init(movie);
