@@ -1,39 +1,90 @@
-import {remove, render} from '../framework/render';
+import {remove, render, replace} from '../framework/render';
 import InfoView from '../view/popup/info-view.js';
-import PopupContainerView from '../view/popup/popup-container-view';
+import ContainerView from '../view/popup/container-view';
 import CommentsView from '../view/popup/comments-view';
 
 export default class PopupPresenter {
-  constructor(mainElement, movie, comments) {
-    this.mainElement = mainElement;
-    this.movie = movie;
-    this.comments = comments;
+  #movie = null;
 
-    this.popupContainerComponent = new PopupContainerView();
-    this.infoComponent = new InfoView(movie);
-    this.commentsComponent = new CommentsView(comments);
+  #mainElement = null;
+  #comments = null;
+  #updateData = null;
+
+  #containerComponent = null;
+  #infoComponent = null;
+  #commentsComponent = null;
+
+  constructor(mainElement, movie, comments, updateData) {
+    this.#mainElement = mainElement;
+    this.#movie = movie;
+    this.#comments = comments;
+    this.#updateData = updateData;
+
+    this.#containerComponent = new ContainerView();
+    this.#infoComponent = new InfoView(this.#movie);
+    this.#commentsComponent = new CommentsView(this.#comments);
   }
 
-  init = () => {
-    this.mainElement.classList.add('hide-overflow');
+  init() {
+    if (this.#containerComponent.isPopupOpen()) {
+      this.#containerComponent.closeAllPopups();
+      this.#containerComponent.allowOverflow(this.#mainElement);
+    }
 
-    const closeKeydownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        this.infoComponent.closeKeydownSuccessful();
-        remove(this.popupContainerComponent);
-        this.mainElement.classList.remove('hide-overflow');
-      }
-    };
-    const closeClickHandler = () => {
-      remove(this.popupContainerComponent);
-      this.mainElement.classList.remove('hide-overflow');
-    };
+    const prevInfoComponent = this.#infoComponent;
+    this.#infoComponent = new InfoView(this.#movie);
 
-    this.infoComponent.setCloseKeydownHandler(closeKeydownHandler);
-    this.infoComponent.setCloseClickHandler(closeClickHandler);
+    if (this.#infoComponent !== prevInfoComponent) {
+      remove(prevInfoComponent);
+      this.#containerComponent.restrictOverflow(this.#mainElement);
+      render(this.#containerComponent, this.#mainElement);
+      render(this.#infoComponent, this.#containerComponent.element);
+      render(this.#commentsComponent, this.#containerComponent.element);
+      this.#containerComponent.setCloseKeydownHandler(this.#closeKeydownHandler);
+      this.#containerComponent.setCloseClickHandler(this.#closeClickHandler);
+      this.#infoComponent.setWatchlistClickHandler(this.#watchlistClickHandler);
+      this.#infoComponent.setHistoryClickHandler(this.#historyClickHandler);
+      this.#infoComponent.setFavoriteClickHandler(this.#favoriteClickHandler);
+      return;
+    }
 
-    render(this.popupContainerComponent, this.mainElement);
-    render(this.infoComponent, this.popupContainerComponent.element);
-    render(this.commentsComponent, this.popupContainerComponent.element);
+    if (this.#containerComponent.element.contains(this.#infoComponent.element)) {
+      replace(this.#infoComponent, prevInfoComponent);
+    }
+
+  }
+
+  destroy = () => {
+    remove(this.#containerComponent);
+  };
+
+
+  #closeKeydownHandler = (evt) => {
+    if (evt.key === 'Escape') {
+      this.destroy();
+      this.#containerComponent.closeKeydownSuccessful();
+      this.#containerComponent.allowOverflow(this.#mainElement);
+    }
+  };
+
+  #closeClickHandler = () => {
+    this.destroy();
+    this.#containerComponent.allowOverflow(this.#mainElement);
+  };
+
+  #watchlistClickHandler = () => {
+    this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
+    this.#updateData(this.#movie);
+  };
+
+  #historyClickHandler = () => {
+    this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
+    this.#updateData(this.#movie);
+  };
+
+  #favoriteClickHandler = () => {
+    this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
+    this.#updateData(this.#movie);
   };
 }
+
