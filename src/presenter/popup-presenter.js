@@ -28,6 +28,7 @@ export default class PopupPresenter {
   init() {
     if (this.#containerComponent.isPopupOpen()) {
       this.#containerComponent.closeAllPopups();
+      this.#containerComponent.allowOverflow(this.#mainElement);
     }
 
     const prevInfoComponent = this.#infoComponent;
@@ -60,8 +61,8 @@ export default class PopupPresenter {
 
   #closeKeydownHandler = (evt) => {
     if (evt.key === 'Escape') {
-      this.#containerComponent.closeKeydownSuccessful();
       this.destroy();
+      this.#containerComponent.closeKeydownSuccessful();
       this.#containerComponent.allowOverflow(this.#mainElement);
     }
   };
