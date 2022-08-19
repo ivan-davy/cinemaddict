@@ -26,6 +26,10 @@ export default class PopupPresenter {
   }
 
   init() {
+    if (this.#containerComponent.isPopupOpen()) {
+      this.#containerComponent.closeAllPopups();
+    }
+
     const prevInfoComponent = this.#infoComponent;
     this.#infoComponent = new InfoView(this.#movie);
 
@@ -70,19 +74,16 @@ export default class PopupPresenter {
   #watchlistClickHandler = () => {
     this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
     this.#updateData(this.#movie);
-    this.init();
   };
 
   #historyClickHandler = () => {
     this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
     this.#updateData(this.#movie);
-    this.init();
   };
 
   #favoriteClickHandler = () => {
     this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
     this.#updateData(this.#movie);
-    this.init();
   };
 }
 

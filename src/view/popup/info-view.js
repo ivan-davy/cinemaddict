@@ -1,6 +1,5 @@
 import {getPrettyDate} from '../../utility/date-time-format';
 import AbstractView from '../../framework/view/abstract-view';
-import {createElement} from '../../framework/render';
 
 const createInfoTemplate = (movie) => {
   const {poster, title, ageRating, alternativeTitle, totalRating, director, runtime, description} = movie.filmInfo;

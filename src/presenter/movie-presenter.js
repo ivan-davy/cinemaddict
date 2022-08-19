@@ -52,18 +52,15 @@ export default class MoviePresenter {
   #watchlistClickHandler = () => {
     this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
     this.#updateData(this.#movie);
-    this.#popupPresenter.init();
   };
 
   #historyClickHandler = () => {
     this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
     this.#updateData(this.#movie);
-    this.#popupPresenter.init();
   };
 
   #favoriteClickHandler = () => {
     this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
     this.#updateData(this.#movie);
-    this.#popupPresenter.init();
   };
 }

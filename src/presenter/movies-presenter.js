@@ -58,7 +58,7 @@ export default class MoviesPresenter {
   #movieChangeHandler = (updatedMovie) => {
     this.movies = updateItem(this.movies, updatedMovie);
     this.mainMovieCardPresenters.get(updatedMovie.id).init(updatedMovie);
-    //this.popupPresenters.get(updatedMovie.id).init();
+    this.popupPresenters.get(updatedMovie.id).init();
     if (this.topRatedMovieCardsPresenters.has(updatedMovie.id)){
       this.topRatedMovieCardsPresenters.get(updatedMovie.id).init(updatedMovie);
     }
