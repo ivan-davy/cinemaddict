@@ -1,7 +1,10 @@
 import AbstractView from '../framework/view/abstract-view';
 
-
-const RANK_NAMES = ['Novice', 'Fan', 'Movie Buff'];
+const RANKS = {
+  'Novice': {from: 1, to: 10},
+  'Fan': {from: 11, to: 20},
+  'Movie Buff': {from: 21, to: Number.POSITIVE_INFINITY}
+};
 
 const createRankTemplate = (rank) => {
   if (rank === '') {
@@ -28,14 +31,12 @@ export default class RankView extends AbstractView {
   }
 
   get rank() {
-    if (this.#moviesSeen >= 1 && this.#moviesSeen <= 10) {
-      return RANK_NAMES[0];
-    } else if (this.#moviesSeen >= 11 && this.#moviesSeen <= 20) {
-      return RANK_NAMES[1];
-    } else if (this.#moviesSeen >= 21) {
-      return RANK_NAMES[2];
-    } else {
-      return '';
+    for (const rank in RANKS) {
+      const {from, to} = RANKS[rank];
+      if (this.#moviesSeen >= from && this.#moviesSeen <= to) {
+        return rank;
+      }
     }
+    return '';
   }
 }

@@ -4,15 +4,14 @@ import {remove, render, replace} from '../framework/render';
 export default class MoviePresenter {
   #movieContainerElement = null;
   #movie = null;
-  #comments = null;
   #updateData = null;
 
   #movieCardComponent = null;
   #popupPresenter = null;
 
-  constructor(movieContainerElement, comments, popupPresenter, updateData) {
+  constructor(movieContainerElement, popupPresenter, updateData) {
     this.#movieContainerElement = movieContainerElement;
-    this.#comments = comments;
+
     this.#updateData = updateData;
 
     this.#popupPresenter = popupPresenter;
