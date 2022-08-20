@@ -19,7 +19,8 @@ export default class MainPresenter {
   }
 
   init = () => {
-    const rankComponent = new RankView(this.filters[2].count);
+    const filmsWatched = this.filters[2].count;
+    const rankComponent = new RankView(filmsWatched);
     render(rankComponent, this.headerElement);
 
     const moviesPresenter = new MoviesPresenter(this.mainElement, this.movies, this.filters, this.comments);

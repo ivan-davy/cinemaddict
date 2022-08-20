@@ -5,11 +5,9 @@ import CommentsView from '../view/popup/comments-view';
 
 export default class PopupPresenter {
   #movie = null;
-
   #mainElement = null;
   #comments = null;
   #updateData = null;
-
   #containerComponent = null;
   #infoComponent = null;
   #commentsComponent = null;
@@ -58,6 +56,7 @@ export default class PopupPresenter {
     remove(this.#containerComponent);
   };
 
+  isPopupOpen = () => this.#containerComponent.isPopupOpen();
 
   #closeKeydownHandler = (evt) => {
     if (evt.key === 'Escape') {

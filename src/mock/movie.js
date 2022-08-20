@@ -21,6 +21,14 @@ const POSTERS = [
   './images/posters/the-man-with-the-golden-arm.jpg',
 ];
 
+const MOCK_DATES = [
+  '2019-05-11T00:05:08.000Z',
+  '2018-04-11T00:00:04.000Z',
+  '2000-01-11T00:01:01.000Z',
+  '2012-12-11T00:00:00.000Z',
+  '2019-04-12T16:12:32.554Z'
+];
+
 
 export const generateMovie = () => ({
   id: getRandomInteger(0, 100),
@@ -35,7 +43,7 @@ export const generateMovie = () => ({
     writers: getRandomSample(MOCK_SHORT, getRandomInteger(1, 3)),
     actors: getRandomSample(MOCK_SHORT, getRandomInteger(1, 3)),
     release: {
-      date: '2019-05-11T00:00:00.000Z',
+      date: getRandomItem(MOCK_DATES),
       releaseCountry: getRandomItem(MOCK_SHORT),
     },
     runtime: getRandomInteger(30, 180),
@@ -45,7 +53,7 @@ export const generateMovie = () => ({
   userDetails: {
     watchlist: getRandomItem([false, true]),
     alreadyWatched: getRandomItem([false, true]),
-    watchingDate: '2019-04-12T16:12:32.554Z',
+    watchingDate: getRandomItem(MOCK_DATES),
     favorite: getRandomItem([false, true])
   }
 });

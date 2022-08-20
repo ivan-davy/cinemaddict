@@ -1,6 +1,7 @@
 import {getPrettyYear} from '../utility/date-time-format.js';
 import AbstractView from '../framework/view/abstract-view';
 
+const MAX_DESCRIPTION_LENGTH = 140;
 
 const createFilmCardTemplate = (movie) => {
   const {poster, title, totalRating, runtime} = movie.filmInfo;
@@ -8,7 +9,7 @@ const createFilmCardTemplate = (movie) => {
   const genre = movie.filmInfo.genre[0];
 
   let description = movie.filmInfo.description;
-  if (description.length > 140) {
+  if (description.length > MAX_DESCRIPTION_LENGTH) {
     description = description.substring(0, 140).concat('…');
   }
 

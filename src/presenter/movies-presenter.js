@@ -9,6 +9,7 @@ import MovieListEmptyView from '../view/movie-list-empty-view';
 import MoviePresenter from './movie-presenter';
 import {updateItem} from '../utility/update-item';
 import PopupPresenter from './popup-presenter';
+import {SORT_TYPES, sortDateDown, sortRatingDown} from '../utility/sort-logic';
 
 
 const MOVIES_SHOWN_STEP = 5;
@@ -16,13 +17,15 @@ const MOVIES_SHOWN_STEP = 5;
 export default class MoviesPresenter {
   constructor(mainElement, movies, filters, comments) {
     this.mainElement = mainElement;
-    this.movies = movies;
+    this.immutableMovies = movies;
+    this.movies = this.immutableMovies.slice();
     this.topRatedMovies = [movies[0]];
     this.mostCommentedMovies = [movies[0], movies[1]];
     this.comments = comments;
     this.moviesShown = Math.min(this.movies.length, MOVIES_SHOWN_STEP);
     this.currentStep = 0;
     this.filters = filters;
+    this.selectedSortType = SORT_TYPES.DEFAULT;
 
     this.movieListComponent = new MovieListView();
     this.movieListEmptyComponent = new MovieListEmptyView();
@@ -39,17 +42,15 @@ export default class MoviesPresenter {
   }
 
   init() {
-    render(this.filterComponent, this.mainElement);
-    render(this.sortComponent, this.mainElement);
-    render(this.movieListComponent, this.mainElement);
+    this.#renderFilter();
+    this.#renderSort();
+    this.#renderMovieList();
 
     if (!this.movies) {
       this.#renderEmptyList();
     } else {
       this.#renderMovies(this.currentStep * MOVIES_SHOWN_STEP, this.moviesShown);
-      if (this.moviesShown < this.movies.length) {
-        this.#renderShowMoreButton();
-      }
+      this.#renderShowMoreButton();
     }
     this.#renderTopRatedList();
     this.#renderMostCommentedList();
@@ -58,7 +59,9 @@ export default class MoviesPresenter {
   #movieChangeHandler = (updatedMovie) => {
     this.movies = updateItem(this.movies, updatedMovie);
     this.mainMovieCardPresenters.get(updatedMovie.id).init(updatedMovie);
-    this.popupPresenters.get(updatedMovie.id).init();
+    if (this.popupPresenters.get(updatedMovie.id).isPopupOpen()) {
+      this.popupPresenters.get(updatedMovie.id).init();
+    }
     if (this.topRatedMovieCardsPresenters.has(updatedMovie.id)){
       this.topRatedMovieCardsPresenters.get(updatedMovie.id).init(updatedMovie);
     }
@@ -67,36 +70,84 @@ export default class MoviesPresenter {
     }
   };
 
+  #sortTypeChangeHandler = (sortType) => {
+    if (this.selectedSortType === sortType) {
+      return;
+    }
+    this.#sortMovies(sortType);
+
+    this.#clearMovieList();
+    this.#renderMovies();
+    //console.log(this.movies.forEach((movie) => console.log(movie.filmInfo.totalRating)));
+    this.#renderShowMoreButton();
+  };
+
+  #sortMovies = (sortType) => {
+    switch (sortType) {
+      case SORT_TYPES.DATE_DOWN:
+        this.movies.sort(sortDateDown);
+        break;
+      case SORT_TYPES.RATING_DOWN:
+        this.movies.sort(sortRatingDown);
+        break;
+      default:
+        this.movies = this.immutableMovies.slice();
+    }
+    this.selectedSortType = sortType;
+  };
+
+  #renderFilter = () => {
+    render(this.filterComponent, this.mainElement);
+  };
+
+  #renderSort = () => {
+    render(this.sortComponent, this.mainElement);
+    this.sortComponent.setSortTypeChangeHandler(this.#sortTypeChangeHandler);
+  };
+
+  #renderMovieList = () => {
+    render(this.movieListComponent, this.mainElement);
+  };
+
   #renderMovieCard = (movie, targetElement, cardPresentersGroup = this.mainMovieCardPresenters) => {
-    const popupPresenter = new PopupPresenter(this.mainElement, movie, this.comments, this.#movieChangeHandler);
-    const moviePresenter = new MoviePresenter(targetElement, this.comments, popupPresenter, this.#movieChangeHandler);
+    //const movieComments = this.comments.slice().filter((comment) => {
+    //  movie.comments.includes(comment.id);
+    //}); WIP
+    const movieComments = this.comments;
+    const popupPresenter = new PopupPresenter(this.mainElement, movie, movieComments, this.#movieChangeHandler);
+    const moviePresenter = new MoviePresenter(targetElement, popupPresenter, this.#movieChangeHandler);
     cardPresentersGroup.set(movie.id, moviePresenter);
     this.popupPresenters.set(movie.id, popupPresenter);
     moviePresenter.init(movie);
   };
 
-  #renderMovies = (from, to) => {
+  #renderMovies = (from = 0, to = MOVIES_SHOWN_STEP) => {
     for (let i = from; i < to; i++) {
       this.#renderMovieCard(this.movies[i], this.movieListComponent.containerElement);
     }
   };
 
   #renderShowMoreButton = () => {
-    render(this.showMoreButtonComponent, this.movieListComponent.listElement);
-    const showMoreClickHandler = () => {
-      this.#renderMovies(this.moviesShown, Math.min(this.moviesShown + MOVIES_SHOWN_STEP, this.movies.length));
-      this.moviesShown += MOVIES_SHOWN_STEP;
-      if (this.moviesShown >= this.movies.length) {
-        remove(this.showMoreButtonComponent);
-      }
-    };
-    this.showMoreButtonComponent.setClickHandler(showMoreClickHandler);
+    if (this.moviesShown < this.movies.length) {
+      render(this.showMoreButtonComponent, this.movieListComponent.listElement);
+      const showMoreClickHandler = () => {
+        this.#renderMovies(this.moviesShown, Math.min(this.moviesShown + MOVIES_SHOWN_STEP, this.movies.length));
+        this.moviesShown += MOVIES_SHOWN_STEP;
+        if (this.moviesShown >= this.movies.length) {
+          remove(this.showMoreButtonComponent);
+        }
+      };
+      this.showMoreButtonComponent.setClickHandler(showMoreClickHandler);
+    }
   };
 
   #clearMovieList = () => {
     this.mainMovieCardPresenters.forEach((presenter) => presenter.destroy());
     this.mainMovieCardPresenters.clear();
     this.moviesShown = MOVIES_SHOWN_STEP;
+    this.currentStep = 0;
+    this.mainMovieCardPresenters.clear();
+    this.popupPresenters.clear();
     remove(this.showMoreButtonComponent);
   };
 
