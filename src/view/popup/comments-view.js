@@ -4,6 +4,14 @@ import dayjs from 'dayjs';
 
 const USERNAME = 'xXx_KEKSUS69_xXx';
 
+const DEFAULT_STATE = {
+  id: 10000, // ?
+  author: USERNAME,
+  comment: '',
+  date: dayjs().format(),
+  emotion: null
+};
+
 const createCommentsTemplate = (commentStates, userCommentState) => {
   const commentsQty = commentStates.length;
   let commentsTemplate = '';
@@ -37,7 +45,7 @@ const createCommentsTemplate = (commentStates, userCommentState) => {
             <div class="film-details__add-emoji-label">${emojiLabelTemplate}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" autofocus>${userCommentState.comment}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -69,14 +77,9 @@ const createCommentsTemplate = (commentStates, userCommentState) => {
 export default class CommentsView extends AbstractStatefulView {
   constructor(comments) {
     super();
+    this.comments = comments.slice();
     this._state.comments = comments.slice().map((comment) => CommentsView.parseCommentToState(comment));
-    this._state.userComment = {
-      id: 10000, // ?
-      author: USERNAME,
-      comment: null,
-      date: dayjs().format(),
-      emotion: null
-    };
+    this._state.userComment = {...DEFAULT_STATE};
     this.#setInnerHandlers();
   }
 
@@ -90,6 +93,15 @@ export default class CommentsView extends AbstractStatefulView {
     super.removeElement();
   }
 
+  reset() {
+    const state = {
+      comments: this.comments.slice().map((comment) => CommentsView.parseCommentToState(comment)),
+      userComment: {...DEFAULT_STATE}
+    };
+    this.updateElement(state);
+    this.#setInnerHandlers();
+  }
+
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
     this.element.querySelector('.film-details__new-comment')
@@ -100,22 +112,22 @@ export default class CommentsView extends AbstractStatefulView {
     this.element.querySelector('.film-details__emoji-list')
       .addEventListener('click', this.#emojiClickHandler);
     this.element.querySelector('.film-details__comment-input')
-      .addEventListener('change', this.#commentInputHandler);
+      .addEventListener('input', this.#commentInputHandler);
   };
 
   #emojiClickHandler = (evt) => {
     if (evt.target.classList.contains('film-details__emoji-item')) {
       this._state.userComment.emotion = evt.target.value;
       this.updateElement({...this._state.userComment, emotion: evt.target.value});
-      console.log(this._state.userComment);
+      //console.log(this._state.userComment);
     }
   };
 
   #commentInputHandler = (evt) => {
-    console.log(this._state.userComment.comment);
     evt.preventDefault();
+    this._state.userComment.comment = evt.target.value;
     this._setState({...this._state.userComment, comment: evt.target.value});
-
+    //console.log(this._state.userComment);
   };
 
   #formSubmitHandler = (evt) => {

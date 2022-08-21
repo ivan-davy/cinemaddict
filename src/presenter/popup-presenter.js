@@ -62,12 +62,14 @@ export default class PopupPresenter {
     if (evt.key === 'Escape') {
       this.destroy();
       this.#containerComponent.closeKeydownSuccessful();
+      this.#commentsComponent.reset();
       this.#containerComponent.allowOverflow(this.#mainElement);
     }
   };
 
   #closeClickHandler = () => {
     this.destroy();
+    this.#commentsComponent.reset();
     this.#containerComponent.allowOverflow(this.#mainElement);
   };
 
