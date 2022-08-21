@@ -1,7 +1,10 @@
 import {getCommentPrettyDate} from '../../utility/date-time-format';
 import AbstractStatefulView from '../../framework/view/abstract-stateful-view';
+//import dayjs from 'dayjs';
 
-const createCommentsTemplate = (commentStates) => {
+const USERNAME = 'xXx_KEKSUS69_xXx';
+
+const createCommentsTemplate = (commentStates, userCommentState) => {
   const commentsQty = commentStates.length;
   let commentsTemplate = '';
   for (const commentEntry of commentStates) {
@@ -23,16 +26,18 @@ const createCommentsTemplate = (commentStates) => {
             </li>`;
   }
 
+  const emojiLabelTemplate = userCommentState.emotion ? `<img src="images/emoji/${userCommentState.emotion}.png" width="55" height="55" alt="emoji-smile">` : '';
+
   return `<div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsQty}</span></h3>
             <ul class="film-details__comments-list">${commentsTemplate}</ul>
 
             <form class="film-details__new-comment" action="" method="get">
-            <div class="film-details__add-emoji-label"></div>
+            <div class="film-details__add-emoji-label">${emojiLabelTemplate}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${userCommentState.comment}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -65,11 +70,18 @@ export default class CommentsView extends AbstractStatefulView {
   constructor(comments) {
     super();
     this._state.comments = comments.slice().map((comment) => CommentsView.parseCommentToState(comment));
-    this._state.userComment = null;
+    this._state.userComment = {
+      id: 10000, // ?
+      author: USERNAME,
+      comment: '',
+      date: '2022-08-11T16:12:32.554Z', //dayjs().toString(),
+      emotion: null
+    };
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createCommentsTemplate(this._state.comments);
+    return createCommentsTemplate(this._state.comments, this._state.userComment);
   }
 
   removeElement() {
@@ -79,13 +91,43 @@ export default class CommentsView extends AbstractStatefulView {
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
-    this.element.querySelector('.film-details__new-comment').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.film-details__new-comment')
+      .addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.film-details__emoji-list')
+      .addEventListener('click', this.#emojiClickHandler);
+    this.element.querySelector('.film-details__comment-input')
+      .addEventListener('input', this.#commentInputHandler);
+  };
+
+  #emojiClickHandler = (evt) => {
+    if (evt.target.id.includes('emoji-') && evt.target.tagName !== 'img') {
+      this._state.userComment.emotion = evt.target.value;
+      const userComment = {...this._state.userComment, emotion: evt.target.value};
+      this.updateElement({userComment: userComment});
+      //console.log(this._state);
+    }
+  };
+
+  #commentInputHandler = (evt) => {
+    evt.preventDefault();
+    const userCommentTmp = {...this._state.userComment, comment: evt.target.value};
+    this._setState({userComment: userCommentTmp});
+    console.log('1')
   };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit(CommentsView.parseStateToComment(this._state.userComment));
   };
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  };
+
 
   static parseCommentToState = (comment) => ({...comment});
 
