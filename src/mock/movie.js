@@ -31,8 +31,8 @@ const MOCK_DATES = [
 
 
 export const generateMovie = () => ({
-  id: getRandomInteger(0, 100),
-  comments: getRandomSample([...Array(50).keys()], getRandomInteger(0, 5)),
+  id: getRandomInteger(0, 10000),
+  comments: getRandomSample([...Array(25).keys()], getRandomInteger(1, 5)),
   filmInfo: {
     title: getRandomItem(MOCK_SHORT),
     alternativeTitle: getRandomItem(MOCK_SHORT),

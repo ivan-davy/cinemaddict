@@ -110,10 +110,7 @@ export default class MoviesPresenter {
   };
 
   #renderMovieCard = (movie, targetElement, cardPresentersGroup = this.mainMovieCardPresenters) => {
-    //const movieComments = this.comments.slice().filter((comment) => {
-    //  movie.comments.includes(comment.id);
-    //}); WIP
-    const movieComments = this.comments;
+    const movieComments = this.comments.slice().filter((comment) => movie.comments.includes(comment.id));
     const popupPresenter = new PopupPresenter(this.mainElement, movie, movieComments, this.#movieChangeHandler);
     const moviePresenter = new MoviePresenter(targetElement, popupPresenter, this.#movieChangeHandler);
     cardPresentersGroup.set(movie.id, moviePresenter);
