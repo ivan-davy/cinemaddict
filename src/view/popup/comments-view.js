@@ -81,12 +81,14 @@ export default class CommentsView extends AbstractStatefulView {
   }
 
   get template() {
-    return createCommentsTemplate(this._state.comments, this._state.userComment);
+    const commentStates = this._state.comments;
+    const userCommentState = this._state.userComment;
+    return createCommentsTemplate(commentStates, userCommentState);
   }
 
   removeElement() {
     super.removeElement();
-    this._state = null;
+    //this._state = null;
   }
 
   setFormSubmitHandler = (callback) => {
@@ -103,19 +105,17 @@ export default class CommentsView extends AbstractStatefulView {
   };
 
   #emojiClickHandler = (evt) => {
-    if (evt.target.id.includes('emoji-') && evt.target.tagName !== 'img') {
+    if (evt.target.classList.contains('film-details__emoji-item')) {
       this._state.userComment.emotion = evt.target.value;
-      const userComment = {...this._state.userComment, emotion: evt.target.value};
-      this.updateElement({userComment: userComment});
-      //console.log(this._state);
+      this.updateElement({...this._state.userComment, emotion: evt.target.value});
+      console.log(this._state.userComment);
     }
   };
 
   #commentInputHandler = (evt) => {
     evt.preventDefault();
-    const userCommentTmp = {...this._state.userComment, comment: evt.target.value};
-    this._setState({userComment: userCommentTmp});
-    console.log('1')
+    this._setState({...this._state.userComment, comment: evt.target.value});
+    console.log(this._state.userComment.comment);
   };
 
   #formSubmitHandler = (evt) => {

@@ -35,7 +35,7 @@ export default class PopupPresenter {
     if (this.#infoComponent !== prevInfoComponent) {
       remove(prevInfoComponent);
       this.#containerComponent.restrictOverflow(this.#mainElement);
-      render(this.#containerComponent, this.#mainElement);
+      render(this.#containerComponent, document.querySelector('footer'), 'afterend');
       render(this.#infoComponent, this.#containerComponent.element);
       render(this.#commentsComponent, this.#containerComponent.element);
       this.#containerComponent.setCloseKeydownHandler(this.#closeKeydownHandler);
