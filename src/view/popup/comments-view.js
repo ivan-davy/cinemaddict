@@ -1,10 +1,10 @@
-import AbstractView from '../../framework/view/abstract-view';
 import {getCommentPrettyDate} from '../../utility/date-time-format';
+import AbstractStatefulView from '../../framework/view/abstract-stateful-view';
 
-const createCommentsTemplate = (comments) => {
-  const commentsQty = comments.length;
+const createCommentsTemplate = (commentStates) => {
+  const commentsQty = commentStates.length;
   let commentsTemplate = '';
-  for (const commentEntry of comments) {
+  for (const commentEntry of commentStates) {
     const {emotion, author, date, comment} = commentEntry;
     const timePassed = getCommentPrettyDate(date);
 
@@ -61,20 +61,33 @@ const createCommentsTemplate = (comments) => {
       </div>`;
 };
 
-export default class CommentsView extends AbstractView {
-  #comments = null;
-
+export default class CommentsView extends AbstractStatefulView {
   constructor(comments) {
     super();
-    this.#comments = comments;
+    this._state.comments = comments.slice().map((comment) => CommentsView.parseCommentToState(comment));
+    this._state.userComment = null;
   }
 
   get template() {
-    return createCommentsTemplate(this.#comments);
+    return createCommentsTemplate(this._state.comments);
   }
 
   removeElement() {
     super.removeElement();
-    this.#comments = null;
+    this._state = null;
   }
+
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('.film-details__new-comment').addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit(CommentsView.parseStateToComment(this._state.userComment));
+  };
+
+  static parseCommentToState = (comment) => ({...comment});
+
+  static parseStateToComment = (state) => ({...state});
 }
