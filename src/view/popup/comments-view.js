@@ -1,6 +1,6 @@
 import {getCommentPrettyDate} from '../../utility/date-time-format';
 import AbstractStatefulView from '../../framework/view/abstract-stateful-view';
-//import dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
 const USERNAME = 'xXx_KEKSUS69_xXx';
 
@@ -37,7 +37,7 @@ const createCommentsTemplate = (commentStates, userCommentState) => {
             <div class="film-details__add-emoji-label">${emojiLabelTemplate}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${userCommentState.comment}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -73,8 +73,8 @@ export default class CommentsView extends AbstractStatefulView {
     this._state.userComment = {
       id: 10000, // ?
       author: USERNAME,
-      comment: '',
-      date: '2022-08-11T16:12:32.554Z', //dayjs().toString(),
+      comment: null,
+      date: dayjs().format(),
       emotion: null
     };
     this.#setInnerHandlers();
@@ -88,7 +88,6 @@ export default class CommentsView extends AbstractStatefulView {
 
   removeElement() {
     super.removeElement();
-    //this._state = null;
   }
 
   setFormSubmitHandler = (callback) => {
@@ -101,7 +100,7 @@ export default class CommentsView extends AbstractStatefulView {
     this.element.querySelector('.film-details__emoji-list')
       .addEventListener('click', this.#emojiClickHandler);
     this.element.querySelector('.film-details__comment-input')
-      .addEventListener('input', this.#commentInputHandler);
+      .addEventListener('change', this.#commentInputHandler);
   };
 
   #emojiClickHandler = (evt) => {
@@ -113,9 +112,10 @@ export default class CommentsView extends AbstractStatefulView {
   };
 
   #commentInputHandler = (evt) => {
+    console.log(this._state.userComment.comment);
     evt.preventDefault();
     this._setState({...this._state.userComment, comment: evt.target.value});
-    console.log(this._state.userComment.comment);
+
   };
 
   #formSubmitHandler = (evt) => {

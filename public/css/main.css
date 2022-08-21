@@ -228,7 +228,8 @@ button {
 }
 
 .film-card__link:hover {
-  opacity: 1;
+  opacity: 0.85;
+  transition: opacity 0.1s ease-in;
 }
 
 .film-card__title,

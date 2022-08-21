@@ -85,8 +85,11 @@ export default class MovieCardView extends AbstractView {
 
 
   #movieClickHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.movieClick();
+    if (!evt.target.classList.contains('film-card__controls-item')) {
+      evt.preventDefault();
+      evt.stopPropagation();
+      this._callback.movieClick();
+    }
   };
 
   #watchlistClickHandler = (evt) => {

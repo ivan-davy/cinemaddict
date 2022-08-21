@@ -11,6 +11,14 @@ const MOCK_SHORT = [
   'Lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit'
 ];
 
+const MOCK_DATES = [
+  '2019-05-11T00:05:08.000Z',
+  '2022-04-11T00:00:04.000Z',
+  '2022-06-11T00:01:01.000Z',
+  '2012-12-11T00:00:00.000Z',
+  '2022-08-12T16:12:32.554Z'
+];
+
 const EMOTIONS = [
   'smile', 'sleeping', 'puke', 'angry'
 ];
@@ -24,7 +32,7 @@ export const generateComment = () => {
     id,
     author: getRandomItem(MOCK_SHORT),
     comment: getRandomItem(MOCK_LONG),
-    date: '2018-05-11T16:12:32.554Z',
+    date: getRandomItem(MOCK_DATES),
     emotion: getRandomItem(EMOTIONS)
   };
 };
