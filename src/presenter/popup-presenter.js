@@ -11,6 +11,7 @@ export default class PopupPresenter {
   #containerComponent = null;
   #infoComponent = null;
   #commentsComponent = null;
+  #offset = null;
 
   constructor(mainElement, movie, comments, updateData) {
     this.#mainElement = mainElement;
@@ -38,6 +39,7 @@ export default class PopupPresenter {
       render(this.#containerComponent, document.querySelector('footer'), 'afterend');
       render(this.#infoComponent, this.#containerComponent.element);
       render(this.#commentsComponent, this.#containerComponent.element);
+      this.#containerComponent.element.scrollTo(0, this.#offset);
       this.#containerComponent.setCloseKeydownHandler(this.#closeKeydownHandler);
       this.#containerComponent.setCloseClickHandler(this.#closeClickHandler);
       this.#infoComponent.setWatchlistClickHandler(this.#watchlistClickHandler);
@@ -74,16 +76,19 @@ export default class PopupPresenter {
   };
 
   #watchlistClickHandler = () => {
+    this.#offset = this.#containerComponent.element.scrollTop;
     this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
     this.#updateData(this.#movie);
   };
 
   #historyClickHandler = () => {
+    this.#offset = this.#containerComponent.element.scrollTop;
     this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
     this.#updateData(this.#movie);
   };
 
   #favoriteClickHandler = () => {
+    this.#offset = this.#containerComponent.element.scrollTop;
     this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
     this.#updateData(this.#movie);
   };

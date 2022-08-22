@@ -12,8 +12,10 @@ export default class ContainerView extends AbstractView {
   }
 
   isPopupOpen = () => document.contains(document.querySelector('.film-details'));
-  closeAllPopups = () => document.querySelectorAll('.film-details')
-    .forEach((node) => node.remove());
+  closeAllPopups = () => {
+    document.querySelectorAll('.film-details')
+      .forEach((node) => node.remove());
+  };
 
   restrictOverflow = (element) => {
     element.classList.add('hide-overflow');
