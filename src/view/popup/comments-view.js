@@ -84,9 +84,7 @@ export default class CommentsView extends AbstractStatefulView {
   }
 
   get template() {
-    const commentStates = this._state.comments;
-    const userCommentState = this._state.userComment;
-    return createCommentsTemplate(commentStates, userCommentState);
+    return createCommentsTemplate(this._state.comments, this._state.userComment);
   }
 
   removeElement() {
@@ -119,7 +117,6 @@ export default class CommentsView extends AbstractStatefulView {
     if (evt.target.classList.contains('film-details__emoji-item')) {
       this._state.userComment.emotion = evt.target.value;
       this.updateElement({...this._state.userComment, emotion: evt.target.value});
-      //console.log(this._state.userComment);
     }
   };
 
@@ -127,7 +124,6 @@ export default class CommentsView extends AbstractStatefulView {
     evt.preventDefault();
     this._state.userComment.comment = evt.target.value;
     this._setState({...this._state.userComment, comment: evt.target.value});
-    //console.log(this._state.userComment);
   };
 
   #formSubmitHandler = (evt) => {

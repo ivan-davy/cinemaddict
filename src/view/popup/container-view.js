@@ -41,14 +41,12 @@ export default class ContainerView extends AbstractView {
       .addEventListener('keydown', this.#closeKeydownHandler);
   };
 
-  #closeClickHandler = (evt) => {
-    evt.preventDefault();
+  #closeClickHandler = () => {
     this._callback.closeClick();
     document.removeEventListener('keydown', this.#closeKeydownHandler);
   };
 
   #closeKeydownHandler = (evt) => {
-    evt.preventDefault();
     this._callback.closeKeydown(evt);
   };
 }
