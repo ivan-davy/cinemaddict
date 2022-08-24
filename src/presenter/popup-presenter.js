@@ -26,6 +26,7 @@ export default class PopupPresenter {
 
   init() {
     if (this.#containerComponent.isPopupOpen()) {
+      this.#commentsComponent.unsetFormSubmitHandler();
       this.#containerComponent.closeAllPopups();
       this.#containerComponent.allowOverflow(this.#mainElement);
     }
@@ -40,6 +41,7 @@ export default class PopupPresenter {
       render(this.#infoComponent, this.#containerComponent.element);
       render(this.#commentsComponent, this.#containerComponent.element);
       this.#containerComponent.element.scrollTo(0, this.#offset);
+      this.#commentsComponent.setFormSubmitHandler();
       this.#containerComponent.setCloseKeydownHandler(this.#closeKeydownHandler);
       this.#containerComponent.setCloseClickHandler(this.#closeClickHandler);
       this.#infoComponent.setWatchlistClickHandler(this.#watchlistClickHandler);

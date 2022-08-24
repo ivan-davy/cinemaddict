@@ -100,10 +100,15 @@ export default class CommentsView extends AbstractStatefulView {
     this.#setInnerHandlers();
   }
 
-  setFormSubmitHandler = (callback) => {
-    this._callback.formSubmit = callback;
-    this.element.querySelector('.film-details__new-comment')
-      .addEventListener('submit', this.#formSubmitHandler);
+  setFormSubmitHandler = () => {
+    this._callback.formSubmit = this.#formSubmitHandler;
+    document
+      .addEventListener('keydown', this.#formSubmitHandler);
+  };
+
+  unsetFormSubmitHandler = () => {
+    this._callback.formSubmit = null;
+    document.removeEventListener('keydown', this.#formSubmitHandler);
   };
 
   #setInnerHandlers = () => {
@@ -121,19 +126,18 @@ export default class CommentsView extends AbstractStatefulView {
   };
 
   #commentInputHandler = (evt) => {
-    evt.preventDefault();
     this._state.userComment.comment = evt.target.value;
     this._setState({...this._state.userComment, comment: evt.target.value});
   };
 
   #formSubmitHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.formSubmit(CommentsView.parseStateToComment(this._state.userComment));
+    if (evt.ctrlKey && evt.key === 'Enter') {
+      this._callback.formSubmit(CommentsView.parseStateToComment(this._state.userComment));
+    }
   };
 
   _restoreHandlers = () => {
     this.#setInnerHandlers();
-    this.setFormSubmitHandler(this._callback.formSubmit);
   };
 
 
