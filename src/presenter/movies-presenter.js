@@ -10,21 +10,33 @@ import MoviePresenter from './movie-presenter';
 import {updateItem} from '../utility/update-item';
 import PopupPresenter from './popup-presenter';
 import {SORT_TYPES, sortDateDown, sortRatingDown} from '../utility/sort-logic';
-
+import RankView from '../view/rank-view';
+import MovieDatabaseStatsView from '../view/movie-database-stats-view';
+import {generateFilter} from '../mock/filter';
 
 const MOVIES_SHOWN_STEP = 5;
 
 export default class MoviesPresenter {
-  constructor(mainElement, movies, filters, comments) {
-    this.mainElement = mainElement;
-    this.immutableMovies = movies;
-    this.movies = this.immutableMovies.slice();
-    this.topRatedMovies = [movies[0]];
-    this.mostCommentedMovies = [movies[0], movies[1]];
-    this.comments = comments;
+  #movies = null;
+  #comments = null;
+
+  constructor(siteElements, moviesModel, commentsModel) {
+    this.headerElement = siteElements.siteHeaderElement;
+    this.mainElement = siteElements.siteMainElement;
+    this.footerElement = siteElements.siteFooterElement;
+
+    this.moviesModel = moviesModel;
+    this.commentsModel = commentsModel;
+    this.immutableMovies = this.movies.slice();
+    this.filters = generateFilter(this.movies);
+
+    this.moviesModel.addObserver(this.#modelEventHandler);
+
+
+    this.topRatedMovies = [this.movies[0]];
+    this.mostCommentedMovies = [this.movies[0], this.movies[1]];
     this.moviesShown = Math.min(this.movies.length, MOVIES_SHOWN_STEP);
     this.currentStep = 0;
-    this.filters = filters;
     this.selectedSortType = SORT_TYPES.DEFAULT;
 
     this.movieListComponent = new MovieListView();
@@ -42,6 +54,10 @@ export default class MoviesPresenter {
   }
 
   init() {
+    const filmsWatched = this.filters[2].count;
+    const rankComponent = new RankView(filmsWatched);
+    render(rankComponent, this.headerElement);
+
     this.#renderFilter();
     this.#renderSort();
     this.#renderMovieList();
@@ -49,11 +65,15 @@ export default class MoviesPresenter {
     if (!this.movies) {
       this.#renderEmptyList();
     } else {
-      this.#renderMovies(this.currentStep * MOVIES_SHOWN_STEP, this.moviesShown);
+      const movieQty = this.movies.length;
+      const movies = this.movies.slice(0, Math.min(movieQty, MOVIES_SHOWN_STEP));
+      this.#renderMovies(movies);
       this.#renderShowMoreButton();
     }
     this.#renderTopRatedList();
     this.#renderMostCommentedList();
+
+    render(new MovieDatabaseStatsView(this.movies.length), this.footerElement.querySelector('.footer__statistics'));
   }
 
   #movieChangeHandler = (updatedMovie) => {
@@ -70,30 +90,22 @@ export default class MoviesPresenter {
     }
   };
 
+  #viewActionHandler = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
+  };
+
+  #modelEventHandler = (updateType, data) => {
+    console.log(updateType, data);
+  };
+
   #sortTypeChangeHandler = (sortType) => {
     if (this.selectedSortType === sortType) {
       return;
     }
-    this.#sortMovies(sortType);
-
+    this.selectedSortType = sortType;
     this.#clearMovieList();
     this.#renderMovies();
-    //console.log(this.movies.forEach((movie) => console.log(movie.filmInfo.totalRating)));
     this.#renderShowMoreButton();
-  };
-
-  #sortMovies = (sortType) => {
-    switch (sortType) {
-      case SORT_TYPES.DATE_DOWN:
-        this.movies.sort(sortDateDown);
-        break;
-      case SORT_TYPES.RATING_DOWN:
-        this.movies.sort(sortRatingDown);
-        break;
-      default:
-        this.movies = this.immutableMovies.slice();
-    }
-    this.selectedSortType = sortType;
   };
 
   #renderFilter = () => {
@@ -111,22 +123,21 @@ export default class MoviesPresenter {
 
   #renderMovieCard = (movie, targetElement, cardPresentersGroup = this.mainMovieCardPresenters) => {
     const movieComments = this.comments.slice().filter((comment) => movie.comments.includes(comment.id));
-    const popupPresenter = new PopupPresenter(this.mainElement, movie, movieComments, this.#movieChangeHandler);
-    const moviePresenter = new MoviePresenter(targetElement, popupPresenter, this.#movieChangeHandler);
+    const popupPresenter = new PopupPresenter(this.mainElement, movie, movieComments, this.#viewActionHandler);
+    const moviePresenter = new MoviePresenter(targetElement, popupPresenter, this.#viewActionHandler);
     cardPresentersGroup.set(movie.id, moviePresenter);
     this.popupPresenters.set(movie.id, popupPresenter);
     moviePresenter.init(movie);
   };
 
-  #renderMovies = (from = 0, to = MOVIES_SHOWN_STEP) => {
-    for (let i = from; i < to; i++) {
-      this.#renderMovieCard(this.movies[i], this.movieListComponent.containerElement);
-    }
+  #renderMovies = (movies) => {
+    movies.forEach((movie) => this.#renderMovieCard(movie, this.movieListComponent.containerElement));
   };
 
   #renderShowMoreButton = () => {
     if (this.moviesShown < this.movies.length) {
       render(this.showMoreButtonComponent, this.movieListComponent.listElement);
+
       const showMoreClickHandler = () => {
         this.#renderMovies(this.moviesShown, Math.min(this.moviesShown + MOVIES_SHOWN_STEP, this.movies.length));
         this.moviesShown += MOVIES_SHOWN_STEP;
@@ -134,6 +145,7 @@ export default class MoviesPresenter {
           remove(this.showMoreButtonComponent);
         }
       };
+
       this.showMoreButtonComponent.setClickHandler(showMoreClickHandler);
     }
   };
@@ -169,4 +181,19 @@ export default class MoviesPresenter {
       }
     }
   };
+
+  get movies() {
+    switch (this.selectedSortType) {
+      case SORT_TYPES.DATE_DOWN:
+        return [...this.moviesModel.movies].sort(sortDateDown);
+      case SORT_TYPES.RATING_DOWN:
+        return [...this.moviesModel.movies].sort(sortRatingDown);
+    }
+    return this.moviesModel.movies;
+  }
+
+
+  get comments() {
+    return this.commentsModel.comments;
+  }
 }

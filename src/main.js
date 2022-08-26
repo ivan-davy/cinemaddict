@@ -1,6 +1,6 @@
-import MainPresenter from './presenter/main-presenter.js';
-import MovieModel from './model/movie-model.js';
-import CommentModel from './model/comment-model.js';
+import MoviesModel from './model/movies-model.js';
+import CommentsModel from './model/comments-model.js';
+import MoviesPresenter from './presenter/movies-presenter';
 
 const siteElements = {
   siteHeaderElement: document.querySelector('.header'),
@@ -8,10 +8,10 @@ const siteElements = {
   siteFooterElement: document.querySelector('.footer'),
 };
 
-const movieModel = new MovieModel;
-const commentModel = new CommentModel;
-const mainPresenter = new MainPresenter(siteElements, movieModel, commentModel);
+const moviesModel = new MoviesModel;
+const commentsModel = new CommentsModel;
+const moviesPresenter = new MoviesPresenter(siteElements, moviesModel, commentsModel);
 
-mainPresenter.init();
+moviesPresenter.init();
 
 

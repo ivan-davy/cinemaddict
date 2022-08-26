@@ -1,5 +1,6 @@
 import MovieCardView from '../view/movie-card-view';
 import {remove, render, replace} from '../framework/render';
+import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates';
 
 export default class MoviePresenter {
   #movieContainerElement = null;
@@ -48,17 +49,29 @@ export default class MoviePresenter {
   };
 
   #watchlistClickHandler = () => {
-    this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
-    this.#updateData(this.#movie);
+    //this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
+    this.#updateData(
+      USER_ACTIONS.UPDATE,
+      UPDATE_TYPES.MINOR,
+      {...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.watchlist}},
+    );
   };
 
   #historyClickHandler = () => {
     this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
-    this.#updateData(this.#movie);
+    this.#updateData(
+      USER_ACTIONS.UPDATE,
+      UPDATE_TYPES.MINOR,
+      this.#movie,
+    );
   };
 
   #favoriteClickHandler = () => {
     this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
-    this.#updateData(this.#movie);
+    this.#updateData(
+      USER_ACTIONS.UPDATE,
+      UPDATE_TYPES.MINOR,
+      this.#movie,
+    );
   };
 }
