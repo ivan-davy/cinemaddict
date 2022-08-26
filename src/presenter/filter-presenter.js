@@ -70,7 +70,6 @@ export default class FilterPresenter {
     if (this.#filtersModel.filter === filterType) {
       return;
     }
-
     this.#filtersModel.setFilter(UPDATE_TYPES.MAJOR, filterType);
   };
 }

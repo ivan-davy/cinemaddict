@@ -59,8 +59,8 @@ export default class MainPresenter {
 
   get movies() {
     const filterType = this.filtersModel.filter;
-    const tasks = this.moviesModel.movies;
-    const filteredMovies = movieFilters[filterType](tasks);
+    const movies = this.moviesModel.movies;
+    const filteredMovies = movieFilters[filterType](movies);
 
     switch (this.selectedSortType) {
       case SORT_TYPES.DATE_DOWN:

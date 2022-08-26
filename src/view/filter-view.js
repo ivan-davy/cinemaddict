@@ -12,10 +12,9 @@ const createFilterItemTemplate = (filter, activeFilter) => {
   const {name, count} = filter;
   const isActiveClass = (activeFilter === filter.name) ? 'main-navigation__item--active' : '';
   const isFilterActive = name !== 'all';
-  const counterSpanTemplate = `<span class="main-navigation__item-count">${count}</span></a>`;
+  const counterSpanTemplate = `<span class="main-navigation__item-count">${count}</span>`;
 
-  return `<a href="#${name}" class="main-navigation__item ${isActiveClass}">${FILTER_UI_NAMES[name]}
-            ${isFilterActive ? counterSpanTemplate : ''}`;
+  return `<a href="#${name}" id="${name}" class="main-navigation__item ${isActiveClass}">${FILTER_UI_NAMES[name]} ${isFilterActive ? counterSpanTemplate : ''}`;
 };
 
 const createFilterTemplate = (filters, activeFilter) => {
@@ -44,11 +43,13 @@ export default class FilterView extends AbstractView {
 
   setFilterTypeChangeHandler = (callback) => {
     this._callback.filterTypeChange = callback;
-    this.element.addEventListener('change', this.#filterTypeChangeHandler);
+    this.element.addEventListener('click', this.#filterTypeChangeHandler);
   };
 
   #filterTypeChangeHandler = (evt) => {
     evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.value);
+    if (evt.target.tagName === 'A') {
+      this._callback.filterTypeChange(evt.target.id);
+    }
   };
 }
