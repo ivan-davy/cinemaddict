@@ -3,7 +3,7 @@ import Observable from '../framework/observable';
 
 
 export default class MoviesModel extends Observable {
-  #movies = Array.from({length: 16}, generateMovie);
+  #movies = Array.from({length: 6}, generateMovie);
 
   get movies() {
     return this.#movies;
@@ -46,6 +46,6 @@ export default class MoviesModel extends Observable {
       ...this.#movies.slice(index + 1),
     ];
 
-    this._notify(updateType, update); //?
+    this._notify(updateType, update);
   };
 }

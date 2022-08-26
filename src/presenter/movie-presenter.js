@@ -6,7 +6,6 @@ export default class MoviePresenter {
   #movieContainerElement = null;
   #movie = null;
   #updateData = null;
-
   #movieCardComponent = null;
   #popupPresenter = null;
 
@@ -43,35 +42,49 @@ export default class MoviePresenter {
     remove(this.#movieCardComponent);
   };
 
-
   #movieClickHandler = () => {
     this.#popupPresenter.init();
   };
 
   #watchlistClickHandler = () => {
-    //this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
+    const popupOffset = this.#popupPresenter.offset;
+    this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
     this.#updateData(
       USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.MINOR,
-      {...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.watchlist}},
+      UPDATE_TYPES.PATCH,
+      this.#movie,
     );
+    if (this.#popupPresenter.isPopupOpen()) {
+      this.#popupPresenter.init();
+      this.#popupPresenter.offset = popupOffset;
+    }
   };
 
   #historyClickHandler = () => {
+    const popupOffset = this.#popupPresenter.offset;
     this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
     this.#updateData(
       USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.MINOR,
+      UPDATE_TYPES.PATCH,
       this.#movie,
     );
+    if (this.#popupPresenter.isPopupOpen()) {
+      this.#popupPresenter.init();
+      this.#popupPresenter.offset = popupOffset;
+    }
   };
 
   #favoriteClickHandler = () => {
+    const popupOffset = this.#popupPresenter.offset;
     this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
     this.#updateData(
       USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.MINOR,
+      UPDATE_TYPES.PATCH,
       this.#movie,
     );
+    if (this.#popupPresenter.isPopupOpen()) {
+      this.#popupPresenter.init();
+      this.#popupPresenter.offset = popupOffset;
+    }
   };
 }
