@@ -1,5 +1,4 @@
 import {render, remove} from '../framework/render';
-import FilterView from '../view/filter-view.js';
 import SortView from '../view/sort-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import MovieListView from '../view/movie-list-view.js';
@@ -11,22 +10,23 @@ import PopupPresenter from './popup-presenter';
 import {SORT_TYPES, sortDateDown, sortRatingDown} from '../utility/sort-logic';
 import RankView from '../view/rank-view';
 import MovieDatabaseStatsView from '../view/movie-database-stats-view';
-import {generateFilter} from '../mock/filter';
 import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates';
+import {movieFilters} from '../utility/filter-logic';
 
 const MOVIES_SHOWN_STEP = 5;
 
 export default class MainPresenter {
-  constructor(siteElements, moviesModel, commentsModel) {
+  constructor(siteElements, moviesModel, commentsModel, filtersModel) {
     this.headerElement = siteElements.siteHeaderElement;
     this.mainElement = siteElements.siteMainElement;
     this.footerElement = siteElements.siteFooterElement;
 
     this.moviesModel = moviesModel;
     this.commentsModel = commentsModel;
+    this.filtersModel = filtersModel;
     this.moviesModel.addObserver(this.#modelMovieEventHandler);
     this.commentsModel.addObserver(this.#modelMovieEventHandler);
-    this.filters = generateFilter(this.movies);
+    this.filtersModel.addObserver(this.#modelMovieEventHandler);
 
     this.topRatedMovies = [this.movies[0]];
     this.mostCommentedMovies = [this.movies[0], this.movies[1]];
@@ -35,7 +35,6 @@ export default class MainPresenter {
 
     this.movieListComponent = new MovieListView();
     this.movieListEmptyComponent = null;
-    this.filterComponent = null;
     this.sortComponent = null;
     this.showMoreButtonComponent = null;
     this.topRatedComponent = null;
@@ -48,7 +47,7 @@ export default class MainPresenter {
   }
 
   init() {
-    const filmsWatched = this.filters[2].count;
+    const filmsWatched = 5;
     const rankComponent = new RankView(filmsWatched);
     render(rankComponent, this.headerElement);
 
@@ -59,13 +58,18 @@ export default class MainPresenter {
   }
 
   get movies() {
+    const filterType = this.filtersModel.filter;
+    const tasks = this.moviesModel.movies;
+    const filteredMovies = movieFilters[filterType](tasks);
+
     switch (this.selectedSortType) {
       case SORT_TYPES.DATE_DOWN:
-        return [...this.moviesModel.movies].sort(sortDateDown);
+        return filteredMovies.sort(sortDateDown);
       case SORT_TYPES.RATING_DOWN:
-        return [...this.moviesModel.movies].sort(sortRatingDown);
+        return filteredMovies.sort(sortRatingDown);
     }
-    return this.moviesModel.movies;
+
+    return filteredMovies;
   }
 
   get comments() {
@@ -111,11 +115,6 @@ export default class MainPresenter {
     this.#renderMainMovieList();
   };
 
-  #renderFilter = () => {
-    this.filterComponent = new FilterView(this.filters);
-    render(this.filterComponent, this.mainElement);
-  };
-
   #renderSort = () => {
     this.sortComponent = new SortView(this.selectedSortType);
     render(this.sortComponent, this.mainElement);
@@ -123,7 +122,6 @@ export default class MainPresenter {
   };
 
   #renderMainMovieList = () => {
-    this.#renderFilter();
     this.#renderSort();
     render(this.movieListComponent, this.mainElement);
     if (!this.movies) {
@@ -172,7 +170,6 @@ export default class MainPresenter {
     this.mainMovieCardPresenters.clear();
 
 
-    remove(this.filterComponent);
     remove(this.sortComponent);
     remove(this.movieListEmptyComponent);
     remove(this.showMoreButtonComponent);

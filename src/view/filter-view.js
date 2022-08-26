@@ -8,9 +8,9 @@ const FILTER_UI_NAMES = {
   'favorite': 'Favorites'
 };
 
-const createFilterItemTemplate = (filter, isActive) => {
+const createFilterItemTemplate = (filter, activeFilter) => {
   const {name, count} = filter;
-  const isActiveClass = isActive ? 'main-navigation__item--active' : '';
+  const isActiveClass = (activeFilter === filter.name) ? 'main-navigation__item--active' : '';
   const isFilterActive = name !== 'all';
   const counterSpanTemplate = `<span class="main-navigation__item-count">${count}</span></a>`;
 
@@ -18,10 +18,9 @@ const createFilterItemTemplate = (filter, isActive) => {
             ${isFilterActive ? counterSpanTemplate : ''}`;
 };
 
-const createFilterTemplate = (filters) => {
+const createFilterTemplate = (filters, activeFilter) => {
   const filterItemsTemplates = filters
-    .map((filter, index) => createFilterItemTemplate(filter, index === 0))
-    .join('');
+    .map((filter) => createFilterItemTemplate(filter, activeFilter)).join('');
 
   return `<nav class="main-navigation">
     ${filterItemsTemplates}
@@ -31,13 +30,25 @@ const createFilterTemplate = (filters) => {
 
 export default class FilterView extends AbstractView {
   #filters = null;
+  #activeFilterType = null;
 
-  constructor(filters) {
+  constructor(filters, activeFilterType) {
     super();
     this.#filters = filters;
+    this.#activeFilterType = activeFilterType;
   }
 
   get template() {
-    return createFilterTemplate(this.#filters);
+    return createFilterTemplate(this.#filters, this.#activeFilterType);
   }
+
+  setFilterTypeChangeHandler = (callback) => {
+    this._callback.filterTypeChange = callback;
+    this.element.addEventListener('change', this.#filterTypeChangeHandler);
+  };
+
+  #filterTypeChangeHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.filterTypeChange(evt.target.value);
+  };
 }

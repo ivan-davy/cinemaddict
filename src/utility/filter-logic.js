@@ -12,4 +12,4 @@ const movieFilters = {
   [FILTER_TYPES.FAVORITE]: (movies) => movies.filter((movie) => movie.userDetails.favorite)
 };
 
-export {movieFilters};
+export {FILTER_TYPES, movieFilters};
