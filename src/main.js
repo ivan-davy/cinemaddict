@@ -1,6 +1,6 @@
 import MoviesModel from './model/movies-model.js';
 import CommentsModel from './model/comments-model.js';
-import MoviesPresenter from './presenter/movies-presenter';
+import MainPresenter from './presenter/main-presenter';
 
 const siteElements = {
   siteHeaderElement: document.querySelector('.header'),
@@ -10,8 +10,8 @@ const siteElements = {
 
 const moviesModel = new MoviesModel;
 const commentsModel = new CommentsModel;
-const moviesPresenter = new MoviesPresenter(siteElements, moviesModel, commentsModel);
+const mainPresenter = new MainPresenter(siteElements, moviesModel, commentsModel);
 
-moviesPresenter.init();
+mainPresenter.init();
 
 

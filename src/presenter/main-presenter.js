@@ -7,16 +7,16 @@ import TopRatedView from '../view/top-rated-view.js';
 import MostCommentedView from '../view/most-commented-view.js';
 import MovieListEmptyView from '../view/movie-list-empty-view';
 import MoviePresenter from './movie-presenter';
-import {updateItem} from '../utility/update-item';
 import PopupPresenter from './popup-presenter';
 import {SORT_TYPES, sortDateDown, sortRatingDown} from '../utility/sort-logic';
 import RankView from '../view/rank-view';
 import MovieDatabaseStatsView from '../view/movie-database-stats-view';
 import {generateFilter} from '../mock/filter';
+import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates';
 
 const MOVIES_SHOWN_STEP = 5;
 
-export default class MoviesPresenter {
+export default class MainPresenter {
   #movies = null;
   #comments = null;
 
@@ -26,17 +26,13 @@ export default class MoviesPresenter {
     this.footerElement = siteElements.siteFooterElement;
 
     this.moviesModel = moviesModel;
-    this.commentsModel = commentsModel;
-    this.immutableMovies = this.movies.slice();
-    this.filters = generateFilter(this.movies);
-
     this.moviesModel.addObserver(this.#modelEventHandler);
-
+    this.commentsModel = commentsModel;
+    this.filters = generateFilter(this.movies);
 
     this.topRatedMovies = [this.movies[0]];
     this.mostCommentedMovies = [this.movies[0], this.movies[1]];
     this.moviesShown = Math.min(this.movies.length, MOVIES_SHOWN_STEP);
-    this.currentStep = 0;
     this.selectedSortType = SORT_TYPES.DEFAULT;
 
     this.movieListComponent = new MovieListView();
@@ -65,10 +61,11 @@ export default class MoviesPresenter {
     if (!this.movies) {
       this.#renderEmptyList();
     } else {
-      const movieQty = this.movies.length;
-      const movies = this.movies.slice(0, Math.min(movieQty, MOVIES_SHOWN_STEP));
+      const movies = this.movies.slice(0, Math.min(this.movies.length, MOVIES_SHOWN_STEP));
       this.#renderMovies(movies);
-      this.#renderShowMoreButton();
+      if (this.moviesShown < this.movies.length) {
+        this.#renderShowMoreButton();
+      }
     }
     this.#renderTopRatedList();
     this.#renderMostCommentedList();
@@ -76,26 +73,63 @@ export default class MoviesPresenter {
     render(new MovieDatabaseStatsView(this.movies.length), this.footerElement.querySelector('.footer__statistics'));
   }
 
-  #movieChangeHandler = (updatedMovie) => {
+  get movies() {
+    switch (this.selectedSortType) {
+      case SORT_TYPES.DATE_DOWN:
+        return [...this.moviesModel.movies].sort(sortDateDown);
+      case SORT_TYPES.RATING_DOWN:
+        return [...this.moviesModel.movies].sort(sortRatingDown);
+    }
+    return this.moviesModel.movies;
+  }
+
+
+  get comments() {
+    return this.commentsModel.comments;
+  }
+
+
+  /*#movieChangeHandler = (updatedMovie) => {
     this.movies = updateItem(this.movies, updatedMovie);
     this.mainMovieCardPresenters.get(updatedMovie.id).init(updatedMovie);
     if (this.popupPresenters.get(updatedMovie.id).isPopupOpen()) {
       this.popupPresenters.get(updatedMovie.id).init();
     }
-    if (this.topRatedMovieCardsPresenters.has(updatedMovie.id)){
+    if (this.topRatedMovieCardsPresenters.has(updatedMovie.id)) {
       this.topRatedMovieCardsPresenters.get(updatedMovie.id).init(updatedMovie);
     }
     if (this.mostCommentedMovieCardsPresenters.has(updatedMovie.id)) {
       this.mostCommentedMovieCardsPresenters.get(updatedMovie.id).init(updatedMovie);
     }
-  };
+  };*/
 
   #viewActionHandler = (actionType, updateType, update) => {
-    console.log(actionType, updateType, update);
+    switch (actionType) {
+      case USER_ACTIONS.UPDATE:
+        this.moviesModel.updateMovie(updateType, update);
+        break;
+      case USER_ACTIONS.ADD:
+        this.moviesModel.addMovie(updateType, update);
+        break;
+      case USER_ACTIONS.DELETE:
+        this.moviesModel.deleteMovie(updateType, update);
+        break;
+    }
   };
 
   #modelEventHandler = (updateType, data) => {
-    console.log(updateType, data);
+    switch (updateType) {
+      case UPDATE_TYPES.PATCH:
+
+        this.mainMovieCardPresenters.get(data.id).init(data);
+        break;
+      case UPDATE_TYPES.MINOR:
+
+        break;
+      case UPDATE_TYPES.MAJOR:
+
+        break;
+    }
   };
 
   #sortTypeChangeHandler = (sortType) => {
@@ -105,7 +139,9 @@ export default class MoviesPresenter {
     this.selectedSortType = sortType;
     this.#clearMovieList();
     this.#renderMovies();
-    this.#renderShowMoreButton();
+    if (this.moviesShown < this.movies.length) {
+      this.#renderShowMoreButton();
+    }
   };
 
   #renderFilter = () => {
@@ -130,23 +166,21 @@ export default class MoviesPresenter {
     moviePresenter.init(movie);
   };
 
-  #renderMovies = (movies) => {
+  #renderMovies = (movies = this.movies.slice(0, MOVIES_SHOWN_STEP)) => {
     movies.forEach((movie) => this.#renderMovieCard(movie, this.movieListComponent.containerElement));
   };
 
   #renderShowMoreButton = () => {
-    if (this.moviesShown < this.movies.length) {
-      render(this.showMoreButtonComponent, this.movieListComponent.listElement);
+    render(this.showMoreButtonComponent, this.movieListComponent.listElement);
+    this.showMoreButtonComponent.setClickHandler(this.#showMoreClickHandler);
+  };
 
-      const showMoreClickHandler = () => {
-        this.#renderMovies(this.moviesShown, Math.min(this.moviesShown + MOVIES_SHOWN_STEP, this.movies.length));
-        this.moviesShown += MOVIES_SHOWN_STEP;
-        if (this.moviesShown >= this.movies.length) {
-          remove(this.showMoreButtonComponent);
-        }
-      };
-
-      this.showMoreButtonComponent.setClickHandler(showMoreClickHandler);
+  #showMoreClickHandler = () => {
+    const movies = this.movies.slice(this.moviesShown, Math.min(this.moviesShown + MOVIES_SHOWN_STEP, this.movies.length));
+    this.#renderMovies(movies);
+    this.moviesShown += MOVIES_SHOWN_STEP;
+    if (this.moviesShown >= this.movies.length) {
+      remove(this.showMoreButtonComponent);
     }
   };
 
@@ -154,11 +188,12 @@ export default class MoviesPresenter {
     this.mainMovieCardPresenters.forEach((presenter) => presenter.destroy());
     this.mainMovieCardPresenters.clear();
     this.moviesShown = MOVIES_SHOWN_STEP;
-    this.currentStep = 0;
     this.mainMovieCardPresenters.clear();
     this.popupPresenters.clear();
     remove(this.showMoreButtonComponent);
   };
+
+
 
   #renderEmptyList = () => {
     render(this.movieListEmptyComponent, this.movieListComponent.listElement);
@@ -181,19 +216,4 @@ export default class MoviesPresenter {
       }
     }
   };
-
-  get movies() {
-    switch (this.selectedSortType) {
-      case SORT_TYPES.DATE_DOWN:
-        return [...this.moviesModel.movies].sort(sortDateDown);
-      case SORT_TYPES.RATING_DOWN:
-        return [...this.moviesModel.movies].sort(sortRatingDown);
-    }
-    return this.moviesModel.movies;
-  }
-
-
-  get comments() {
-    return this.commentsModel.comments;
-  }
 }
