@@ -157,7 +157,7 @@ export default class MainPresenter {
     if (this.movies.length === 0) {
       this.#renderEmptyList();
     } else {
-      const movies = this.movies.slice(0, Math.min(this.movies.length, MOVIES_SHOWN_STEP));
+      const movies = this.movies.slice(0, Math.min(this.movies.length, this.moviesShown));
       this.#renderMovies(movies);
       if (this.moviesShown < this.movies.length) {
         this.#renderShowMoreButton();
