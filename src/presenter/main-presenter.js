@@ -7,7 +7,7 @@ import MostCommentedView from '../view/most-commented-view.js';
 import MovieListEmptyView from '../view/movie-list-empty-view';
 import MoviePresenter from './movie-presenter';
 import PopupPresenter from './popup-presenter';
-import {SORT_TYPES, sortDateDown, sortRatingDown} from '../utility/sort-logic';
+import {SORT_TYPES, sortCommentsDown, sortDateDown, sortRatingDown} from '../utility/sort-logic';
 import RankView from '../view/rank-view';
 import MovieDatabaseStatsView from '../view/movie-database-stats-view';
 import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates';
@@ -28,8 +28,8 @@ export default class MainPresenter {
     this.commentsModel.addObserver(this.#modelMovieEventHandler);
     this.filtersModel.addObserver(this.#modelMovieEventHandler);
 
-    this.topRatedMovies = [this.movies[0]];
-    this.mostCommentedMovies = [this.movies[0], this.movies[1]];
+    this.topRatedMovies = moviesModel.movies.slice().sort(sortRatingDown).slice(0, 2);
+    this.mostCommentedMovies = moviesModel.movies.slice().sort(sortCommentsDown).slice(0, 2);
     this.moviesShown = Math.min(this.movies.length, MOVIES_SHOWN_STEP);
     this.selectedSortType = SORT_TYPES.DEFAULT;
     this.selectedFilterType = FILTER_TYPES.ALL;
@@ -98,12 +98,16 @@ export default class MainPresenter {
         this.mainMovieCardPresenters.get(data.id).init(data);
         break;
       case UPDATE_TYPES.MINOR:
-        this.#clearMovieList();
+        this.#clearMovieLists();
         this.#renderMainMovieList();
+        this.#renderTopRatedList();
+        this.#renderMostCommentedList();
         break;
       case UPDATE_TYPES.MAJOR:
-        this.#clearMovieList({resetMoviesShownCount: true, resetSortType: true});
+        this.#clearMovieLists({resetMoviesShownCount: true, resetSortType: true});
         this.#renderMainMovieList();
+        this.#renderTopRatedList();
+        this.#renderMostCommentedList();
         break;
     }
   };
@@ -113,7 +117,7 @@ export default class MainPresenter {
       return;
     }
     this.selectedSortType = sortType;
-    this.#clearMovieList({resetMoviesShownCount: true});
+    this.#clearMovieLists({resetMoviesShownCount: true});
     this.#renderMainMovieList();
   };
 
@@ -165,7 +169,7 @@ export default class MainPresenter {
     }
   };
 
-  #clearMovieList = ({resetMoviesShownCount = false, resetSortType = false} = {}) => {
+  #clearMovieLists = ({resetMoviesShownCount = false, resetSortType = false} = {}) => {
     const moviesCount = this.movies.length;
 
     this.mainMovieCardPresenters.forEach((presenter) => presenter.destroy());
@@ -175,6 +179,13 @@ export default class MainPresenter {
     remove(this.sortComponent);
     remove(this.movieListEmptyComponent);
     remove(this.showMoreButtonComponent);
+
+    if (this.topRatedComponent) {
+      remove(this.topRatedComponent);
+    }
+    if (this.mostCommentedComponent) {
+      remove(this.mostCommentedComponent);
+    }
 
     if (resetMoviesShownCount) {
       this.moviesShown = MOVIES_SHOWN_STEP;

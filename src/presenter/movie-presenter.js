@@ -51,7 +51,7 @@ export default class MoviePresenter {
     this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
     this.#updateData(
       USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.PATCH,
+      UPDATE_TYPES.MINOR,
       this.#movie,
     );
     if (this.#popupPresenter.isPopupOpen()) {
@@ -65,7 +65,7 @@ export default class MoviePresenter {
     this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
     this.#updateData(
       USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.PATCH,
+      UPDATE_TYPES.MINOR,
       this.#movie,
     );
     if (this.#popupPresenter.isPopupOpen()) {
@@ -79,7 +79,7 @@ export default class MoviePresenter {
     this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
     this.#updateData(
       USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.PATCH,
+      UPDATE_TYPES.MINOR,
       this.#movie,
     );
     if (this.#popupPresenter.isPopupOpen()) {

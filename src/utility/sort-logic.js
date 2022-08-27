@@ -36,7 +36,18 @@ const sortRatingDown = (movieA, movieB) => {
   }
 };
 
+const sortCommentsDown = (movieA, movieB) => {
+  if (movieA.comments.length > movieB.comments.length) {
+    return -1;
+  }
+  if (movieA.comments.length < movieB.comments.length) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+};
 
-export {SORT_TYPES, sortDateDown, sortRatingDown};
+export {SORT_TYPES, sortDateDown, sortRatingDown, sortCommentsDown};
 
 
