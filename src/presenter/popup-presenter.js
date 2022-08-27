@@ -8,17 +8,19 @@ export default class PopupPresenter {
   #movie = null;
   #mainElement = null;
   #comments = null;
-  #updateData = null;
+  #updateMovieData = null;
+  #updateCommentData = null;
   #containerComponent = null;
   #infoComponent = null;
   #commentsComponent = null;
   #offset = null;
 
-  constructor(mainElement, movie, comments, updateData) {
+  constructor(mainElement, movie, comments, updateMovieData, updateCommentData) {
     this.#mainElement = mainElement;
     this.#movie = movie;
     this.#comments = comments;
-    this.#updateData = updateData;
+    this.#updateMovieData = updateMovieData;
+    this.#updateCommentData = updateCommentData;
 
     this.#containerComponent = new ContainerView();
     this.#infoComponent = new InfoView(this.#movie);
@@ -41,6 +43,7 @@ export default class PopupPresenter {
       render(this.#commentsComponent, this.#containerComponent.element);
 
       this.#commentsComponent.setFormSubmitHandler();
+      this.#commentsComponent.setCommentDeleteHandler(this.#deleteCommentHandler);
       this.#containerComponent.setCloseKeydownHandler(this.#closeKeydownHandler);
       this.#containerComponent.setCloseClickHandler(this.#closeClickHandler);
       this.#infoComponent.setWatchlistClickHandler(this.#watchlistClickHandler);
@@ -91,7 +94,7 @@ export default class PopupPresenter {
   #watchlistClickHandler = () => {
     this.#offset = this.#containerComponent.element.scrollTop;
     this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
-    this.#updateData(
+    this.#updateMovieData(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.PATCH,
       this.#movie,
@@ -103,7 +106,7 @@ export default class PopupPresenter {
   #historyClickHandler = () => {
     this.#offset = this.#containerComponent.element.scrollTop;
     this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
-    this.#updateData(
+    this.#updateMovieData(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.PATCH,
       this.#movie,
@@ -114,12 +117,21 @@ export default class PopupPresenter {
   #favoriteClickHandler = () => {
     this.#offset = this.#containerComponent.element.scrollTop;
     this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
-    this.#updateData(
+    this.#updateMovieData(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.PATCH,
       this.#movie,
     );
     this.init();
+  };
+
+  #deleteCommentHandler = (comment) => {
+    this.#offset = this.#containerComponent.element.scrollTop;
+    this.#updateCommentData(
+      USER_ACTIONS.DELETE,
+      UPDATE_TYPES.MAJOR,
+      comment
+    );
   };
 }
 

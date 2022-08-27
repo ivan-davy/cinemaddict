@@ -92,6 +92,17 @@ export default class MainPresenter {
     }
   };
 
+  #viewCommentActionHandler = (actionType, updateType, update) => {
+    switch (actionType) {
+      case USER_ACTIONS.ADD:
+        this.commentsModel.addComment(updateType, update);
+        break;
+      case USER_ACTIONS.DELETE:
+        this.commentsModel.deleteComment(updateType, update);
+        break;
+    }
+  };
+
   #modelMovieEventHandler = (updateType, data) => {
     switch (updateType) {
       case UPDATE_TYPES.PATCH:
@@ -108,6 +119,14 @@ export default class MainPresenter {
         this.#renderMainMovieList();
         this.#renderTopRatedList();
         this.#renderMostCommentedList();
+        break;
+    }
+  };
+
+  #modelCommentEventHandler = (updateType, data) => {
+    switch (updateType) {
+      case UPDATE_TYPES.MAJOR:
+        console.log(data);
         break;
     }
   };
@@ -143,7 +162,7 @@ export default class MainPresenter {
 
   #renderMovieCard = (movie, targetElement, cardPresentersGroup = this.mainMovieCardPresenters) => {
     const movieComments = this.comments.slice().filter((comment) => movie.comments.includes(comment.id));
-    const popupPresenter = new PopupPresenter(this.mainElement, movie, movieComments, this.#viewMovieActionHandler);
+    const popupPresenter = new PopupPresenter(this.mainElement, movie, movieComments, this.#viewMovieActionHandler, this.#viewCommentActionHandler);
     const moviePresenter = new MoviePresenter(targetElement, popupPresenter, this.#viewMovieActionHandler);
     cardPresentersGroup.set(movie.id, moviePresenter);
     this.popupPresenters.set(movie.id, popupPresenter);
