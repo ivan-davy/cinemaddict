@@ -29,7 +29,7 @@ let id = -1;
 export const generateComment = () => {
   id += 1;
   return {
-    id,
+    id: String(id),
     author: getRandomItem(MOCK_SHORT),
     comment: getRandomItem(MOCK_LONG),
     date: getRandomItem(MOCK_DATES),

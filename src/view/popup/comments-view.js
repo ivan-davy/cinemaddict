@@ -124,6 +124,8 @@ export default class CommentsView extends AbstractStatefulView {
       .addEventListener('click', this.#emojiClickHandler);
     this.element.querySelector('.film-details__comment-input')
       .addEventListener('input', this.#commentInputHandler);
+    this.element.querySelector('.film-details__comments-list')
+      .addEventListener('click', this.#deleteCommentHandler);
   };
 
   #emojiClickHandler = (evt) => {
@@ -147,8 +149,9 @@ export default class CommentsView extends AbstractStatefulView {
 
   #deleteCommentHandler = (evt) => {
     if (evt.target.tagName === 'BUTTON') {
-      console.log(`COMMENT ${evt.target.id}`)
-      this._callback.deleteComment(this.#comments.find((comment) => comment.id === evt.target.id));
+      console.log(`COMMENT ${evt.target.id}`);
+      const toBeDeleted = this.#comments.slice().find((comment) => comment.id === evt.target.id);
+      this._callback.deleteComment(toBeDeleted);
     }
   };
 

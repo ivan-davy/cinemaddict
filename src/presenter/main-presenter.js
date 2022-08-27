@@ -25,7 +25,7 @@ export default class MainPresenter {
     this.commentsModel = commentsModel;
     this.filtersModel = filtersModel;
     this.moviesModel.addObserver(this.#modelMovieEventHandler);
-    this.commentsModel.addObserver(this.#modelMovieEventHandler);
+    this.commentsModel.addObserver(this.#modelCommentEventHandler);
     this.filtersModel.addObserver(this.#modelMovieEventHandler);
 
     this.topRatedMovies = moviesModel.movies.slice().sort(sortRatingDown).slice(0, 2);
@@ -125,8 +125,12 @@ export default class MainPresenter {
 
   #modelCommentEventHandler = (updateType, data) => {
     switch (updateType) {
-      case UPDATE_TYPES.MAJOR:
-        console.log(data);
+      case UPDATE_TYPES.MINOR:
+        console.log(1);
+        this.#clearMovieLists();
+        this.#renderMainMovieList();
+        this.#renderTopRatedList();
+        this.#renderMostCommentedList();
         break;
     }
   };

@@ -34,10 +34,15 @@ export default class PopupPresenter {
       this.#containerComponent.allowOverflow(this.#mainElement);
     }
     const prevInfoComponent = this.#infoComponent;
+    const prevCommentsComponent = this.#commentsComponent;
     this.#infoComponent = new InfoView(this.#movie);
-    if (this.#infoComponent !== prevInfoComponent) {
+    this.#commentsComponent = new CommentsView(this.#comments);
+
+    if (this.#infoComponent !== prevInfoComponent || this.#commentsComponent !== prevCommentsComponent) {
       this.#containerComponent.restrictOverflow(this.#mainElement);
-      replace(this.#infoComponent, prevInfoComponent);
+      remove(prevInfoComponent);
+      remove(prevCommentsComponent);
+
       render(this.#containerComponent, document.querySelector('footer'), 'afterend');
       render(this.#infoComponent, this.#containerComponent.element);
       render(this.#commentsComponent, this.#containerComponent.element);
@@ -57,10 +62,14 @@ export default class PopupPresenter {
     if (this.#containerComponent.element.contains(this.#infoComponent.element)) {
       replace(this.#infoComponent, prevInfoComponent);
     }
+    if (this.#containerComponent.element.contains(this.#commentsComponent.element)) {
+      replace(this.#commentsComponent, prevCommentsComponent);
+    }
 
   }
 
   destroy = () => {
+    this.#commentsComponent.unsetFormSubmitHandler();
     remove(this.#containerComponent);
   };
 
@@ -129,9 +138,10 @@ export default class PopupPresenter {
     this.#offset = this.#containerComponent.element.scrollTop;
     this.#updateCommentData(
       USER_ACTIONS.DELETE,
-      UPDATE_TYPES.MAJOR,
+      UPDATE_TYPES.MINOR,
       comment
     );
+    this.init();
   };
 }
 
