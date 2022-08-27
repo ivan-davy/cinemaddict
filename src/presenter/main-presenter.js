@@ -11,7 +11,7 @@ import {SORT_TYPES, sortDateDown, sortRatingDown} from '../utility/sort-logic';
 import RankView from '../view/rank-view';
 import MovieDatabaseStatsView from '../view/movie-database-stats-view';
 import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates';
-import {movieFilters} from '../utility/filter-logic';
+import {FILTER_TYPES, movieFilters} from '../utility/filter-logic';
 
 const MOVIES_SHOWN_STEP = 5;
 
@@ -32,6 +32,7 @@ export default class MainPresenter {
     this.mostCommentedMovies = [this.movies[0], this.movies[1]];
     this.moviesShown = Math.min(this.movies.length, MOVIES_SHOWN_STEP);
     this.selectedSortType = SORT_TYPES.DEFAULT;
+    this.selectedFilterType = FILTER_TYPES.ALL;
 
     this.movieListComponent = new MovieListView();
     this.movieListEmptyComponent = null;
@@ -58,6 +59,7 @@ export default class MainPresenter {
   }
 
   get movies() {
+    this.selectedFilterType = this.filtersModel.filter;
     const filterType = this.filtersModel.filter;
     const movies = this.moviesModel.movies;
     const filteredMovies = movieFilters[filterType](movies);
@@ -124,7 +126,7 @@ export default class MainPresenter {
   #renderMainMovieList = () => {
     this.#renderSort();
     render(this.movieListComponent, this.mainElement);
-    if (!this.movies) {
+    if (this.movies.length === 0) {
       this.#renderEmptyList();
     } else {
       const movies = this.movies.slice(0, Math.min(this.movies.length, MOVIES_SHOWN_STEP));
@@ -183,10 +185,14 @@ export default class MainPresenter {
     if (resetSortType) {
       this.selectedSortType = SORT_TYPES.DEFAULT;
     }
+
+    if (this.movieListEmptyComponent) {
+      remove(this.movieListEmptyComponent);
+    }
   };
 
   #renderEmptyList = () => {
-    this.movieListEmptyComponent = new MovieListEmptyView();
+    this.movieListEmptyComponent = new MovieListEmptyView(this.selectedFilterType);
     render(this.movieListEmptyComponent, this.movieListComponent.listElement);
   };
 

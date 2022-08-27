@@ -1,34 +1,30 @@
 import AbstractView from '../framework/view/abstract-view';
 
 
-const SCENARIO_MESSAGES = {
+const MESSAGES = {
   'all': 'There are no movies in our database',
   'watchlist': 'There are no movies to watch now',
   'alreadyWatched': 'There are no watched movies now',
-  'favorites': 'There are no favorite movies now'
+  'favorite': 'There are no favorite movies now'
 };
 
 
-const createMovieListEmptyTemplate = (message) => `<h2 class="films-list__title">${message}</h2>`;
+const createMovieListEmptyTemplate = (filterName) => `<h2 class="films-list__title">${MESSAGES[filterName]}</h2>`;
 
 export default class MovieListEmptyView extends AbstractView {
-  #message = null;
+  #filter = null;
 
-  constructor() {
+  constructor(filter) {
     super();
-    this.#message = SCENARIO_MESSAGES['all'];
+    this.#filter = filter;
   }
 
   get template() {
-    return createMovieListEmptyTemplate(this.#message);
+    return createMovieListEmptyTemplate(this.#filter);
   }
-
-  setScenario = (scenario) => {
-    this.#message = SCENARIO_MESSAGES[scenario];
-  };
 
   removeElement() {
     super.removeElement();
-    this.#message = null;
+    this.#filter = null;
   }
 }
