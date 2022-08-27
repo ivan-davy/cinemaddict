@@ -17,7 +17,7 @@ const createCommentsTemplate = (commentStates, userCommentState) => {
   const commentsQty = commentStates.length;
   let commentsTemplate = '';
   for (const commentEntry of commentStates) {
-    const {emotion, author, date, comment} = commentEntry;
+    const {id, emotion, author, date, comment} = commentEntry;
     const timePassed = getCommentPrettyDate(date);
 
     commentsTemplate += `<li class="film-details__comment">
@@ -29,7 +29,7 @@ const createCommentsTemplate = (commentStates, userCommentState) => {
                 <p class="film-details__comment-info">
                   <span class="film-details__comment-author">${author}</span>
                   <span class="film-details__comment-day">${timePassed}</span>
-                  <button class="film-details__comment-delete">Delete</button>
+                  <button id=${id} class="film-details__comment-delete">Delete</button>
                 </p>
               </div>
             </li>`;
@@ -76,9 +76,10 @@ const createCommentsTemplate = (commentStates, userCommentState) => {
 };
 
 export default class CommentsView extends AbstractStatefulView {
+  #comments = null;
   constructor(comments) {
     super();
-    this.comments = comments.slice();
+    this.#comments = comments.slice();
     this._state.comments = comments.slice().map((comment) => CommentsView.parseCommentToState(comment));
     this._state.userComment = {...DEFAULT_STATE};
     this.#setInnerHandlers();
@@ -94,7 +95,7 @@ export default class CommentsView extends AbstractStatefulView {
 
   reset() {
     const state = {
-      comments: this.comments.slice().map((comment) => CommentsView.parseCommentToState(comment)),
+      comments: this.#comments.slice().map((comment) => CommentsView.parseCommentToState(comment)),
       userComment: {...DEFAULT_STATE}
     };
     this.updateElement(state);
@@ -110,6 +111,12 @@ export default class CommentsView extends AbstractStatefulView {
   unsetFormSubmitHandler = () => {
     this._callback.formSubmit = null;
     document.removeEventListener('keydown', this.#formSubmitHandler);
+  };
+
+  setCommentDeleteHandler = (callback) => {
+    this._callback.deleteComment = callback;
+    this.element.querySelector('.film-details__comments-list')
+      .addEventListener('click', this.#deleteCommentHandler);
   };
 
   #setInnerHandlers = () => {
@@ -133,7 +140,14 @@ export default class CommentsView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     if (evt.ctrlKey && evt.key === 'Enter') {
+      console.log('SUBMIT');
       this._callback.formSubmit(CommentsView.parseStateToComment(this._state.userComment));
+    }
+  };
+
+  #deleteCommentHandler = (evt) => {
+    if (evt.target.tagName === 'BUTTON') {
+      this._callback.deleteComment(this.#comments.find((comment) => comment.id === evt.target.id));
     }
   };
 
