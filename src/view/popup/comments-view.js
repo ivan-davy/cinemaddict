@@ -1,6 +1,7 @@
 import {getCommentPrettyDate} from '../../utility/date-time-format';
 import AbstractStatefulView from '../../framework/view/abstract-stateful-view';
 import dayjs from 'dayjs';
+import he from 'he';
 
 const USERNAME = 'xXx_KEKSUS69_xXx';
 
@@ -45,7 +46,7 @@ const createCommentsTemplate = (commentStates, userCommentState) => {
             <div class="film-details__add-emoji-label">${emojiLabelTemplate}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${userCommentState.comment}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(userCommentState.comment)}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
