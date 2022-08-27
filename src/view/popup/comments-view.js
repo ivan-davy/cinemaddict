@@ -6,7 +6,7 @@ import he from 'he';
 const USERNAME = 'xXx_KEKSUS69_xXx';
 
 const DEFAULT_STATE = {
-  id: 10000, // ?
+  id: 0,
   author: USERNAME,
   comment: '',
   date: dayjs().format(),
@@ -102,8 +102,8 @@ export default class CommentsView extends AbstractStatefulView {
     this.#setInnerHandlers();
   }
 
-  setFormSubmitHandler = () => {
-    this._callback.formSubmit = this.#formSubmitHandler;
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
     document
       .addEventListener('keydown', this.#formSubmitHandler);
   };
@@ -142,8 +142,11 @@ export default class CommentsView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     if (evt.ctrlKey && evt.key === 'Enter') {
-      console.log('SUBMIT');
-      this._callback.formSubmit(CommentsView.parseStateToComment(this._state.userComment));
+      if (this._state.userComment.emotion && this._state.userComment.comment) {
+        console.log('SUBMIT');
+        console.log(CommentsView.parseStateToComment(this._state.userComment));
+        this._callback.formSubmit(CommentsView.parseStateToComment(this._state.userComment));
+      }
     }
   };
 

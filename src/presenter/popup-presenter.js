@@ -50,7 +50,7 @@ export default class PopupPresenter {
       render(this.#infoComponent, this.#containerComponent.element);
       render(this.#commentsComponent, this.#containerComponent.element);
 
-      this.#commentsComponent.setFormSubmitHandler();
+      this.#commentsComponent.setFormSubmitHandler(this.#formSubmitHandler);
       this.#commentsComponent.setCommentDeleteHandler(this.#deleteCommentHandler);
       this.#containerComponent.setCloseKeydownHandler(this.#closeKeydownHandler);
       this.#containerComponent.setCloseClickHandler(this.#closeClickHandler);
@@ -133,6 +133,16 @@ export default class PopupPresenter {
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.PATCH,
       this.#movie,
+    );
+    this.init();
+  };
+
+  #formSubmitHandler = (comment) => {
+    this.#offset = this.#containerComponent.element.scrollTop;
+    this.#updateCommentData(
+      USER_ACTIONS.ADD,
+      UPDATE_TYPES.MINOR,
+      comment
     );
     this.init();
   };

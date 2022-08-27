@@ -10,6 +10,8 @@ export default class CommentsModel extends Observable {
   }
 
   addComment = (updateType, update) => {
+    update.id = Math.max(...this.#comments.slice().map((comment) => parseInt(comment.id, 10))) + 1;
+
     this.#comments = [
       update,
       ...this.#comments,
