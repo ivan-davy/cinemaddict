@@ -8,19 +8,24 @@ export default class PopupPresenter {
   #movie = null;
   #mainElement = null;
   #comments = null;
+  #commentsModel = null;
   #updateMovieData = null;
   #updateCommentData = null;
   #containerComponent = null;
   #infoComponent = null;
   #commentsComponent = null;
   #offset = null;
+  #getNewCommentId = null;
 
-  constructor(mainElement, movie, comments, updateMovieData, updateCommentData) {
+  constructor(mainElement, movie, comments, commentsModel, updateMovieData, updateCommentData, getNewCommentId) {
     this.#mainElement = mainElement;
     this.#movie = movie;
     this.#comments = comments;
+    this.#commentsModel = commentsModel;
+    this.#commentsModel.addObserver(this.#commentModelEventHandler);
     this.#updateMovieData = updateMovieData;
     this.#updateCommentData = updateCommentData;
+    this.#getNewCommentId = getNewCommentId;
 
     this.#containerComponent = new ContainerView();
     this.#infoComponent = new InfoView(this.#movie);
@@ -137,15 +142,30 @@ export default class PopupPresenter {
     this.init();
   };
 
+  #commentModelEventHandler = (updateType) => {
+    switch (updateType) {
+      case UPDATE_TYPES.MINOR:
+        this.init();
+        break;
+    }
+  };
+
   #formSubmitHandler = (comment) => {
     this.#offset = this.#containerComponent.element.scrollTop;
+    comment.id = this.#getNewCommentId();
+    this.#movie.comments.push(comment.id);
+    this.#comments.push(comment);
     this.#updateCommentData(
       USER_ACTIONS.ADD,
-      UPDATE_TYPES.MINOR,
-      comment
+      UPDATE_TYPES.PATCH,
+      {
+        movieData: this.#movie,
+        commentData: comment
+      }
     );
     this.init();
   };
+
 
   #deleteCommentHandler = (comment) => {
     this.#offset = this.#containerComponent.element.scrollTop;
@@ -153,8 +173,11 @@ export default class PopupPresenter {
     this.#comments = this.#comments.filter((item) => item.id !== comment.id);
     this.#updateCommentData(
       USER_ACTIONS.DELETE,
-      UPDATE_TYPES.MINOR,
-      comment
+      UPDATE_TYPES.PATCH,
+      {
+        movieData: this.#movie,
+        commentData: comment,
+      }
     );
     this.init();
   };

@@ -6,7 +6,7 @@ import he from 'he';
 const USERNAME = 'xXx_KEKSUS69_xXx';
 
 const DEFAULT_STATE = {
-  id: 0,
+  id: null,
   author: USERNAME,
   comment: '',
   date: dayjs().format(),
@@ -143,8 +143,6 @@ export default class CommentsView extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     if (evt.ctrlKey && evt.key === 'Enter') {
       if (this._state.userComment.emotion && this._state.userComment.comment) {
-        console.log('SUBMIT');
-        console.log(CommentsView.parseStateToComment(this._state.userComment));
         this._callback.formSubmit(CommentsView.parseStateToComment(this._state.userComment));
       }
     }
@@ -152,7 +150,6 @@ export default class CommentsView extends AbstractStatefulView {
 
   #deleteCommentHandler = (evt) => {
     if (evt.target.tagName === 'BUTTON') {
-      console.log(`COMMENT ${evt.target.id}`);
       const toBeDeleted = this.#comments.slice().find((comment) => comment.id === evt.target.id);
       this._callback.deleteComment(toBeDeleted);
     }

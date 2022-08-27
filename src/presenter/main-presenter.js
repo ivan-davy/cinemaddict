@@ -1,4 +1,4 @@
-import {render, remove} from '../framework/render';
+import {remove, render} from '../framework/render';
 import SortView from '../view/sort-view.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import MovieListView from '../view/movie-list-view.js';
@@ -95,8 +95,7 @@ export default class MainPresenter {
   #viewCommentActionHandler = (actionType, updateType, update) => {
     switch (actionType) {
       case USER_ACTIONS.ADD:
-        this.commentsModel.addComment(updateType, update);
-        break;
+        return this.commentsModel.addComment(updateType, update);
       case USER_ACTIONS.DELETE:
         this.commentsModel.deleteComment(updateType, update);
         break;
@@ -124,8 +123,11 @@ export default class MainPresenter {
   };
 
   #modelCommentEventHandler = (updateType, data) => {
+    const {movieData} = data;
     switch (updateType) {
-      case UPDATE_TYPES.MINOR:
+      case UPDATE_TYPES.PATCH:
+        //console.log(movieData);
+        this.mainMovieCardPresenters.get(movieData.id).init(movieData);
         this.#clearMovieLists();
         this.#renderMainMovieList();
         this.#renderTopRatedList();
@@ -165,7 +167,7 @@ export default class MainPresenter {
 
   #renderMovieCard = (movie, targetElement, cardPresentersGroup = this.mainMovieCardPresenters) => {
     const movieComments = this.comments.slice().filter((comment) => movie.comments.includes(comment.id));
-    const popupPresenter = new PopupPresenter(this.mainElement, movie, movieComments, this.#viewMovieActionHandler, this.#viewCommentActionHandler);
+    const popupPresenter = new PopupPresenter(this.mainElement, movie, movieComments, this.commentsModel, this.#viewMovieActionHandler, this.#viewCommentActionHandler, this.commentsModel.getNewId);
     const moviePresenter = new MoviePresenter(targetElement, popupPresenter, this.#viewMovieActionHandler);
     cardPresentersGroup.set(movie.id, moviePresenter);
     this.popupPresenters.set(movie.id, popupPresenter);

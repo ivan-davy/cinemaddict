@@ -10,18 +10,22 @@ export default class CommentsModel extends Observable {
   }
 
   addComment = (updateType, update) => {
-    update.id = Math.max(...this.#comments.slice().map((comment) => parseInt(comment.id, 10))) + 1;
+    const {commentData} = update;
+    //const updateId = String(Math.max(...this.#comments.slice().map((comment) => parseInt(comment.id, 10))) + 1);
+    //commentData.id = updateId;
 
     this.#comments = [
-      update,
       ...this.#comments,
+      commentData
     ];
 
     this._notify(updateType, update);
+    //return updateId;
   };
 
   deleteComment = (updateType, update) => {
-    const index = this.#comments.findIndex((comment) => comment.id === update.id);
+    const {commentData} = update;
+    const index = this.#comments.findIndex((comment) => comment.id === commentData.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting comment');
@@ -34,4 +38,6 @@ export default class CommentsModel extends Observable {
 
     this._notify(updateType, update); //?
   };
+
+  getNewId = () => String(Math.max(...this.#comments.slice().map((comment) => parseInt(comment.id, 10))) + 1);
 }
