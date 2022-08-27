@@ -25,12 +25,11 @@ export default class MainPresenter {
     this.commentsModel = commentsModel;
     this.filtersModel = filtersModel;
     this.moviesModel.addObserver(this.#modelMovieEventHandler);
-    //this.moviesModel.addObserver(this.#modelCommentEventHandler);
     this.commentsModel.addObserver(this.#modelCommentEventHandler);
     this.filtersModel.addObserver(this.#modelMovieEventHandler);
 
-    this.topRatedMovies = moviesModel.movies.slice().sort(sortRatingDown).slice(0, 2);
-    this.mostCommentedMovies = moviesModel.movies.slice().sort(sortCommentsDown).slice(0, 2);
+    this.topRatedMovies = null;
+    this.mostCommentedMovies = null;
     this.moviesShown = Math.min(this.movies.length, MOVIES_SHOWN_STEP);
     this.selectedSortType = SORT_TYPES.DEFAULT;
     this.selectedFilterType = FILTER_TYPES.ALL;
@@ -231,6 +230,7 @@ export default class MainPresenter {
   };
 
   #renderTopRatedList = () => {
+    this.topRatedMovies = this.moviesModel.movies.slice().sort(sortRatingDown).slice(0, 2);
     if (this.topRatedMovies.length) {
       this.topRatedComponent = new TopRatedView();
       render(this.topRatedComponent, this.movieListComponent.filmsElement);
@@ -241,6 +241,7 @@ export default class MainPresenter {
   };
 
   #renderMostCommentedList = () => {
+    this.mostCommentedMovies = this.moviesModel.movies.slice().sort(sortCommentsDown).slice(0, 2);
     if (this.mostCommentedMovies.length) {
       this.mostCommentedComponent = new MostCommentedView();
       render(this.mostCommentedComponent, this.movieListComponent.filmsElement);
