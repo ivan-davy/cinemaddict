@@ -25,6 +25,7 @@ export default class MainPresenter {
     this.commentsModel = commentsModel;
     this.filtersModel = filtersModel;
     this.moviesModel.addObserver(this.#modelMovieEventHandler);
+    //this.moviesModel.addObserver(this.#modelCommentEventHandler);
     this.commentsModel.addObserver(this.#modelCommentEventHandler);
     this.filtersModel.addObserver(this.#modelMovieEventHandler);
 
@@ -126,7 +127,6 @@ export default class MainPresenter {
   #modelCommentEventHandler = (updateType, data) => {
     switch (updateType) {
       case UPDATE_TYPES.MINOR:
-        console.log(1);
         this.#clearMovieLists();
         this.#renderMainMovieList();
         this.#renderTopRatedList();

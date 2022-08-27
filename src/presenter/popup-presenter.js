@@ -43,6 +43,9 @@ export default class PopupPresenter {
       remove(prevInfoComponent);
       remove(prevCommentsComponent);
 
+
+      this.#infoComponent = new InfoView(this.#movie);
+      this.#commentsComponent = new CommentsView(this.#comments);
       render(this.#containerComponent, document.querySelector('footer'), 'afterend');
       render(this.#infoComponent, this.#containerComponent.element);
       render(this.#commentsComponent, this.#containerComponent.element);
@@ -136,6 +139,8 @@ export default class PopupPresenter {
 
   #deleteCommentHandler = (comment) => {
     this.#offset = this.#containerComponent.element.scrollTop;
+    this.#movie.comments = this.#movie.comments.filter((item) => item !== comment.id);
+    this.#comments = this.#comments.filter((item) => item.id !== comment.id);
     this.#updateCommentData(
       USER_ACTIONS.DELETE,
       UPDATE_TYPES.MINOR,
