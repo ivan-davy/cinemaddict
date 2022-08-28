@@ -143,6 +143,8 @@ export default class MainPresenter {
     this.selectedSortType = sortType;
     this.#clearMovieLists({resetMoviesShownCount: true});
     this.#renderMainMovieList();
+    this.#renderTopRatedList();
+    this.#renderMostCommentedList();
   };
 
   #renderSort = () => {
