@@ -55,7 +55,6 @@ export default class MoviePresenter {
       this.#movie,
     );
     if (this.#popupPresenter.isPopupOpen()) {
-      this.#popupPresenter.init();
       this.#popupPresenter.offset = popupOffset;
     }
   };
@@ -69,7 +68,6 @@ export default class MoviePresenter {
       this.#movie,
     );
     if (this.#popupPresenter.isPopupOpen()) {
-      this.#popupPresenter.init();
       this.#popupPresenter.offset = popupOffset;
     }
   };
@@ -83,7 +81,6 @@ export default class MoviePresenter {
       this.#movie,
     );
     if (this.#popupPresenter.isPopupOpen()) {
-      this.#popupPresenter.init();
       this.#popupPresenter.offset = popupOffset;
     }
   };

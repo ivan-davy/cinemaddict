@@ -48,8 +48,8 @@ export default class MainPresenter {
   }
 
   init() {
-    const filmsWatched = 5;
-    const rankComponent = new RankView(filmsWatched);
+    const moviesWatched = movieFilters[FILTER_TYPES.WATCHED](this.moviesModel.movies).length;
+    const rankComponent = new RankView(moviesWatched);
     render(rankComponent, this.headerElement);
 
     this.#renderMainMovieList();
@@ -102,12 +102,13 @@ export default class MainPresenter {
     }
   };
 
-  #modelMovieEventHandler = (updateType, data) => {
+  #modelMovieEventHandler = (updateType, movieData) => {
     switch (updateType) {
-      case UPDATE_TYPES.PATCH:
-        this.mainMovieCardPresenters.get(data.id).init(data);
-        break;
       case UPDATE_TYPES.MINOR:
+        this.mainMovieCardPresenters.get(movieData.id).init(movieData);
+        if (this.popupPresenters.get(movieData.id).isPopupOpen()){
+          this.popupPresenters.get(movieData.id).init();
+        }
         this.#clearMovieLists();
         this.#renderMainMovieList();
         this.#renderTopRatedList();
@@ -125,9 +126,9 @@ export default class MainPresenter {
   #modelCommentEventHandler = (updateType, data) => {
     const {movieData} = data;
     switch (updateType) {
-      case UPDATE_TYPES.PATCH:
-        //console.log(movieData);
+      case UPDATE_TYPES.MINOR:
         this.mainMovieCardPresenters.get(movieData.id).init(movieData);
+        this.popupPresenters.get(movieData.id).init();
         this.#clearMovieLists();
         this.#renderMainMovieList();
         this.#renderTopRatedList();

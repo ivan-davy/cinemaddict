@@ -51,7 +51,7 @@ export default class FilterPresenter {
     const prevFilterComponent = this.#filterComponent;
 
     this.#filterComponent = new FilterView(filters, this.#filtersModel.filter);
-    this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
+    this.#filterComponent.setFilterTypeChangeHandler(this.#filterTypeChangeHandler);
 
     if (prevFilterComponent === null) {
       render(this.#filterComponent, this.#filterContainer);
@@ -66,7 +66,7 @@ export default class FilterPresenter {
     this.init();
   };
 
-  #handleFilterTypeChange = (filterType) => {
+  #filterTypeChangeHandler = (filterType) => {
     if (this.#filtersModel.filter === filterType) {
       return;
     }

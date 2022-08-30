@@ -11,8 +11,6 @@ export default class CommentsModel extends Observable {
 
   addComment = (updateType, update) => {
     const {commentData} = update;
-    //const updateId = String(Math.max(...this.#comments.slice().map((comment) => parseInt(comment.id, 10))) + 1);
-    //commentData.id = updateId;
 
     this.#comments = [
       ...this.#comments,
@@ -20,7 +18,6 @@ export default class CommentsModel extends Observable {
     ];
 
     this._notify(updateType, update);
-    //return updateId;
   };
 
   deleteComment = (updateType, update) => {
@@ -36,7 +33,7 @@ export default class CommentsModel extends Observable {
       ...this.#comments.slice(index + 1),
     ];
 
-    this._notify(updateType, update); //?
+    this._notify(updateType, update);
   };
 
   getNewId = () => String(Math.max(...this.#comments.slice().map((comment) => parseInt(comment.id, 10))) + 1);

@@ -3,7 +3,7 @@ import Observable from '../framework/observable';
 
 
 export default class MoviesModel extends Observable {
-  #movies = Array.from({length: 6}, generateMovie);
+  #movies = Array.from({length: 16}, generateMovie);
 
   get movies() {
     return this.#movies;

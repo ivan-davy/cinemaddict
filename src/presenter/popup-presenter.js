@@ -22,7 +22,7 @@ export default class PopupPresenter {
     this.#movie = movie;
     this.#comments = comments;
     this.#commentsModel = commentsModel;
-    this.#commentsModel.addObserver(this.#commentModelEventHandler);
+    //this.#commentsModel.addObserver(this.#commentModelEventHandler);
     this.#updateMovieData = updateMovieData;
     this.#updateCommentData = updateCommentData;
     this.#getNewCommentId = getNewCommentId;
@@ -113,11 +113,9 @@ export default class PopupPresenter {
     this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
     this.#updateMovieData(
       USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.PATCH,
+      UPDATE_TYPES.MINOR,
       this.#movie,
     );
-    this.init();
-
   };
 
   #historyClickHandler = () => {
@@ -125,10 +123,9 @@ export default class PopupPresenter {
     this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
     this.#updateMovieData(
       USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.PATCH,
+      UPDATE_TYPES.MINOR,
       this.#movie,
     );
-    this.init();
   };
 
   #favoriteClickHandler = () => {
@@ -136,50 +133,47 @@ export default class PopupPresenter {
     this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
     this.#updateMovieData(
       USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.PATCH,
+      UPDATE_TYPES.MINOR,
       this.#movie,
     );
-    this.init();
-  };
-
-  #commentModelEventHandler = (updateType) => {
-    switch (updateType) {
-      case UPDATE_TYPES.MINOR:
-        this.init();
-        break;
-    }
   };
 
   #formSubmitHandler = (comment) => {
     this.#offset = this.#containerComponent.element.scrollTop;
     comment.id = this.#getNewCommentId();
     this.#movie.comments.push(comment.id);
-    this.#comments.push(comment);
     this.#updateCommentData(
       USER_ACTIONS.ADD,
-      UPDATE_TYPES.PATCH,
+      UPDATE_TYPES.MINOR,
       {
         movieData: this.#movie,
         commentData: comment
       }
     );
-    this.init();
+    this.#updateMovieData(
+      USER_ACTIONS.UPDATE,
+      UPDATE_TYPES.MINOR,
+      this.#movie,
+    );
   };
 
 
   #deleteCommentHandler = (comment) => {
     this.#offset = this.#containerComponent.element.scrollTop;
     this.#movie.comments = this.#movie.comments.filter((item) => item !== comment.id);
-    this.#comments = this.#comments.filter((item) => item.id !== comment.id);
     this.#updateCommentData(
       USER_ACTIONS.DELETE,
-      UPDATE_TYPES.PATCH,
+      UPDATE_TYPES.MINOR,
       {
         movieData: this.#movie,
         commentData: comment,
       }
     );
-    this.init();
+    this.#updateMovieData(
+      USER_ACTIONS.UPDATE,
+      UPDATE_TYPES.MINOR,
+      this.#movie,
+    );
   };
 }
 
