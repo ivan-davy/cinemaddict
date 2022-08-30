@@ -22,7 +22,7 @@ export default class PopupPresenter {
     this.#movie = movie;
     this.#comments = comments;
     this.#commentsModel = commentsModel;
-    //this.#commentsModel.addObserver(this.#commentModelEventHandler);
+
     this.#updateMovieData = updateMovieData;
     this.#updateCommentData = updateCommentData;
     this.#getNewCommentId = getNewCommentId;
