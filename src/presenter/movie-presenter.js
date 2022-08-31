@@ -47,41 +47,29 @@ export default class MoviePresenter {
   };
 
   #watchlistClickHandler = () => {
-    const popupOffset = this.#popupPresenter.offset;
     this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
     this.#updateData(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
       this.#movie,
     );
-    if (this.#popupPresenter.isPopupOpen()) {
-      this.#popupPresenter.offset = popupOffset;
-    }
   };
 
   #historyClickHandler = () => {
-    const popupOffset = this.#popupPresenter.offset;
     this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
     this.#updateData(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
       this.#movie,
     );
-    if (this.#popupPresenter.isPopupOpen()) {
-      this.#popupPresenter.offset = popupOffset;
-    }
   };
 
   #favoriteClickHandler = () => {
-    const popupOffset = this.#popupPresenter.offset;
     this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
     this.#updateData(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
       this.#movie,
     );
-    if (this.#popupPresenter.isPopupOpen()) {
-      this.#popupPresenter.offset = popupOffset;
-    }
   };
 }

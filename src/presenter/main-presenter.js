@@ -128,7 +128,7 @@ export default class MainPresenter {
     switch (updateType) {
       case UPDATE_TYPES.MINOR:
         this.mainMovieCardPresenters.get(movieData.id).init(movieData);
-        this.popupPresenters.get(movieData.id).init();
+        this.popupPresenters.get(movieData.id).init(movieData.comments);
         this.#clearMovieLists();
         this.#renderMainMovieList();
         this.#renderTopRatedList();
@@ -169,8 +169,7 @@ export default class MainPresenter {
   };
 
   #renderMovieCard = (movie, targetElement, cardPresentersGroup = this.mainMovieCardPresenters) => {
-    const movieComments = this.comments.slice().filter((comment) => movie.comments.includes(comment.id));
-    const popupPresenter = new PopupPresenter(this.mainElement, movie, movieComments, this.commentsModel, this.#viewMovieActionHandler, this.#viewCommentActionHandler, this.commentsModel.getNewId);
+    const popupPresenter = new PopupPresenter(this.mainElement, movie, this.commentsModel, this.#viewMovieActionHandler, this.#viewCommentActionHandler, this.commentsModel.getNewId);
     const moviePresenter = new MoviePresenter(targetElement, popupPresenter, this.#viewMovieActionHandler);
     cardPresentersGroup.set(movie.id, moviePresenter);
     this.popupPresenters.set(movie.id, popupPresenter);

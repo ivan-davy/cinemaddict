@@ -10,18 +10,21 @@ export default class CommentsModel extends Observable {
   }
 
   addComment = (updateType, update) => {
-    const {commentData} = update;
+    const {movieData, commentData} = update;
+    commentData.id = this.getNewId();
+    movieData.comments.push(commentData.id);
 
     this.#comments = [
       ...this.#comments,
       commentData
     ];
 
-    this._notify(updateType, update);
+    this._notify(updateType, {movieData, commentData});
   };
 
   deleteComment = (updateType, update) => {
-    const {commentData} = update;
+    const {movieData, commentData} = update;
+    movieData.comments = movieData.comments.filter((item) => item !== commentData.id);
     const index = this.#comments.findIndex((comment) => comment.id === commentData.id);
 
     if (index === -1) {
@@ -33,7 +36,7 @@ export default class CommentsModel extends Observable {
       ...this.#comments.slice(index + 1),
     ];
 
-    this._notify(updateType, update);
+    this._notify(updateType, {movieData, commentData});
   };
 
   getNewId = () => String(Math.max(...this.#comments.slice().map((comment) => parseInt(comment.id, 10))) + 1);

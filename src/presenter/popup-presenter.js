@@ -14,14 +14,13 @@ export default class PopupPresenter {
   #containerComponent = null;
   #infoComponent = null;
   #commentsComponent = null;
-  #offset = null;
   #getNewCommentId = null;
 
-  constructor(mainElement, movie, comments, commentsModel, updateMovieData, updateCommentData, getNewCommentId) {
+  constructor(mainElement, movie, commentsModel, updateMovieData, updateCommentData, getNewCommentId) {
     this.#mainElement = mainElement;
     this.#movie = movie;
-    this.#comments = comments;
     this.#commentsModel = commentsModel;
+    this.#comments = this.#commentsModel.comments.slice().filter((comment) => this.#movie.comments.includes(comment.id));
 
     this.#updateMovieData = updateMovieData;
     this.#updateCommentData = updateCommentData;
@@ -33,6 +32,7 @@ export default class PopupPresenter {
   }
 
   init() {
+    this.#comments = this.#commentsModel.comments.slice().filter((comment) => this.#movie.comments.includes(comment.id));
     if (this.#containerComponent.isPopupOpen()) {
       this.#commentsComponent.unsetFormSubmitHandler();
       this.#containerComponent.closeAllPopups();
@@ -62,8 +62,6 @@ export default class PopupPresenter {
       this.#infoComponent.setWatchlistClickHandler(this.#watchlistClickHandler);
       this.#infoComponent.setHistoryClickHandler(this.#historyClickHandler);
       this.#infoComponent.setFavoriteClickHandler(this.#favoriteClickHandler);
-
-      this.#containerComponent.element.scrollTo(0, this.#offset);
       return;
     }
 
@@ -83,16 +81,6 @@ export default class PopupPresenter {
 
   isPopupOpen = () => this.#containerComponent.isPopupOpen();
 
-  get offset() {
-    this.#offset = this.#containerComponent.element.scrollTop;
-    return this.#offset;
-  }
-
-  set offset(offset) {
-    this.#containerComponent.element.scrollTo(0, offset);
-    this.#offset = offset;
-  }
-
   #closeKeydownHandler = (evt) => {
     if (evt.key === 'Escape') {
       this.destroy();
@@ -109,7 +97,6 @@ export default class PopupPresenter {
   };
 
   #watchlistClickHandler = () => {
-    this.#offset = this.#containerComponent.element.scrollTop;
     this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
     this.#updateMovieData(
       USER_ACTIONS.UPDATE,
@@ -119,7 +106,6 @@ export default class PopupPresenter {
   };
 
   #historyClickHandler = () => {
-    this.#offset = this.#containerComponent.element.scrollTop;
     this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
     this.#updateMovieData(
       USER_ACTIONS.UPDATE,
@@ -129,7 +115,6 @@ export default class PopupPresenter {
   };
 
   #favoriteClickHandler = () => {
-    this.#offset = this.#containerComponent.element.scrollTop;
     this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
     this.#updateMovieData(
       USER_ACTIONS.UPDATE,
@@ -139,9 +124,6 @@ export default class PopupPresenter {
   };
 
   #formSubmitHandler = (comment) => {
-    this.#offset = this.#containerComponent.element.scrollTop;
-    comment.id = this.#getNewCommentId();
-    this.#movie.comments.push(comment.id);
     this.#updateCommentData(
       USER_ACTIONS.ADD,
       UPDATE_TYPES.MINOR,
@@ -150,17 +132,10 @@ export default class PopupPresenter {
         commentData: comment
       }
     );
-    this.#updateMovieData(
-      USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.MINOR,
-      this.#movie,
-    );
   };
 
 
   #deleteCommentHandler = (comment) => {
-    this.#offset = this.#containerComponent.element.scrollTop;
-    this.#movie.comments = this.#movie.comments.filter((item) => item !== comment.id);
     this.#updateCommentData(
       USER_ACTIONS.DELETE,
       UPDATE_TYPES.MINOR,
@@ -168,11 +143,6 @@ export default class PopupPresenter {
         movieData: this.#movie,
         commentData: comment,
       }
-    );
-    this.#updateMovieData(
-      USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.MINOR,
-      this.#movie,
     );
   };
 }
