@@ -5,15 +5,13 @@ import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates';
 export default class MoviePresenter {
   #movieContainerElement = null;
   #movie = null;
-  #updateData = null;
+  #updateMovieDataHandler = null;
   #movieCardComponent = null;
   #popupPresenter = null;
 
-  constructor(movieContainerElement, popupPresenter, updateData) {
+  constructor(movieContainerElement, popupPresenter, updateMovieDataHandler) {
     this.#movieContainerElement = movieContainerElement;
-
-    this.#updateData = updateData;
-
+    this.#updateMovieDataHandler = updateMovieDataHandler;
     this.#popupPresenter = popupPresenter;
   }
 
@@ -48,28 +46,37 @@ export default class MoviePresenter {
 
   #watchlistClickHandler = () => {
     this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
-    this.#updateData(
+    this.#updateMovieDataHandler(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
-      this.#movie,
+      {
+        movieData: this.#movie,
+        popupOffsetY: this.#popupPresenter.getPopupOffsetY()
+      },
     );
   };
 
   #historyClickHandler = () => {
     this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
-    this.#updateData(
+    this.#updateMovieDataHandler(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
-      this.#movie,
+      {
+        movieData: this.#movie,
+        popupOffsetY: this.#popupPresenter.getPopupOffsetY()
+      },
     );
   };
 
   #favoriteClickHandler = () => {
     this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
-    this.#updateData(
+    this.#updateMovieDataHandler(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
-      this.#movie,
+      {
+        movieData: this.#movie,
+        popupOffsetY: this.#popupPresenter.getPopupOffsetY()
+      },
     );
   };
 }

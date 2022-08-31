@@ -103,10 +103,26 @@ export default class MainPresenter {
   };
 
   #modelMovieEventHandler = (updateType, data) => {
+    let presenterMain = null;
+    let presenterTopRated = null;
+    let presenterMostCommented = null;
     const {movieData, popupOffsetY} = data;
+    if (movieData) {
+      presenterMain = this.mainMovieCardPresenters.get(movieData.id);
+      presenterTopRated = this.topRatedMovieCardsPresenters.get(movieData.id);
+      presenterMostCommented = this.mainMovieCardPresenters.get(movieData.id);
+    }
     switch (updateType) {
       case UPDATE_TYPES.MINOR:
-        this.mainMovieCardPresenters.get(movieData.id).init(movieData);
+        if (presenterMain) {
+          presenterMain.init(movieData);
+        }
+        if (presenterTopRated) {
+          presenterTopRated.init(movieData);
+        }
+        if (presenterMostCommented) {
+          presenterMostCommented.init(movieData);
+        }
         if (this.popupPresenters.get(movieData.id).isPopupOpen()){
           this.popupPresenters.get(movieData.id).init(popupOffsetY);
         }
@@ -126,9 +142,20 @@ export default class MainPresenter {
 
   #modelCommentEventHandler = (updateType, data) => {
     const {movieData, popupOffsetY} = data;
+    const presenterMain = this.mainMovieCardPresenters.get(movieData.id);
+    const presenterTopRated = this.topRatedMovieCardsPresenters.get(movieData.id);
+    const presenterMostCommented = this.mainMovieCardPresenters.get(movieData.id);
     switch (updateType) {
       case UPDATE_TYPES.MINOR:
-        this.mainMovieCardPresenters.get(movieData.id).init(movieData);
+        if (presenterMain) {
+          presenterMain.init(movieData);
+        }
+        if (presenterTopRated) {
+          presenterTopRated.init(movieData);
+        }
+        if (presenterMostCommented) {
+          presenterMostCommented.init(movieData);
+        }
         this.popupPresenters.get(movieData.id).init(popupOffsetY);
         this.#clearMovieLists();
         this.#renderMainMovieList();

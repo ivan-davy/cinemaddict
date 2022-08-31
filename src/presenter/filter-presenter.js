@@ -15,8 +15,8 @@ export default class FilterPresenter {
     this.#filtersModel = filtersModel;
     this.#moviesModel = moviesModel;
 
-    this.#moviesModel.addObserver(this.#handleModelEvent);
-    this.#filtersModel.addObserver(this.#handleModelEvent);
+    this.#moviesModel.addObserver(this.#modelEventHandler);
+    this.#filtersModel.addObserver(this.#modelEventHandler);
   }
 
   get filters() {
@@ -62,7 +62,7 @@ export default class FilterPresenter {
     remove(prevFilterComponent);
   };
 
-  #handleModelEvent = () => {
+  #modelEventHandler = () => {
     this.init();
   };
 

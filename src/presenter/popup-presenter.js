@@ -9,21 +9,21 @@ export default class PopupPresenter {
   #mainElement = null;
   #comments = null;
   #commentsModel = null;
-  #updateMovieData = null;
-  #updateCommentData = null;
+  #updateMovieDataHandler = null;
+  #updateCommentDataHandler = null;
   #containerComponent = null;
   #infoComponent = null;
   #commentsComponent = null;
   #getNewCommentId = null;
 
-  constructor(mainElement, movie, commentsModel, updateMovieData, updateCommentData, getNewCommentId) {
+  constructor(mainElement, movie, commentsModel, updateMovieDataHandler, updateCommentDataHandler, getNewCommentId) {
     this.#mainElement = mainElement;
     this.#movie = movie;
     this.#commentsModel = commentsModel;
     this.#comments = this.#commentsModel.comments.slice().filter((comment) => this.#movie.comments.includes(comment.id));
 
-    this.#updateMovieData = updateMovieData;
-    this.#updateCommentData = updateCommentData;
+    this.#updateMovieDataHandler = updateMovieDataHandler;
+    this.#updateCommentDataHandler = updateCommentDataHandler;
     this.#getNewCommentId = getNewCommentId;
 
     this.#containerComponent = new ContainerView();
@@ -82,6 +82,8 @@ export default class PopupPresenter {
 
   isPopupOpen = () => this.#containerComponent.isPopupOpen();
 
+  getPopupOffsetY = () => this.#containerComponent.element.scrollTop;
+
   #closeKeydownHandler = (evt) => {
     if (evt.key === 'Escape') {
       this.destroy();
@@ -99,7 +101,7 @@ export default class PopupPresenter {
 
   #watchlistClickHandler = () => {
     this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
-    this.#updateMovieData(
+    this.#updateMovieDataHandler(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
       {
@@ -111,7 +113,7 @@ export default class PopupPresenter {
 
   #historyClickHandler = () => {
     this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
-    this.#updateMovieData(
+    this.#updateMovieDataHandler(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
       {
@@ -123,7 +125,7 @@ export default class PopupPresenter {
 
   #favoriteClickHandler = () => {
     this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
-    this.#updateMovieData(
+    this.#updateMovieDataHandler(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
       {
@@ -134,7 +136,7 @@ export default class PopupPresenter {
   };
 
   #formSubmitHandler = (comment) => {
-    this.#updateCommentData(
+    this.#updateCommentDataHandler(
       USER_ACTIONS.ADD,
       UPDATE_TYPES.MINOR,
       {
@@ -146,7 +148,7 @@ export default class PopupPresenter {
   };
 
   #deleteCommentHandler = (comment) => {
-    this.#updateCommentData(
+    this.#updateCommentDataHandler(
       USER_ACTIONS.DELETE,
       UPDATE_TYPES.MINOR,
       {
