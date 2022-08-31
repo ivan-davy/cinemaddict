@@ -4,6 +4,15 @@ import Observable from '../framework/observable';
 
 export default class MoviesModel extends Observable {
   #movies = Array.from({length: 16}, generateMovie);
+  #moviesApiService = null;
+
+  constructor(moviesApiService) {
+    super();
+    this.#moviesApiService = moviesApiService;
+    this.#moviesApiService.movies.then((movies) => {
+      console.log(movies);
+    });
+  }
 
   get movies() {
     return this.#movies;
