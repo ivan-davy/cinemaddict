@@ -1,9 +1,23 @@
-import {generateComment} from '../mock/comment';
 import Observable from '../framework/observable';
 
 
 export default class CommentsModel extends Observable {
-  #comments = Array.from({length: 25}, generateComment);
+  #comments = [];
+  #commentsApiService = null;
+
+  constructor(commentsApiService) {
+    super();
+    this.#commentsApiService = commentsApiService;
+  }
+
+  init = async () => {
+    try {
+      const comments = await this.#commentsApiService.comments;
+      this.#comments = comments.map(this.#adaptToClient);
+    } catch(err) {
+      this.#comments = [];
+    }
+  };
 
   get comments() {
     return this.#comments;
@@ -40,4 +54,6 @@ export default class CommentsModel extends Observable {
   };
 
   getNewId = () => String(Math.max(...this.#comments.slice().map((comment) => parseInt(comment.id, 10))) + 1);
+
+  #adaptToClient = (comment) => ({...comment});
 }

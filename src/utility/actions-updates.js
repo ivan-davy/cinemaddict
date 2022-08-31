@@ -5,9 +5,9 @@ const USER_ACTIONS = {
 };
 
 const UPDATE_TYPES = {
-  PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
 export {UPDATE_TYPES, USER_ACTIONS};

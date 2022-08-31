@@ -10,8 +10,10 @@ import PopupPresenter from './popup-presenter';
 import {SORT_TYPES, sortCommentsDown, sortDateDown, sortRatingDown} from '../utility/sort-logic';
 import RankView from '../view/rank-view';
 import MovieDatabaseStatsView from '../view/movie-database-stats-view';
+import LoadingView from '../view/loading-view';
 import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates';
 import {FILTER_TYPES, movieFilters} from '../utility/filter-logic';
+import FilterPresenter from './filter-presenter';
 
 const MOVIES_SHOWN_STEP = 5;
 
@@ -30,17 +32,20 @@ export default class MainPresenter {
 
     this.topRatedMovies = null;
     this.mostCommentedMovies = null;
-    this.moviesShown = Math.min(this.movies.length, MOVIES_SHOWN_STEP);
+    this.moviesShown = null;
     this.selectedSortType = SORT_TYPES.DEFAULT;
     this.selectedFilterType = FILTER_TYPES.ALL;
+    this.isLoading = true;
 
     this.movieListComponent = new MovieListView();
+    this.loadingComponent = new LoadingView();
     this.movieListEmptyComponent = null;
     this.sortComponent = null;
     this.showMoreButtonComponent = null;
     this.topRatedComponent = null;
     this.mostCommentedComponent = null;
 
+    this.filterPresenter = new FilterPresenter(siteElements, filtersModel, moviesModel);
     this.mainMovieCardPresenters = new Map();
     this.topRatedMovieCardsPresenters = new Map();
     this.mostCommentedMovieCardsPresenters = new Map();
@@ -48,14 +53,10 @@ export default class MainPresenter {
   }
 
   init() {
-    const moviesWatched = movieFilters[FILTER_TYPES.WATCHED](this.moviesModel.movies).length;
-    const rankComponent = new RankView(moviesWatched);
-    render(rankComponent, this.headerElement);
-
+    this.#clearMovieLists();
     this.#renderMainMovieList();
     this.#renderTopRatedList();
     this.#renderMostCommentedList();
-    render(new MovieDatabaseStatsView(this.movies.length), this.footerElement.querySelector('.footer__statistics'));
   }
 
   get movies() {
@@ -66,9 +67,9 @@ export default class MainPresenter {
 
     switch (this.selectedSortType) {
       case SORT_TYPES.DATE_DOWN:
-        return filteredMovies.sort(sortDateDown);
+        return filteredMovies.slice().sort(sortDateDown);
       case SORT_TYPES.RATING_DOWN:
-        return filteredMovies.sort(sortRatingDown);
+        return filteredMovies.slice().sort(sortRatingDown);
     }
 
     return filteredMovies;
@@ -106,11 +107,16 @@ export default class MainPresenter {
     let presenterMain = null;
     let presenterTopRated = null;
     let presenterMostCommented = null;
-    const {movieData, popupOffsetY} = data;
-    if (movieData) {
-      presenterMain = this.mainMovieCardPresenters.get(movieData.id);
-      presenterTopRated = this.topRatedMovieCardsPresenters.get(movieData.id);
-      presenterMostCommented = this.mainMovieCardPresenters.get(movieData.id);
+    let movieData = null;
+    let popupOffsetY = null;
+    if (data) {
+      movieData = data.movieData;
+      popupOffsetY = data.popupOffsetY;
+      if (movieData) {
+        presenterMain = this.mainMovieCardPresenters.get(movieData.id);
+        presenterTopRated = this.topRatedMovieCardsPresenters.get(movieData.id);
+        presenterMostCommented = this.mainMovieCardPresenters.get(movieData.id);
+      }
     }
     switch (updateType) {
       case UPDATE_TYPES.MINOR:
@@ -123,8 +129,12 @@ export default class MainPresenter {
         if (presenterMostCommented) {
           presenterMostCommented.init(movieData);
         }
-        if (this.popupPresenters.get(movieData.id).isPopupOpen()){
-          this.popupPresenters.get(movieData.id).init(popupOffsetY);
+        if (movieData) {
+          {
+            if (this.popupPresenters.get(movieData.id).isPopupOpen()) {
+              this.popupPresenters.get(movieData.id).init(popupOffsetY);
+            }
+          }
         }
         this.#clearMovieLists();
         this.#renderMainMovieList();
@@ -133,6 +143,17 @@ export default class MainPresenter {
         break;
       case UPDATE_TYPES.MAJOR:
         this.#clearMovieLists({resetMoviesShownCount: true, resetSortType: true});
+        this.#renderMainMovieList();
+        this.#renderTopRatedList();
+        this.#renderMostCommentedList();
+        break;
+      case UPDATE_TYPES.INIT:
+        this.isLoading = false;
+        render(new RankView(movieFilters[FILTER_TYPES.WATCHED](this.moviesModel.movies).length), this.headerElement);
+        render(new MovieDatabaseStatsView(this.movies.length), this.footerElement.querySelector('.footer__statistics'));
+        this.filterPresenter.init();
+        this.moviesShown = Math.min(this.movies.length, MOVIES_SHOWN_STEP);
+        remove(this.loadingComponent);
         this.#renderMainMovieList();
         this.#renderTopRatedList();
         this.#renderMostCommentedList();
@@ -176,6 +197,10 @@ export default class MainPresenter {
     this.#renderMostCommentedList();
   };
 
+  #renderLoading = () => {
+    render(this.loadingComponent, this.mainElement);
+  };
+
   #renderSort = () => {
     this.sortComponent = new SortView(this.selectedSortType);
     render(this.sortComponent, this.mainElement);
@@ -183,6 +208,10 @@ export default class MainPresenter {
   };
 
   #renderMainMovieList = () => {
+    if (this.isLoading) {
+      this.#renderLoading();
+      return;
+    }
     this.#renderSort();
     render(this.movieListComponent, this.mainElement);
     if (this.movies.length === 0) {
@@ -212,6 +241,8 @@ export default class MainPresenter {
     this.showMoreButtonComponent = new ShowMoreButtonView();
     render(this.showMoreButtonComponent, this.movieListComponent.listElement);
     this.showMoreButtonComponent.setClickHandler(this.#showMoreClickHandler);
+
+    remove(this.loadingComponent);
   };
 
   #showMoreClickHandler = () => {
