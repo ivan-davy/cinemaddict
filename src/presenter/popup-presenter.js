@@ -31,7 +31,7 @@ export default class PopupPresenter {
     this.#commentsComponent = new CommentsView(this.#comments);
   }
 
-  init() {
+  init(offsetY = 0) {
     this.#comments = this.#commentsModel.comments.slice().filter((comment) => this.#movie.comments.includes(comment.id));
     if (this.#containerComponent.isPopupOpen()) {
       this.#commentsComponent.unsetFormSubmitHandler();
@@ -48,7 +48,6 @@ export default class PopupPresenter {
       remove(prevInfoComponent);
       remove(prevCommentsComponent);
 
-
       this.#infoComponent = new InfoView(this.#movie);
       this.#commentsComponent = new CommentsView(this.#comments);
       render(this.#containerComponent, document.querySelector('footer'), 'afterend');
@@ -62,6 +61,8 @@ export default class PopupPresenter {
       this.#infoComponent.setWatchlistClickHandler(this.#watchlistClickHandler);
       this.#infoComponent.setHistoryClickHandler(this.#historyClickHandler);
       this.#infoComponent.setFavoriteClickHandler(this.#favoriteClickHandler);
+
+      this.#containerComponent.element.scrollTo(0, offsetY);
       return;
     }
 
@@ -101,7 +102,10 @@ export default class PopupPresenter {
     this.#updateMovieData(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
-      this.#movie,
+      {
+        movieData: this.#movie,
+        popupOffsetY: this.#containerComponent.element.scrollTop
+      }
     );
   };
 
@@ -110,7 +114,10 @@ export default class PopupPresenter {
     this.#updateMovieData(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
-      this.#movie,
+      {
+        movieData: this.#movie,
+        popupOffsetY: this.#containerComponent.element.scrollTop
+      }
     );
   };
 
@@ -119,7 +126,10 @@ export default class PopupPresenter {
     this.#updateMovieData(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
-      this.#movie,
+      {
+        movieData: this.#movie,
+        popupOffsetY: this.#containerComponent.element.scrollTop
+      }
     );
   };
 
@@ -129,11 +139,11 @@ export default class PopupPresenter {
       UPDATE_TYPES.MINOR,
       {
         movieData: this.#movie,
-        commentData: comment
-      }
+        commentData: comment,
+        popupOffsetY: this.#containerComponent.element.scrollTop
+      },
     );
   };
-
 
   #deleteCommentHandler = (comment) => {
     this.#updateCommentData(
@@ -142,7 +152,8 @@ export default class PopupPresenter {
       {
         movieData: this.#movie,
         commentData: comment,
-      }
+        popupOffsetY: this.#containerComponent.element.scrollTop
+      },
     );
   };
 }

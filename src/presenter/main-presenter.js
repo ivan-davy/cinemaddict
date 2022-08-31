@@ -102,12 +102,13 @@ export default class MainPresenter {
     }
   };
 
-  #modelMovieEventHandler = (updateType, movieData) => {
+  #modelMovieEventHandler = (updateType, data) => {
+    const {movieData, popupOffsetY} = data;
     switch (updateType) {
       case UPDATE_TYPES.MINOR:
         this.mainMovieCardPresenters.get(movieData.id).init(movieData);
         if (this.popupPresenters.get(movieData.id).isPopupOpen()){
-          this.popupPresenters.get(movieData.id).init();
+          this.popupPresenters.get(movieData.id).init(popupOffsetY);
         }
         this.#clearMovieLists();
         this.#renderMainMovieList();
@@ -124,11 +125,11 @@ export default class MainPresenter {
   };
 
   #modelCommentEventHandler = (updateType, data) => {
-    const {movieData} = data;
+    const {movieData, popupOffsetY} = data;
     switch (updateType) {
       case UPDATE_TYPES.MINOR:
         this.mainMovieCardPresenters.get(movieData.id).init(movieData);
-        this.popupPresenters.get(movieData.id).init(movieData.comments);
+        this.popupPresenters.get(movieData.id).init(popupOffsetY);
         this.#clearMovieLists();
         this.#renderMainMovieList();
         this.#renderTopRatedList();
