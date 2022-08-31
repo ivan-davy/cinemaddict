@@ -77,6 +77,7 @@ const createCommentsTemplate = (commentStates, userCommentState) => {
 
 export default class CommentsView extends AbstractStatefulView {
   #comments = null;
+
   constructor(comments) {
     super();
     this.#comments = comments.slice();

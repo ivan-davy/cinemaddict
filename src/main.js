@@ -20,7 +20,6 @@ const filtersModel = new FiltersModel;
 const mainPresenter = new MainPresenter(siteElements, moviesModel, commentsModel, filtersModel);
 
 moviesModel.init();
-//commentsModel.init();
 mainPresenter.init();
 
 

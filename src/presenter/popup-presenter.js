@@ -14,17 +14,16 @@ export default class PopupPresenter {
   #containerComponent = null;
   #infoComponent = null;
   #commentsComponent = null;
-  #getNewCommentId = null;
 
-  constructor(mainElement, movie, commentsModel, updateMovieDataHandler, updateCommentDataHandler, getNewCommentId) {
+  constructor(mainElement, movie, commentsModel, updateMovieDataHandler, updateCommentDataHandler) {
     this.#mainElement = mainElement;
     this.#movie = movie;
-    this.#commentsModel = commentsModel;
-    this.#comments = this.#commentsModel.comments.slice().filter((comment) => this.#movie.comments.includes(comment.id));
 
     this.#updateMovieDataHandler = updateMovieDataHandler;
     this.#updateCommentDataHandler = updateCommentDataHandler;
-    this.#getNewCommentId = getNewCommentId;
+
+    this.#commentsModel = commentsModel;
+    this.#comments = commentsModel.getComments(this.#movie.id);
 
     this.#containerComponent = new ContainerView();
     this.#infoComponent = new InfoView(this.#movie);
@@ -32,12 +31,13 @@ export default class PopupPresenter {
   }
 
   init(offsetY = 0) {
-    this.#comments = this.#commentsModel.comments.slice().filter((comment) => this.#movie.comments.includes(comment.id));
     if (this.#containerComponent.isPopupOpen()) {
       this.#commentsComponent.unsetFormSubmitHandler();
       this.#containerComponent.closeAllPopups();
       this.#containerComponent.allowOverflow(this.#mainElement);
     }
+
+    this.#comments = this.#commentsModel.getComments(this.#movie.id);
     const prevInfoComponent = this.#infoComponent;
     const prevCommentsComponent = this.#commentsComponent;
     this.#infoComponent = new InfoView(this.#movie);

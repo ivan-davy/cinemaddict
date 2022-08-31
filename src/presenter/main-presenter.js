@@ -76,7 +76,11 @@ export default class MainPresenter {
   }
 
   get comments() {
-    return this.commentsModel.comments;
+    const comments = [];
+    for (const movie in this.moviesModel.movies) {
+      comments.push.getComments(movie);
+    }
+    return comments;
   }
 
   #viewMovieActionHandler = (actionType, updateType, update) => {

@@ -10,16 +10,17 @@ export default class CommentsModel extends Observable {
     this.#commentsApiService = commentsApiService;
   }
 
-  init = async () => {
+  init = async (movieId) => {
     try {
-      const comments = await this.#commentsApiService.comments;
+      const comments = await this.#commentsApiService.getComments(movieId);
       this.#comments = comments.map(this.#adaptToClient);
     } catch(err) {
       this.#comments = [];
     }
   };
 
-  get comments() {
+  getComments(movieId) {
+    this.init(movieId);
     return this.#comments;
   }
 
