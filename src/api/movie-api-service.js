@@ -12,7 +12,7 @@ export default class MovieApiService extends ApiService {
     const response = await this._load({
       url: `movies/${movie.id}`,
       method: HTTP_METHODS.PUT,
-      body: JSON.stringify(this.#adaptToServer(movie)),
+      body: JSON.stringify(this.#adaptMovieToServer(movie)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
@@ -21,7 +21,7 @@ export default class MovieApiService extends ApiService {
     return parsedResponse;
   };
 
-  #adaptToServer = (movie) => {
+  #adaptMovieToServer = (movie) => {
     const adaptedMovie = {
       ...movie,
       'film_info': {

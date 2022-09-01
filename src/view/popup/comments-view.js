@@ -145,6 +145,8 @@ export default class CommentsView extends AbstractStatefulView {
     if (evt.ctrlKey && evt.key === 'Enter') {
       if (this._state.userComment.emotion && this._state.userComment.comment) {
         this._callback.formSubmit(CommentsView.parseStateToComment(this._state.userComment));
+        this._state.userComment = DEFAULT_STATE;
+        this.unsetFormSubmitHandler();
       }
     }
   };
@@ -159,7 +161,6 @@ export default class CommentsView extends AbstractStatefulView {
   _restoreHandlers = () => {
     this.#setInnerHandlers();
   };
-
 
   static parseCommentToState = (comment) => ({...comment});
 

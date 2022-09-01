@@ -8,6 +8,7 @@ export default class PopupPresenter {
   #movie = null;
   #mainElement = null;
   #comments = null;
+  #moviesModel = null;
   #commentsModel = null;
   #updateMovieDataHandler = null;
   #updateCommentDataHandler = null;
@@ -15,25 +16,28 @@ export default class PopupPresenter {
   #infoComponent = null;
   #commentsComponent = null;
 
-  constructor(mainElement, movie, commentsModel, updateMovieDataHandler, updateCommentDataHandler) {
+  constructor(mainElement, movie, moviesModel, commentsModel, updateMovieDataHandler, updateCommentDataHandler) {
     this.#mainElement = mainElement;
     this.#movie = movie;
 
     this.#updateMovieDataHandler = updateMovieDataHandler;
     this.#updateCommentDataHandler = updateCommentDataHandler;
 
+    this.#moviesModel = moviesModel;
     this.#commentsModel = commentsModel;
-    this.#comments = commentsModel.init(this.#movie.id);
+    this.#moviesModel.addObserver(updateMovieDataHandler);
+    this.#commentsModel.addObserver(updateCommentDataHandler);
+    this.#comments = null;
 
     this.#containerComponent = new ContainerView();
+    this.#commentsComponent = new CommentsView([]);
+    this.#infoComponent = new InfoView(this.#movie);
   }
 
   async init(offsetY = 0) {
     this.#comments = await this.#commentsModel.init(this.#movie.id);
     if (this.#containerComponent.isPopupOpen()) {
-      if (this.#commentsComponent) {
-        this.#commentsComponent.unsetFormSubmitHandler();
-      }
+      this.#commentsComponent.unsetFormSubmitHandler();
       this.#containerComponent.closeAllPopups();
       this.#containerComponent.allowOverflow(this.#mainElement);
     }
@@ -41,6 +45,7 @@ export default class PopupPresenter {
     const prevCommentsComponent = this.#commentsComponent;
     this.#infoComponent = new InfoView(this.#movie);
     this.#commentsComponent = new CommentsView(this.#comments);
+
 
     if (this.#infoComponent !== prevInfoComponent || this.#commentsComponent !== prevCommentsComponent) {
       this.#containerComponent.restrictOverflow(this.#mainElement);
@@ -86,7 +91,6 @@ export default class PopupPresenter {
   #closeKeydownHandler = (evt) => {
     if (evt.key === 'Escape') {
       this.destroy();
-      this.#containerComponent.closeKeydownSuccessful();
       this.#commentsComponent.reset();
       this.#containerComponent.allowOverflow(this.#mainElement);
     }
@@ -144,6 +148,7 @@ export default class PopupPresenter {
         popupOffsetY: this.#containerComponent.element.scrollTop
       },
     );
+    //this.#comments = this.#commentsModel.init(this.#movie.id);
   };
 
   #deleteCommentHandler = (comment) => {
@@ -156,6 +161,7 @@ export default class PopupPresenter {
         popupOffsetY: this.#containerComponent.element.scrollTop
       },
     );
+    //this.#comments = this.#commentsModel.init(this.#movie.id);
   };
 }
 

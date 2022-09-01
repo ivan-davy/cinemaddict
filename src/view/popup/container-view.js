@@ -12,9 +12,11 @@ export default class ContainerView extends AbstractView {
   }
 
   isPopupOpen = () => document.contains(document.querySelector('.film-details'));
+
   closeAllPopups = () => {
-    document.querySelectorAll('.film-details')
-      .forEach((node) => node.remove());
+    document.querySelector('.film-details').remove();
+    document
+      .removeEventListener('keydown', this.#closeKeydownHandler);
   };
 
   restrictOverflow = (element) => {
@@ -23,10 +25,6 @@ export default class ContainerView extends AbstractView {
 
   allowOverflow = (element) => {
     element.classList.remove('hide-overflow');
-  };
-
-  closeKeydownSuccessful = () => {
-    document.removeEventListener('keydown', this.#closeKeydownHandler);
   };
 
   setCloseClickHandler = (callback) => {
@@ -43,10 +41,15 @@ export default class ContainerView extends AbstractView {
 
   #closeClickHandler = () => {
     this._callback.closeClick();
-    document.removeEventListener('keydown', this.#closeKeydownHandler);
+    this.#removeCloseKeydownListener();
   };
 
   #closeKeydownHandler = (evt) => {
     this._callback.closeKeydown(evt);
+    this.#removeCloseKeydownListener();
+  };
+
+  #removeCloseKeydownListener = () => {
+    document.removeEventListener('keydown', this.#closeKeydownHandler);
   };
 }

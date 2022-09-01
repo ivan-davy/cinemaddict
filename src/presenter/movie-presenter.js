@@ -17,7 +17,6 @@ export default class MoviePresenter {
 
   init(movie) {
     this.#movie = movie;
-
     const prevMovieCardComponent = this.#movieCardComponent;
     this.#movieCardComponent = new MovieCardView(this.#movie);
 
@@ -45,24 +44,22 @@ export default class MoviePresenter {
   };
 
   #watchlistClickHandler = () => {
-    this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
     this.#updateMovieDataHandler(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
       {
-        movieData: this.#movie,
+        movieData: {...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist}},
         popupOffsetY: this.#popupPresenter.getPopupOffsetY()
       },
     );
   };
 
   #historyClickHandler = () => {
-    this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
     this.#updateMovieDataHandler(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
       {
-        movieData: this.#movie,
+        movieData: {...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched}},
         popupOffsetY: this.#popupPresenter.getPopupOffsetY()
       },
     );
@@ -74,7 +71,7 @@ export default class MoviePresenter {
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
       {
-        movieData: this.#movie,
+        movieData: {...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite}},
         popupOffsetY: this.#popupPresenter.getPopupOffsetY()
       },
     );
