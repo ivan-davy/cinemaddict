@@ -10,4 +10,11 @@ const UPDATE_TYPES = {
   INIT: 'INIT'
 };
 
-export {UPDATE_TYPES, USER_ACTIONS};
+const HTTP_METHODS = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE'
+};
+
+export {UPDATE_TYPES, USER_ACTIONS, HTTP_METHODS};

@@ -1,6 +1,6 @@
 import MovieCardView from '../view/movie-card-view';
 import {remove, render, replace} from '../framework/render';
-import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates';
+import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates-methods';
 
 export default class MoviePresenter {
   #movieContainerElement = null;

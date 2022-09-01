@@ -1,9 +1,6 @@
 import ApiService from '../framework/api-service';
+import {HTTP_METHODS} from '../utility/actions-updates-methods';
 
-const METHODS = {
-  GET: 'GET',
-  PUT: 'PUT',
-};
 
 export default class MovieApiService extends ApiService {
   get movies() {
@@ -14,7 +11,7 @@ export default class MovieApiService extends ApiService {
   updateMovie = async (movie) => {
     const response = await this._load({
       url: `movies/${movie.id}`,
-      method: METHODS.PUT,
+      method: HTTP_METHODS.PUT,
       body: JSON.stringify(this.#adaptToServer(movie)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });

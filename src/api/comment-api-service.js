@@ -1,28 +1,30 @@
 import ApiService from '../framework/api-service';
+import {HTTP_METHODS} from '../utility/actions-updates-methods';
 
-const Method = {
-  GET: 'GET',
-  PUT: 'PUT',
-  DELETE: 'DELETE'
-};
 
 export default class CommentApiService extends ApiService {
-  getComments(filmId) {
-    return this._load({url: `comments/${filmId}`})
+  getComments(movieId) {
+    return this._load({url: `comments/${movieId}`})
       .then(ApiService.parseResponse);
   }
 
-  addComment = async (comment) => { //!
+  addComment = async (comment, movieId) => {
     const response = await this._load({
-      url: `comments/${comment.id}`,
-      method: Method.PUT,
-      body: JSON.stringify(comment),
+      url: `comments/${movieId}`,
+      method: HTTP_METHODS.POST,
+      body: JSON.stringify(this.#adaptToServer(comment)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
+    return await ApiService.parseResponse(response);
+  };
 
-    const parsedResponse = await ApiService.parseResponse(response);
-
-    return parsedResponse;
+  deleteComment = async (commentId) => {
+    const response = await this._load({
+      url: `comments/${commentId}`,
+      method: HTTP_METHODS.DELETE,
+    });
+    console.log(response)
+    return await ApiService.parseResponse(response);
   };
 
   #adaptToServer = (comment) => comment;

@@ -2,7 +2,7 @@ import {remove, render, replace} from '../framework/render';
 import InfoView from '../view/popup/info-view.js';
 import ContainerView from '../view/popup/container-view';
 import CommentsView from '../view/popup/comments-view';
-import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates';
+import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates-methods';
 
 export default class PopupPresenter {
   #movie = null;
@@ -31,7 +31,9 @@ export default class PopupPresenter {
   async init(offsetY = 0) {
     this.#comments = await this.#commentsModel.init(this.#movie.id);
     if (this.#containerComponent.isPopupOpen()) {
-      this.#commentsComponent.unsetFormSubmitHandler();
+      if (this.#commentsComponent) {
+        this.#commentsComponent.unsetFormSubmitHandler();
+      }
       this.#containerComponent.closeAllPopups();
       this.#containerComponent.allowOverflow(this.#mainElement);
     }

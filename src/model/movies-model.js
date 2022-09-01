@@ -1,5 +1,5 @@
 import Observable from '../framework/observable';
-import {UPDATE_TYPES} from '../utility/actions-updates';
+import {UPDATE_TYPES} from '../utility/actions-updates-methods';
 
 
 export default class MoviesModel extends Observable {
@@ -40,40 +40,14 @@ export default class MoviesModel extends Observable {
 
       this.#movies = [
         ...this.#movies.slice(0, index),
-        movieData,
+        updatedMovieData,
         ...this.#movies.slice(index + 1),
       ];
-      this._notify(updateType, updatedMovieData);
+      this._notify(updateType, {...update, movieData: updatedMovieData});
     } catch(err) {
       console.log(err)
       throw new Error('Can\'t update movie');
     }
-  };
-
-  addMovie = (updateType, update) => {
-    const {movieData} = update;
-
-    this.#movies = [
-      movieData,
-      ...this.#movies,
-    ];
-
-    this._notify(updateType, update);
-  };
-
-  deleteMovie = (updateType, update) => {
-    const index = this.#movies.findIndex((movie) => movie.id === update.id);
-
-    if (index === -1) {
-      throw new Error('Can\'t delete unexisting movie');
-    }
-
-    this.#movies = [
-      ...this.#movies.slice(0, index),
-      ...this.#movies.slice(index + 1),
-    ];
-
-    this._notify(updateType, update);
   };
 
   #adaptToClient = (movie) => {

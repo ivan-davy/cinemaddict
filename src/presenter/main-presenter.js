@@ -11,7 +11,7 @@ import {SORT_TYPES, sortCommentsDown, sortDateDown, sortRatingDown} from '../uti
 import RankView from '../view/rank-view';
 import MovieDatabaseStatsView from '../view/movie-database-stats-view';
 import LoadingView from '../view/loading-view';
-import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates';
+import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates-methods';
 import {FILTER_TYPES, movieFilters} from '../utility/filter-logic';
 import FilterPresenter from './filter-presenter';
 
@@ -87,12 +87,6 @@ export default class MainPresenter {
     switch (actionType) {
       case USER_ACTIONS.UPDATE:
         this.moviesModel.updateMovie(updateType, update);
-        break;
-      case USER_ACTIONS.ADD:
-        this.moviesModel.addMovie(updateType, update);
-        break;
-      case USER_ACTIONS.DELETE:
-        this.moviesModel.deleteMovie(updateType, update);
         break;
     }
   };
@@ -230,7 +224,7 @@ export default class MainPresenter {
   };
 
   #renderMovieCard = (movie, targetElement, cardPresentersGroup = this.mainMovieCardPresenters) => {
-    const popupPresenter = new PopupPresenter(this.mainElement, movie, this.commentsModel, this.#viewMovieActionHandler, this.#viewCommentActionHandler, this.commentsModel.getNewId);
+    const popupPresenter = new PopupPresenter(this.mainElement, movie, this.commentsModel, this.#viewMovieActionHandler, this.#viewCommentActionHandler);
     const moviePresenter = new MoviePresenter(targetElement, popupPresenter, this.#viewMovieActionHandler);
     cardPresentersGroup.set(movie.id, moviePresenter);
     this.popupPresenters.set(movie.id, popupPresenter);

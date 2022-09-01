@@ -17,41 +17,44 @@ export default class CommentsModel extends Observable {
       return this.#comments;
     } catch(err) {
       this.#comments = [];
-      return this.#comments;
+      throw new Error('Can\'t fetch comments');
     }
   };
 
-  addComment = (updateType, update) => {
+  addComment = async (updateType, update) => {
     const {movieData, commentData, popupOffsetY} = update;
-    commentData.id = this.getNewId();
-    movieData.comments.push(commentData.id);
+    try {
+      const response = await this.#commentsApiService.addComment(commentData, movieData.id);
+      const adaptedCommentData = this.#adaptToClient(response);
+      movieData.comments.push(adaptedCommentData.id);
 
-    this.#comments = [
-      ...this.#comments,
-      commentData
-    ];
+      this.#comments = [...this.#comments, adaptedCommentData];
 
-    this._notify(updateType, {movieData, commentData, popupOffsetY});
+      this._notify(updateType, {movieData, commentData: adaptedCommentData, popupOffsetY});
+    } catch(err) {
+      console.log(err)
+      throw new Error('Can\'t add a new comment');
+    }
   };
 
-  deleteComment = (updateType, update) => {
+  deleteComment = async (updateType, update) => {
     const {movieData, commentData, popupOffsetY} = update;
-    movieData.comments = movieData.comments.filter((item) => item !== commentData.id);
     const index = this.#comments.findIndex((comment) => comment.id === commentData.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting comment');
     }
 
-    this.#comments = [
-      ...this.#comments.slice(0, index),
-      ...this.#comments.slice(index + 1),
-    ];
-
-    this._notify(updateType, {movieData, commentData, popupOffsetY});
+    try {
+      movieData.comments = movieData.comments.filter((item) => item !== commentData.id);
+      this.#comments = [...this.#comments.slice(0, index), ...this.#comments.slice(index + 1)];
+      await this.#commentsApiService.deleteComment(commentData.id);
+      this._notify(updateType, {movieData, popupOffsetY});
+    } catch(err) {
+      console.log(err);
+      throw new Error('Can\'t delete a comment');
+    }
   };
-
-  getNewId = () => String(Math.max(...this.#comments.slice().map((comment) => parseInt(comment.id, 10))) + 1);
 
   #adaptToClient = (comment) => ({...comment});
 }

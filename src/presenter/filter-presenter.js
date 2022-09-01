@@ -1,7 +1,7 @@
 import {render, replace, remove} from '../framework/render.js';
 import FilterView from '../view/filter-view.js';
 import {FILTER_TYPES, movieFilters} from '../utility/filter-logic';
-import {UPDATE_TYPES} from '../utility/actions-updates';
+import {UPDATE_TYPES} from '../utility/actions-updates-methods';
 
 export default class FilterPresenter {
   #filterContainer = null;
