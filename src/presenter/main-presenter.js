@@ -53,6 +53,7 @@ export default class MainPresenter {
   }
 
   init() {
+    this.filterPresenter.init();
     this.#clearMovieLists();
     this.#renderMainMovieList();
     this.#renderTopRatedList();
@@ -149,7 +150,6 @@ export default class MainPresenter {
         this.isLoading = false;
         render(new RankView(movieFilters[FILTER_TYPES.WATCHED](this.moviesModel.movies).length), this.headerElement);
         render(new MovieDatabaseStatsView(this.movies.length), this.footerElement.querySelector('.footer__statistics'));
-        this.filterPresenter.init();
         this.moviesShown = Math.min(this.movies.length, MOVIES_SHOWN_STEP);
         remove(this.loadingComponent);
         this.#renderMainMovieList();
