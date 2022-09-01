@@ -14,15 +14,12 @@ export default class CommentsModel extends Observable {
     try {
       const comments = await this.#commentsApiService.getComments(movieId);
       this.#comments = comments.map(this.#adaptToClient);
+      return this.#comments;
     } catch(err) {
       this.#comments = [];
+      return this.#comments;
     }
   };
-
-  getComments(movieId) {
-    this.init(movieId);
-    return this.#comments;
-  }
 
   addComment = (updateType, update) => {
     const {movieData, commentData, popupOffsetY} = update;

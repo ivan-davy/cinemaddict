@@ -23,21 +23,18 @@ export default class PopupPresenter {
     this.#updateCommentDataHandler = updateCommentDataHandler;
 
     this.#commentsModel = commentsModel;
-    this.#comments = commentsModel.getComments(this.#movie.id);
+    this.#comments = commentsModel.init(this.#movie.id);
 
     this.#containerComponent = new ContainerView();
-    this.#infoComponent = new InfoView(this.#movie);
-    this.#commentsComponent = new CommentsView(this.#comments);
   }
 
-  init(offsetY = 0) {
+  async init(offsetY = 0) {
+    this.#comments = await this.#commentsModel.init(this.#movie.id);
     if (this.#containerComponent.isPopupOpen()) {
       this.#commentsComponent.unsetFormSubmitHandler();
       this.#containerComponent.closeAllPopups();
       this.#containerComponent.allowOverflow(this.#mainElement);
     }
-
-    this.#comments = this.#commentsModel.getComments(this.#movie.id);
     const prevInfoComponent = this.#infoComponent;
     const prevCommentsComponent = this.#commentsComponent;
     this.#infoComponent = new InfoView(this.#movie);
