@@ -164,7 +164,6 @@ export default class MainPresenter {
       case UPDATE_TYPES.MINOR:
         if (presenterMain) {
           presenterMain.init(movieData);
-          console.log(presenterMain)
         }
         if (presenterTopRated) {
           presenterTopRated.init(movieData);
@@ -222,7 +221,7 @@ export default class MainPresenter {
 
   #renderMovieCard = (movie, targetElement, cardPresentersGroup = this.mainMovieCardPresenters) => {
     const popupPresenter = new PopupPresenter(this.mainElement, movie, this.moviesModel, this.commentsModel, this.#viewMovieActionHandler, this.#viewCommentActionHandler);
-    const moviePresenter = new MoviePresenter(targetElement, popupPresenter, this.#viewMovieActionHandler);
+    const moviePresenter = new MoviePresenter(targetElement, this.moviesModel, popupPresenter, this.#viewMovieActionHandler);
     cardPresentersGroup.set(movie.id, moviePresenter);
     this.popupPresenters.set(movie.id, popupPresenter);
     moviePresenter.init(movie);

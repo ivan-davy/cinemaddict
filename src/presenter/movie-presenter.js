@@ -8,9 +8,15 @@ export default class MoviePresenter {
   #updateMovieDataHandler = null;
   #movieCardComponent = null;
   #popupPresenter = null;
+  #moviesModel = null;
 
-  constructor(movieContainerElement, popupPresenter, updateMovieDataHandler) {
+
+  constructor(movieContainerElement, moviesModel, popupPresenter, updateMovieDataHandler) {
     this.#movieContainerElement = movieContainerElement;
+
+    this.#moviesModel = moviesModel;
+    this.#moviesModel.addObserver(updateMovieDataHandler);
+
     this.#updateMovieDataHandler = updateMovieDataHandler;
     this.#popupPresenter = popupPresenter;
   }
@@ -66,7 +72,6 @@ export default class MoviePresenter {
   };
 
   #favoriteClickHandler = () => {
-    this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
     this.#updateMovieDataHandler(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,

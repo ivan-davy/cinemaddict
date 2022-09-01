@@ -52,8 +52,6 @@ export default class PopupPresenter {
       remove(prevInfoComponent);
       remove(prevCommentsComponent);
 
-      this.#infoComponent = new InfoView(this.#movie);
-      this.#commentsComponent = new CommentsView(this.#comments);
       render(this.#containerComponent, document.querySelector('footer'), 'afterend');
       render(this.#infoComponent, this.#containerComponent.element);
       render(this.#commentsComponent, this.#containerComponent.element);
@@ -103,36 +101,33 @@ export default class PopupPresenter {
   };
 
   #watchlistClickHandler = () => {
-    this.#movie.userDetails.watchlist = !this.#movie.userDetails.watchlist;
     this.#updateMovieDataHandler(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
       {
-        movieData: this.#movie,
+        movieData: {...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist}},
         popupOffsetY: this.#containerComponent.element.scrollTop
       }
     );
   };
 
   #historyClickHandler = () => {
-    this.#movie.userDetails.alreadyWatched = !this.#movie.userDetails.alreadyWatched;
     this.#updateMovieDataHandler(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
       {
-        movieData: this.#movie,
+        movieData: {...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched}},
         popupOffsetY: this.#containerComponent.element.scrollTop
       }
     );
   };
 
   #favoriteClickHandler = () => {
-    this.#movie.userDetails.favorite = !this.#movie.userDetails.favorite;
     this.#updateMovieDataHandler(
       USER_ACTIONS.UPDATE,
       UPDATE_TYPES.MINOR,
       {
-        movieData: this.#movie,
+        movieData: {...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite}},
         popupOffsetY: this.#containerComponent.element.scrollTop
       }
     );
@@ -148,7 +143,6 @@ export default class PopupPresenter {
         popupOffsetY: this.#containerComponent.element.scrollTop
       },
     );
-    //this.#comments = this.#commentsModel.init(this.#movie.id);
   };
 
   #deleteCommentHandler = (comment) => {
@@ -161,7 +155,6 @@ export default class PopupPresenter {
         popupOffsetY: this.#containerComponent.element.scrollTop
       },
     );
-    //this.#comments = this.#commentsModel.init(this.#movie.id);
   };
 }
 

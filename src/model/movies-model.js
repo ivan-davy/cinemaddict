@@ -28,24 +28,15 @@ export default class MoviesModel extends Observable {
 
   updateMovie = async (updateType, update) => {
     const {movieData} = update;
-    const index = this.#movies.findIndex((movie) => movie.id === movieData.id);
-
-    if (index === -1) {
-      throw new Error('Can\'t update unexisting movie');
-    }
-
     try {
       const response = await this.#moviesApiService.updateMovie(movieData);
       const updatedMovieData = this.#adaptMovieToClient(response);
 
-      this.#movies = [
-        ...this.#movies.slice(0, index),
-        updatedMovieData,
-        ...this.#movies.slice(index + 1),
-      ];
+      const index = this.#movies.findIndex((movie) => movie.id === movieData.id);
+      this.#movies = [...this.#movies.slice(0, index), updatedMovieData, ...this.#movies.slice(index + 1)];
+
       this._notify(updateType, {...update, movieData: updatedMovieData});
     } catch(err) {
-      console.log(err)
       throw new Error('Can\'t update movie');
     }
   };
