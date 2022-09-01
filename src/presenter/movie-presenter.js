@@ -46,7 +46,7 @@ export default class MoviePresenter {
   };
 
   #movieClickHandler = () => {
-    this.#popupPresenter.init();
+    this.#popupPresenter.init(this.#movie);
   };
 
   #watchlistClickHandler = () => {

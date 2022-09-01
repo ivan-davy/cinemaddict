@@ -129,7 +129,7 @@ export default class MainPresenter {
           presenterMostCommented.init(movieData);
         }
         if (movieData && this.popupPresenters.get(movieData.id).isPopupOpen()) {
-          this.popupPresenters.get(movieData.id).init(popupOffsetY);
+          this.popupPresenters.get(movieData.id).init(movieData, popupOffsetY);
         }
         this.#clearMovieLists();
         this.#renderMainMovieList();
@@ -171,7 +171,7 @@ export default class MainPresenter {
         if (presenterMostCommented) {
           presenterMostCommented.init(movieData);
         }
-        this.popupPresenters.get(movieData.id).init(popupOffsetY);
+        this.popupPresenters.get(movieData.id).init(movieData, popupOffsetY);
         this.#clearMovieLists();
         this.#renderMainMovieList();
         this.#renderTopRatedList();
@@ -220,7 +220,7 @@ export default class MainPresenter {
   };
 
   #renderMovieCard = (movie, targetElement, cardPresentersGroup = this.mainMovieCardPresenters) => {
-    const popupPresenter = new PopupPresenter(this.mainElement, movie, this.moviesModel, this.commentsModel, this.#viewMovieActionHandler, this.#viewCommentActionHandler);
+    const popupPresenter = new PopupPresenter(this.mainElement, this.moviesModel, this.commentsModel, this.#viewMovieActionHandler, this.#viewCommentActionHandler);
     const moviePresenter = new MoviePresenter(targetElement, this.moviesModel, popupPresenter, this.#viewMovieActionHandler);
     cardPresentersGroup.set(movie.id, moviePresenter);
     this.popupPresenters.set(movie.id, popupPresenter);

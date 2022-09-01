@@ -16,9 +16,8 @@ export default class PopupPresenter {
   #infoComponent = null;
   #commentsComponent = null;
 
-  constructor(mainElement, movie, moviesModel, commentsModel, updateMovieDataHandler, updateCommentDataHandler) {
+  constructor(mainElement, moviesModel, commentsModel, updateMovieDataHandler, updateCommentDataHandler) {
     this.#mainElement = mainElement;
-    this.#movie = movie;
 
     this.#updateMovieDataHandler = updateMovieDataHandler;
     this.#updateCommentDataHandler = updateCommentDataHandler;
@@ -31,10 +30,11 @@ export default class PopupPresenter {
 
     this.#containerComponent = new ContainerView();
     this.#commentsComponent = new CommentsView([]);
-    this.#infoComponent = new InfoView(this.#movie);
+    this.#infoComponent = null;
   }
 
-  async init(offsetY = 0) {
+  async init(movie, offsetY = 0) {
+    this.#movie = movie;
     this.#comments = await this.#commentsModel.init(this.#movie.id);
     if (this.#containerComponent.isPopupOpen()) {
       this.#commentsComponent.unsetFormSubmitHandler();
@@ -49,6 +49,7 @@ export default class PopupPresenter {
 
     if (this.#infoComponent !== prevInfoComponent || this.#commentsComponent !== prevCommentsComponent) {
       this.#containerComponent.restrictOverflow(this.#mainElement);
+      //prevCommentsComponent.unsetFormSubmitHandler();
       remove(prevInfoComponent);
       remove(prevCommentsComponent);
 
@@ -91,6 +92,7 @@ export default class PopupPresenter {
       this.destroy();
       this.#commentsComponent.reset();
       this.#containerComponent.allowOverflow(this.#mainElement);
+      this.#containerComponent.removeCloseKeydownListener();
     }
   };
 
@@ -98,6 +100,7 @@ export default class PopupPresenter {
     this.destroy();
     this.#commentsComponent.reset();
     this.#containerComponent.allowOverflow(this.#mainElement);
+    this.#containerComponent.removeCloseKeydownListener();
   };
 
   #watchlistClickHandler = () => {

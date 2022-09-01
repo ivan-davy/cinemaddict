@@ -90,10 +90,6 @@ export default class CommentsView extends AbstractStatefulView {
     return createCommentsTemplate(this._state.comments, this._state.userComment);
   }
 
-  removeElement() {
-    super.removeElement();
-  }
-
   reset() {
     const state = {
       comments: this.#comments.slice().map((comment) => CommentsView.parseCommentToState(comment)),
