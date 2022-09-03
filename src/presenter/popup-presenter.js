@@ -36,8 +36,8 @@ export default class PopupPresenter {
   async init(movie, offsetY = 0) {
     this.#movie = movie;
     this.#comments = await this.#commentsModel.init(this.#movie.id);
+    this.purgeAllGlobalListeners();
     if (this.#containerComponent.isPopupOpen()) {
-      this.#commentsComponent.unsetFormSubmitHandler();
       this.#containerComponent.closeAllPopups();
       this.#containerComponent.allowOverflow(this.#mainElement);
     }
@@ -46,10 +46,8 @@ export default class PopupPresenter {
     this.#infoComponent = new InfoView(this.#movie);
     this.#commentsComponent = new CommentsView(this.#comments);
 
-
     if (this.#infoComponent !== prevInfoComponent || this.#commentsComponent !== prevCommentsComponent) {
       this.#containerComponent.restrictOverflow(this.#mainElement);
-      //prevCommentsComponent.unsetFormSubmitHandler();
       remove(prevInfoComponent);
       remove(prevCommentsComponent);
 
@@ -58,8 +56,8 @@ export default class PopupPresenter {
       render(this.#commentsComponent, this.#containerComponent.element);
 
       this.#commentsComponent.setFormSubmitHandler(this.#formSubmitHandler);
-      this.#commentsComponent.setCommentDeleteHandler(this.#deleteCommentHandler);
       this.#containerComponent.setCloseKeydownHandler(this.#closeKeydownHandler);
+      this.#commentsComponent.setCommentDeleteHandler(this.#deleteCommentHandler);
       this.#containerComponent.setCloseClickHandler(this.#closeClickHandler);
       this.#infoComponent.setWatchlistClickHandler(this.#watchlistClickHandler);
       this.#infoComponent.setHistoryClickHandler(this.#historyClickHandler);
@@ -79,7 +77,7 @@ export default class PopupPresenter {
   }
 
   destroy = () => {
-    this.#commentsComponent.unsetFormSubmitHandler();
+    this.purgeAllGlobalListeners();
     remove(this.#containerComponent);
   };
 
@@ -87,12 +85,17 @@ export default class PopupPresenter {
 
   getPopupOffsetY = () => this.#containerComponent.element.scrollTop;
 
+  purgeAllGlobalListeners = () => {
+    this.#containerComponent.unsetCloseKeydownHandler();
+    this.#commentsComponent.unsetFormSubmitHandler();
+  };
+
   #closeKeydownHandler = (evt) => {
     if (evt.key === 'Escape') {
       this.destroy();
       this.#commentsComponent.reset();
       this.#containerComponent.allowOverflow(this.#mainElement);
-      this.#containerComponent.removeCloseKeydownListener();
+      this.#containerComponent.unsetCloseKeydownHandler();
     }
   };
 
@@ -100,7 +103,7 @@ export default class PopupPresenter {
     this.destroy();
     this.#commentsComponent.reset();
     this.#containerComponent.allowOverflow(this.#mainElement);
-    this.#containerComponent.removeCloseKeydownListener();
+    this.#containerComponent.unsetCloseKeydownHandler();
   };
 
   #watchlistClickHandler = () => {

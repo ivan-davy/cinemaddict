@@ -15,8 +15,7 @@ export default class ContainerView extends AbstractView {
 
   closeAllPopups = () => {
     document.querySelector('.film-details').remove();
-    document
-      .removeEventListener('keydown', this.#closeKeydownHandler);
+    this.unsetCloseKeydownHandler();
   };
 
   restrictOverflow = (element) => {
@@ -41,14 +40,15 @@ export default class ContainerView extends AbstractView {
 
   #closeClickHandler = () => {
     this._callback.closeClick();
-    this.removeCloseKeydownListener();
+    this.unsetCloseKeydownHandler();
   };
 
   #closeKeydownHandler = (evt) => {
     this._callback.closeKeydown(evt);
+    this.unsetCloseKeydownHandler();
   };
 
-  removeCloseKeydownListener = () => {
+  unsetCloseKeydownHandler = () => {
     document.removeEventListener('keydown', this.#closeKeydownHandler);
   };
 }
