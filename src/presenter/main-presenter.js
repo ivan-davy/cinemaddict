@@ -106,6 +106,7 @@ export default class MainPresenter {
     switch (updateType) {
       case UPDATE_TYPES.MINOR:
         if (movieData && this.popupPresenters.get(movieData.id).isPopupOpen()) {
+          this.popupPresenters.get(movieData.id).purgeAllGlobalListeners();
           this.popupPresenters.get(movieData.id).init(movieData, popupOffsetY);
         }
         this.#clearMovieLists();
@@ -136,6 +137,7 @@ export default class MainPresenter {
     const {movieData, popupOffsetY} = data;
     switch (updateType) {
       case UPDATE_TYPES.MINOR:
+        this.popupPresenters.get(movieData.id).purgeAllGlobalListeners();
         this.popupPresenters.get(movieData.id).init(movieData, popupOffsetY);
         this.#clearMovieLists();
         this.#renderMainMovieList();
@@ -185,6 +187,10 @@ export default class MainPresenter {
   };
 
   #renderMovieCard = (movie, targetElement, cardPresentersGroup = this.mainMovieCardPresenters) => {
+    const existingPopupPresenter = this.popupPresenters.get(movie.id);
+    if (existingPopupPresenter) {
+      existingPopupPresenter.purgeAllGlobalListeners();
+    }
     const popupPresenter = new PopupPresenter(this.mainElement, this.moviesModel, this.commentsModel, this.#viewMovieActionHandler, this.#viewCommentActionHandler);
     const moviePresenter = new MoviePresenter(targetElement, movie, this.moviesModel, popupPresenter, this.#viewMovieActionHandler, this.#viewCommentActionHandler);
     cardPresentersGroup.set(movie.id, moviePresenter);
