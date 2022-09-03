@@ -31,7 +31,7 @@ export default class CommentsModel extends Observable {
       movieData.comments = adaptedMovieData.comments;
       this.#comments = adaptedCommentData;
 
-      this._notify(updateType, {movieData: adaptedMovieData, commentData: adaptedCommentData, popupOffsetY});
+      this._notify(updateType, {movieData, commentData: adaptedCommentData, popupOffsetY});
     } catch(err) {
       throw new Error('Can\'t add a new comment');
     }
@@ -43,8 +43,8 @@ export default class CommentsModel extends Observable {
       await this.#commentsApiService.deleteComment(commentData.id);
       const index = this.#comments.findIndex((comment) => comment.id === commentData.id);
 
-      this.#comments = [...this.#comments.slice(0, index), ...this.#comments.slice(index + 1)];
       movieData.comments = movieData.comments.filter((comment) => comment !== commentData.id);
+      this.#comments = [...this.#comments.slice(0, index), ...this.#comments.slice(index + 1)];
 
       this._notify(updateType, {movieData, popupOffsetY});
     } catch(err) {

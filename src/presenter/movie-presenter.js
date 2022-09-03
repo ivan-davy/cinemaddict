@@ -11,18 +11,16 @@ export default class MoviePresenter {
   #moviesModel = null;
 
 
-  constructor(movieContainerElement, moviesModel, popupPresenter, updateMovieDataHandler) {
+  constructor(movieContainerElement, movie, moviesModel, popupPresenter, updateMovieDataHandler) {
     this.#movieContainerElement = movieContainerElement;
-
+    this.#movie = movie;
     this.#moviesModel = moviesModel;
     this.#moviesModel.addObserver(updateMovieDataHandler);
-
     this.#updateMovieDataHandler = updateMovieDataHandler;
     this.#popupPresenter = popupPresenter;
   }
 
-  init(movie) {
-    this.#movie = movie;
+  init() {
     const prevMovieCardComponent = this.#movieCardComponent;
     this.#movieCardComponent = new MovieCardView(this.#movie);
 

@@ -76,13 +76,6 @@ export default class MainPresenter {
     return filteredMovies;
   }
 
-  get comments() {
-    const comments = [];
-    for (const movie in this.moviesModel.movies) {
-      comments.push.getComments(movie);
-    }
-    return comments;
-  }
 
   #viewMovieActionHandler = (actionType, updateType, update) => {
     switch (actionType) {
@@ -95,7 +88,8 @@ export default class MainPresenter {
   #viewCommentActionHandler = (actionType, updateType, update) => {
     switch (actionType) {
       case USER_ACTIONS.ADD:
-        return this.commentsModel.addComment(updateType, update);
+        this.commentsModel.addComment(updateType, update);
+        break;
       case USER_ACTIONS.DELETE:
         this.commentsModel.deleteComment(updateType, update);
         break;
@@ -103,31 +97,14 @@ export default class MainPresenter {
   };
 
   #modelMovieEventHandler = (updateType, data) => {
-    let presenterMain = null;
-    let presenterTopRated = null;
-    let presenterMostCommented = null;
     let movieData = null;
     let popupOffsetY = null;
     if (data) {
       movieData = data.movieData;
       popupOffsetY = data.popupOffsetY;
-      if (movieData) {
-        presenterMain = this.mainMovieCardPresenters.get(movieData.id);
-        presenterTopRated = this.topRatedMovieCardsPresenters.get(movieData.id);
-        presenterMostCommented = this.mainMovieCardPresenters.get(movieData.id);
-      }
     }
     switch (updateType) {
       case UPDATE_TYPES.MINOR:
-        if (presenterMain) {
-          presenterMain.init(movieData);
-        }
-        if (presenterTopRated) {
-          presenterTopRated.init(movieData);
-        }
-        if (presenterMostCommented) {
-          presenterMostCommented.init(movieData);
-        }
         if (movieData && this.popupPresenters.get(movieData.id).isPopupOpen()) {
           this.popupPresenters.get(movieData.id).init(movieData, popupOffsetY);
         }
@@ -157,20 +134,8 @@ export default class MainPresenter {
 
   #modelCommentEventHandler = (updateType, data) => {
     const {movieData, popupOffsetY} = data;
-    const presenterMain = this.mainMovieCardPresenters.get(movieData.id);
-    const presenterTopRated = this.topRatedMovieCardsPresenters.get(movieData.id);
-    const presenterMostCommented = this.mainMovieCardPresenters.get(movieData.id);
     switch (updateType) {
       case UPDATE_TYPES.MINOR:
-        if (presenterMain) {
-          presenterMain.init(movieData);
-        }
-        if (presenterTopRated) {
-          presenterTopRated.init(movieData);
-        }
-        if (presenterMostCommented) {
-          presenterMostCommented.init(movieData);
-        }
         this.popupPresenters.get(movieData.id).init(movieData, popupOffsetY);
         this.#clearMovieLists();
         this.#renderMainMovieList();
@@ -221,10 +186,10 @@ export default class MainPresenter {
 
   #renderMovieCard = (movie, targetElement, cardPresentersGroup = this.mainMovieCardPresenters) => {
     const popupPresenter = new PopupPresenter(this.mainElement, this.moviesModel, this.commentsModel, this.#viewMovieActionHandler, this.#viewCommentActionHandler);
-    const moviePresenter = new MoviePresenter(targetElement, this.moviesModel, popupPresenter, this.#viewMovieActionHandler);
+    const moviePresenter = new MoviePresenter(targetElement, movie, this.moviesModel, popupPresenter, this.#viewMovieActionHandler, this.#viewCommentActionHandler);
     cardPresentersGroup.set(movie.id, moviePresenter);
     this.popupPresenters.set(movie.id, popupPresenter);
-    moviePresenter.init(movie);
+    moviePresenter.init();
   };
 
   #renderMovies = (movies = this.movies.slice(0, MOVIES_SHOWN_STEP)) => {
