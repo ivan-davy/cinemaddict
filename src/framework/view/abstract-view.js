@@ -70,5 +70,3 @@ export default class AbstractView {
  * @callback shakeCallback
  */
 
-export {SHAKE_CLASS_NAME, SHAKE_ANIMATION_TIMEOUT};
-

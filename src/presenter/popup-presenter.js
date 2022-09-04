@@ -16,9 +16,9 @@ export default class PopupPresenter {
   #infoComponent = null;
   #commentsComponent = null;
 
-  constructor(mainElement, moviesModel, commentsModel, updateMovieDataHandler, updateCommentDataHandler) {
+  constructor(mainElement, movie, moviesModel, commentsModel, updateMovieDataHandler, updateCommentDataHandler) {
     this.#mainElement = mainElement;
-
+    this.#movie = movie;
     this.#updateMovieDataHandler = updateMovieDataHandler;
     this.#updateCommentDataHandler = updateCommentDataHandler;
 
@@ -30,7 +30,7 @@ export default class PopupPresenter {
 
     this.#containerComponent = new ContainerView();
     this.#commentsComponent = new CommentsView([]);
-    this.#infoComponent = null;
+    this.#infoComponent = new InfoView(this.#movie);
   }
 
   async init(movie, offsetY = 0) {
@@ -184,7 +184,7 @@ export default class PopupPresenter {
     const reset = () => {
       this.#commentsComponent.resetAllStates();
     };
-    this.#commentsComponent.shake(reset);
+    this.#commentsComponent.shakeInput(reset);
     this.restoreGlobalListeners();
   };
 
@@ -193,6 +193,11 @@ export default class PopupPresenter {
       this.#commentsComponent.resetAllStates();
     };
     this.#commentsComponent.shakeComment(reset, commentId);
+    this.restoreGlobalListeners();
+  };
+
+  resetControls = () => {
+    this.#infoComponent.shakeControls();
     this.restoreGlobalListeners();
   };
 }

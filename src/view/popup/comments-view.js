@@ -1,9 +1,10 @@
 import {getCommentPrettyDate} from '../../utility/date-time-format';
 import AbstractStatefulView from '../../framework/view/abstract-stateful-view';
 import he from 'he';
-import {SHAKE_ANIMATION_TIMEOUT, SHAKE_CLASS_NAME} from '../../framework/view/abstract-view';
 
-const USERNAME = 'xXx_KEKSUS69_xXx';
+const USERNAME = 'xXx_KEKSUS_xXx';
+const SHAKE_CLASS_NAME = 'shake';
+const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const DEFAULT_STATE = {
   id: null,
@@ -203,6 +204,14 @@ export default class CommentsView extends AbstractStatefulView {
 
   shakeComment(callback, commentId) {
     document.querySelector(`#block${commentId}`).classList.add(SHAKE_CLASS_NAME);
+    setTimeout(() => {
+      this.element.classList.remove(SHAKE_CLASS_NAME);
+      callback?.();
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  shakeInput(callback) {
+    document.querySelector('.film-details__new-comment').classList.add(SHAKE_CLASS_NAME);
     setTimeout(() => {
       this.element.classList.remove(SHAKE_CLASS_NAME);
       callback?.();

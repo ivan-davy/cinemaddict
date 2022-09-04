@@ -1,6 +1,9 @@
 import {getPrettyDate} from '../../utility/date-time-format';
 import AbstractView from '../../framework/view/abstract-view';
 
+const SHAKE_CLASS_NAME = 'shake';
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 const createInfoTemplate = (movie) => {
   const {poster, title, ageRating, alternativeTitle, totalRating, director, runtime, description} = movie.filmInfo;
   const writers = movie.filmInfo.writers.join(', ');
@@ -129,4 +132,11 @@ export default class InfoView extends AbstractView {
     evt.preventDefault();
     this._callback.favoriteClick();
   };
+
+  shakeControls() {
+    document.querySelector('.film-details__controls').classList.add(SHAKE_CLASS_NAME);
+    setTimeout(() => {
+      this.element.classList.remove(SHAKE_CLASS_NAME);
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
 }

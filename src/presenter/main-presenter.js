@@ -85,10 +85,17 @@ export default class MainPresenter {
   }
 
 
-  #viewMovieActionHandler = (actionType, updateType, update) => {
+  #viewMovieActionHandler = async (actionType, updateType, update) => {
     switch (actionType) {
       case USER_ACTIONS.UPDATE:
-        this.moviesModel.updateMovie(updateType, update);
+        try {
+          await this.moviesModel.updateMovie(updateType, update);
+        } catch(err) {
+          const popupPresenter = this.popupPresenters.get(update.movieData.id);
+          if (popupPresenter.isPopupOpen()) {
+            this.popupPresenters.get(update.movieData.id).resetControls();
+          }
+        }
         break;
     }
   };
@@ -203,7 +210,7 @@ export default class MainPresenter {
   };
 
   #renderMovieCard = (movie, targetElement, cardPresentersGroup = this.mainMovieCardPresenters) => {
-    const popupPresenter = new PopupPresenter(this.mainElement, this.moviesModel, this.commentsModel, this.#viewMovieActionHandler, this.#viewCommentActionHandler);
+    const popupPresenter = new PopupPresenter(this.mainElement, movie, this.moviesModel, this.commentsModel, this.#viewMovieActionHandler, this.#viewCommentActionHandler);
     const moviePresenter = new MoviePresenter(targetElement, movie, this.moviesModel, popupPresenter, this.#viewMovieActionHandler, this.#viewCommentActionHandler);
     cardPresentersGroup.set(movie.id, moviePresenter);
     this.popupPresenters.set(movie.id, popupPresenter);
