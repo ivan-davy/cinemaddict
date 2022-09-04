@@ -10,13 +10,16 @@ const DEFAULT_STATE = {
   author: USERNAME,
   comment: '',
   date: dayjs().format(),
-  emotion: null
+  emotion: null,
+  isSubmitting: false
 };
 
 const createCommentsTemplate = (commentStates, userCommentState) => {
   const commentsQty = commentStates.length;
   let commentsTemplate = '';
+  const isSubmitting = userCommentState.isSubmitting;
   for (const commentEntry of commentStates) {
+    const isDeleting = commentEntry.isDeleting;
     const {id, emotion, author, date, comment} = commentEntry;
     const timePassed = getCommentPrettyDate(date);
 
@@ -29,14 +32,13 @@ const createCommentsTemplate = (commentStates, userCommentState) => {
                 <p class="film-details__comment-info">
                   <span class="film-details__comment-author">${author}</span>
                   <span class="film-details__comment-day">${timePassed}</span>
-                  <button id=${id} class="film-details__comment-delete">Delete</button>
+                  <button id=${id} class="film-details__comment-delete" ${(isDeleting || isSubmitting) ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
                 </p>
               </div>
             </li>`;
   }
 
   const emojiLabelTemplate = userCommentState.emotion ? `<img src="images/emoji/${userCommentState.emotion}.png" width="55" height="55" alt="emoji-smile">` : '';
-
   return `<div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsQty}</span></h3>
@@ -46,26 +48,26 @@ const createCommentsTemplate = (commentStates, userCommentState) => {
             <div class="film-details__add-emoji-label">${emojiLabelTemplate}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(userCommentState.comment)}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isSubmitting ? 'disabled' : ''}>${he.encode(userCommentState.comment)}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${isSubmitting ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="emoji-smile">
                 <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${isSubmitting ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="emoji-sleeping">
                 <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${isSubmitting ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="emoji-puke">
                 <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry" ${isSubmitting ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="emoji-angry">
                 <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
               </label>
@@ -140,7 +142,9 @@ export default class CommentsView extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     if (evt.ctrlKey && evt.key === 'Enter') {
       if (this._state.userComment.emotion && this._state.userComment.comment) {
-        this._callback.formSubmit(CommentsView.parseStateToComment(this._state.userComment));
+        this._state.userComment.isSubmitting = true;
+        this.updateElement(this._state.userComment);
+        this._callback.formSubmit(CommentsView.parseStateToUserComment(this._state.userComment));
         this._state.userComment = DEFAULT_STATE;
       }
     }
@@ -148,8 +152,10 @@ export default class CommentsView extends AbstractStatefulView {
 
   #deleteCommentHandler = (evt) => {
     if (evt.target.tagName === 'BUTTON') {
-      const toBeDeleted = this.#comments.slice().find((comment) => comment.id === evt.target.id);
-      this._callback.deleteComment(toBeDeleted);
+      const toBeDeletedIndex = this._state.comments.findIndex((comment) => comment.id === evt.target.id);
+      this._state.comments[toBeDeletedIndex].isDeleting = true;
+      this.updateElement({...this._state.comments});
+      this._callback.deleteComment(this._state.comments[toBeDeletedIndex]);
     }
   };
 
@@ -157,7 +163,10 @@ export default class CommentsView extends AbstractStatefulView {
     this.#setInnerHandlers();
   };
 
-  static parseCommentToState = (comment) => ({...comment});
+  static parseCommentToState = (comment) => ({...comment, isDeleting: false});
 
-  static parseStateToComment = (state) => ({...state});
+  static parseStateToUserComment = (state) => {
+    delete state.isSubmitting;
+    return {...state};
+  };
 }
