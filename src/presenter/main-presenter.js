@@ -88,11 +88,11 @@ export default class MainPresenter {
   #viewCommentActionHandler = (actionType, updateType, update) => {
     switch (actionType) {
       case USER_ACTIONS.ADD:
-        this.popupPresenters.get(update.id).setSubmittingState();
+        this.popupPresenters.get(update.movieData.id).setSubmittingState();
         this.commentsModel.addComment(updateType, update);
         break;
       case USER_ACTIONS.DELETE:
-        this.popupPresenters.get(update.id).setDeletingState(update.id);
+        this.popupPresenters.get(update.movieData.id).setDeletingState(update.commentData.id);
         this.commentsModel.deleteComment(updateType, update);
         break;
     }

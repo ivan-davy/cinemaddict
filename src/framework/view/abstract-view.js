@@ -69,3 +69,6 @@ export default class AbstractView {
  * Функция, которая будет вызвана методом shake после завершения анимации
  * @callback shakeCallback
  */
+
+export {SHAKE_CLASS_NAME, SHAKE_ANIMATION_TIMEOUT};
+

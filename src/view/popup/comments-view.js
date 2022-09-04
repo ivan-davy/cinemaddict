@@ -2,6 +2,7 @@ import {getCommentPrettyDate} from '../../utility/date-time-format';
 import AbstractStatefulView from '../../framework/view/abstract-stateful-view';
 import dayjs from 'dayjs';
 import he from 'he';
+import {SHAKE_ANIMATION_TIMEOUT, SHAKE_CLASS_NAME} from '../../framework/view/abstract-view';
 
 const USERNAME = 'xXx_KEKSUS69_xXx';
 
@@ -23,7 +24,7 @@ const createCommentsTemplate = (commentStates, userCommentState) => {
     const {id, emotion, author, date, comment} = commentEntry;
     const timePassed = getCommentPrettyDate(date);
 
-    commentsTemplate += `<li class="film-details__comment">
+    commentsTemplate += `<li class="film-details__comment" id="block${id}">
               <span class="film-details__comment-emoji">
                 <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
               </span>
@@ -32,7 +33,7 @@ const createCommentsTemplate = (commentStates, userCommentState) => {
                 <p class="film-details__comment-info">
                   <span class="film-details__comment-author">${author}</span>
                   <span class="film-details__comment-day">${timePassed}</span>
-                  <button id=${id} class="film-details__comment-delete" ${(isDeleting || isSubmitting) ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
+                  <button id="${id}" class="film-details__comment-delete" ${(isDeleting || isSubmitting) ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
                 </p>
               </div>
             </li>`;
@@ -143,7 +144,7 @@ export default class CommentsView extends AbstractStatefulView {
     if (evt.ctrlKey && evt.key === 'Enter') {
       if (this._state.userComment.emotion && this._state.userComment.comment) {
         this.setSubmittingState();
-        this._callback.formSubmit(CommentsView.parseStateToUserComment(this._state.userComment));
+        this._callback.formSubmit(CommentsView.parseStateToComment(this._state.userComment));
         this._state.userComment = DEFAULT_STATE;
       }
     }
@@ -152,7 +153,8 @@ export default class CommentsView extends AbstractStatefulView {
   #deleteCommentHandler = (evt) => {
     if (evt.target.tagName === 'BUTTON') {
       const toBeDeletedIndex = this.setDeletingState(evt);
-      this._callback.deleteComment(this._state.comments[toBeDeletedIndex]);
+      console.log(CommentsView.parseStateToComment(this._state.comments[toBeDeletedIndex]));
+      this._callback.deleteComment(CommentsView.parseStateToComment(this._state.comments[toBeDeletedIndex]));
     }
   };
 
@@ -162,28 +164,47 @@ export default class CommentsView extends AbstractStatefulView {
 
   static parseCommentToState = (comment) => ({...comment, isDeleting: false});
 
-  static parseStateToUserComment = (state) => {
+  static parseStateToComment = (state) => {
     delete state.isSubmitting;
+    delete state.isDeleting;
     return {...state};
   };
+
 
   setSubmittingState = () => {
     this._state.userComment.isSubmitting = true;
     this.updateElement(this._state.userComment);
   };
 
-  setDeletingState = (evt = null, commentId = null, ) => {
+  setDeletingState = (evt = null, commentId = null) => {
+    const comments = this._state.comments.slice();
     if (evt) {
-      const toBeDeletedIndex = this._state.comments.findIndex((comment) => comment.id === evt.target.id);
+      const toBeDeletedIndex = comments.findIndex((comment) => comment.id === evt.target.id);
       this._state.comments[toBeDeletedIndex].isDeleting = true;
       this.updateElement({...this._state.comments});
       return toBeDeletedIndex;
     }
     if (commentId) {
-      const toBeDeletedIndex = this._state.comments.findIndex((comment) => comment.id === commentId);
+      const toBeDeletedIndex = comments.findIndex((comment) => comment.id === commentId);
       this._state.comments[toBeDeletedIndex].isDeleting = true;
       this.updateElement({...this._state.comments});
     }
   };
 
+  resetAllStates = () => {
+    for (const comment of this._state.comments) {
+      comment.isDeleting = false;
+    }
+    this._state.userComment.isSubmitting = false;
+    this.updateElement({...this._state});
+  };
+
+  shakeComment(callback, commentId) {
+    console.log(this.element.querySelector(`.film-details__comment #block${commentId}`))
+    this.element.querySelector(`.film-details__comment #block${commentId}`).classList.add(SHAKE_CLASS_NAME);
+    setTimeout(() => {
+      this.element.classList.remove(SHAKE_CLASS_NAME);
+      callback?.();
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
 }

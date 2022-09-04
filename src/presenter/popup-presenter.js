@@ -81,7 +81,8 @@ export default class PopupPresenter {
   };
 
   setDeletingState = (commentId) => {
-    this.#commentsComponent.setDeletingState(commentId);
+    console.log(commentId)
+    this.#commentsComponent.setDeletingState(null, commentId);
   };
 
   destroy = () => {
@@ -172,6 +173,20 @@ export default class PopupPresenter {
       },
     );
     this.purgeAllGlobalListeners();
+  };
+
+  resetSubmittingState = () => {
+    const reset = () => {
+      this.#commentsComponent.resetAllStates();
+    };
+    this.#commentsComponent.shake(reset);
+  };
+
+  resetDeletingState = () => {
+    const reset = () => {
+      this.#commentsComponent.resetAllStates();
+    };
+    this.#commentsComponent.shakeComment(reset);
   };
 }
 
