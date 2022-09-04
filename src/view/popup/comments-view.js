@@ -142,8 +142,7 @@ export default class CommentsView extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     if (evt.ctrlKey && evt.key === 'Enter') {
       if (this._state.userComment.emotion && this._state.userComment.comment) {
-        this._state.userComment.isSubmitting = true;
-        this.updateElement(this._state.userComment);
+        this.setSubmittingState();
         this._callback.formSubmit(CommentsView.parseStateToUserComment(this._state.userComment));
         this._state.userComment = DEFAULT_STATE;
       }
@@ -152,9 +151,7 @@ export default class CommentsView extends AbstractStatefulView {
 
   #deleteCommentHandler = (evt) => {
     if (evt.target.tagName === 'BUTTON') {
-      const toBeDeletedIndex = this._state.comments.findIndex((comment) => comment.id === evt.target.id);
-      this._state.comments[toBeDeletedIndex].isDeleting = true;
-      this.updateElement({...this._state.comments});
+      const toBeDeletedIndex = this.setDeletingState(evt);
       this._callback.deleteComment(this._state.comments[toBeDeletedIndex]);
     }
   };
@@ -169,4 +166,24 @@ export default class CommentsView extends AbstractStatefulView {
     delete state.isSubmitting;
     return {...state};
   };
+
+  setSubmittingState = () => {
+    this._state.userComment.isSubmitting = true;
+    this.updateElement(this._state.userComment);
+  };
+
+  setDeletingState = (evt = null, commentId = null, ) => {
+    if (evt) {
+      const toBeDeletedIndex = this._state.comments.findIndex((comment) => comment.id === evt.target.id);
+      this._state.comments[toBeDeletedIndex].isDeleting = true;
+      this.updateElement({...this._state.comments});
+      return toBeDeletedIndex;
+    }
+    if (commentId) {
+      const toBeDeletedIndex = this._state.comments.findIndex((comment) => comment.id === commentId);
+      this._state.comments[toBeDeletedIndex].isDeleting = true;
+      this.updateElement({...this._state.comments});
+    }
+  };
+
 }

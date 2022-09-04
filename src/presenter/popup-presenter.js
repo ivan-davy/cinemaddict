@@ -76,6 +76,14 @@ export default class PopupPresenter {
 
   }
 
+  setSubmittingState = () => {
+    this.#commentsComponent.setSubmittingState();
+  };
+
+  setDeletingState = (commentId) => {
+    this.#commentsComponent.setDeletingState(commentId);
+  };
+
   destroy = () => {
     this.purgeAllGlobalListeners();
     remove(this.#containerComponent);
@@ -92,18 +100,16 @@ export default class PopupPresenter {
 
   #closeKeydownHandler = (evt) => {
     if (evt.key === 'Escape') {
-      this.destroy();
       this.#commentsComponent.reset();
       this.#containerComponent.allowOverflow(this.#mainElement);
-      this.#containerComponent.unsetCloseKeydownHandler();
+      this.destroy();
     }
   };
 
   #closeClickHandler = () => {
-    this.destroy();
     this.#commentsComponent.reset();
     this.#containerComponent.allowOverflow(this.#mainElement);
-    this.#containerComponent.unsetCloseKeydownHandler();
+    this.destroy();
   };
 
   #watchlistClickHandler = () => {
