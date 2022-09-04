@@ -6,7 +6,7 @@ import MovieApiService from './api/movie-api-service';
 import CommentApiService from './api/comment-api-service';
 
 const END_POINT = 'https://18.ecmascript.pages.academy/cinemaddict';
-const AUTH = 'Basic azdsdagg';
+const AUTH = 'Basic azdsdfg';
 
 const siteElements = {
   siteHeaderElement: document.querySelector('.header'),

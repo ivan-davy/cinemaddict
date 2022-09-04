@@ -37,7 +37,7 @@ export default class PopupPresenter {
     this.#movie = movie;
     this.#comments = await this.#commentsModel.init(this.#movie.id);
     if (this.#containerComponent.isPopupOpen()) {
-      this.purgeAllGlobalListeners();
+      this.purgeGlobalListeners();
       this.#containerComponent.closeAllPopups();
       this.#containerComponent.allowOverflow(this.#mainElement);
     }
@@ -76,17 +76,17 @@ export default class PopupPresenter {
 
   }
 
-  setSubmittingState = () => {
+  /*setSubmittingState = () => {
     this.#commentsComponent.setSubmittingState();
   };
 
   setDeletingState = (commentId) => {
     console.log(commentId)
     this.#commentsComponent.setDeletingState(null, commentId);
-  };
+  };*/
 
   destroy = () => {
-    this.purgeAllGlobalListeners();
+    this.purgeGlobalListeners();
     remove(this.#containerComponent);
   };
 
@@ -94,9 +94,14 @@ export default class PopupPresenter {
 
   getPopupOffsetY = () => this.#containerComponent.element.scrollTop;
 
-  purgeAllGlobalListeners = () => {
+  purgeGlobalListeners = () => {
     this.#containerComponent.unsetCloseKeydownHandler();
     this.#commentsComponent.unsetFormSubmitHandler();
+  };
+
+  restoreGlobalListeners = () => {
+    this.#containerComponent.setCloseKeydownHandler(this.#closeKeydownHandler);
+    this.#commentsComponent.setFormSubmitHandler(this.#formSubmitHandler);
   };
 
   #closeKeydownHandler = (evt) => {
@@ -122,7 +127,7 @@ export default class PopupPresenter {
         popupOffsetY: this.#containerComponent.element.scrollTop
       }
     );
-    this.purgeAllGlobalListeners();
+    this.purgeGlobalListeners();
   };
 
   #historyClickHandler = () => {
@@ -134,7 +139,7 @@ export default class PopupPresenter {
         popupOffsetY: this.#containerComponent.element.scrollTop
       }
     );
-    this.purgeAllGlobalListeners();
+    this.purgeGlobalListeners();
   };
 
   #favoriteClickHandler = () => {
@@ -146,7 +151,7 @@ export default class PopupPresenter {
         popupOffsetY: this.#containerComponent.element.scrollTop
       }
     );
-    this.purgeAllGlobalListeners();
+    this.purgeGlobalListeners();
   };
 
   #formSubmitHandler = (comment) => {
@@ -159,7 +164,7 @@ export default class PopupPresenter {
         popupOffsetY: this.#containerComponent.element.scrollTop
       },
     );
-    this.purgeAllGlobalListeners();
+    this.purgeGlobalListeners();
   };
 
   #deleteCommentHandler = (comment) => {
@@ -172,7 +177,7 @@ export default class PopupPresenter {
         popupOffsetY: this.#containerComponent.element.scrollTop
       },
     );
-    this.purgeAllGlobalListeners();
+    this.purgeGlobalListeners();
   };
 
   resetSubmittingState = () => {
@@ -180,13 +185,15 @@ export default class PopupPresenter {
       this.#commentsComponent.resetAllStates();
     };
     this.#commentsComponent.shake(reset);
+    this.restoreGlobalListeners();
   };
 
-  resetDeletingState = () => {
+  resetDeletingState = (commentId) => {
     const reset = () => {
       this.#commentsComponent.resetAllStates();
     };
-    this.#commentsComponent.shakeComment(reset);
+    this.#commentsComponent.shakeComment(reset, commentId);
+    this.restoreGlobalListeners();
   };
 }
 

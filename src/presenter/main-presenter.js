@@ -14,10 +14,18 @@ import LoadingView from '../view/loading-view';
 import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates-methods';
 import {FILTER_TYPES, movieFilters} from '../utility/filter-logic';
 import FilterPresenter from './filter-presenter';
+import UiBlocker from '../framework/ui-blocker/ui-blocker';
 
 const MOVIES_SHOWN_STEP = 5;
 
+const UI_TIME_LIMITS = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
 export default class MainPresenter {
+  #uiBlocker = new UiBlocker(UI_TIME_LIMITS.LOWER_LIMIT, UI_TIME_LIMITS.UPPER_LIMIT);
+
   constructor(siteElements, moviesModel, commentsModel, filtersModel) {
     this.headerElement = siteElements.siteHeaderElement;
     this.mainElement = siteElements.siteMainElement;
@@ -85,15 +93,23 @@ export default class MainPresenter {
     }
   };
 
-  #viewCommentActionHandler = (actionType, updateType, update) => {
+  #viewCommentActionHandler = async (actionType, updateType, update) => {
     switch (actionType) {
       case USER_ACTIONS.ADD:
-        this.popupPresenters.get(update.movieData.id).setSubmittingState();
-        this.commentsModel.addComment(updateType, update);
+        this.#uiBlocker.block();
+        try {
+          await this.commentsModel.addComment(updateType, update);
+        } catch(err) {
+          this.popupPresenters.get(update.movieData.id).resetSubmittingState();
+        }
+        this.#uiBlocker.unblock();
         break;
       case USER_ACTIONS.DELETE:
-        this.popupPresenters.get(update.movieData.id).setDeletingState(update.commentData.id);
-        this.commentsModel.deleteComment(updateType, update);
+        try {
+          await this.commentsModel.deleteComment(updateType, update);
+        } catch(err) {
+          this.popupPresenters.get(update.movieData.id).resetDeletingState(update.commentData.id);
+        }
         break;
     }
   };

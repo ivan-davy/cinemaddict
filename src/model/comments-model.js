@@ -48,7 +48,6 @@ export default class CommentsModel extends Observable {
 
       this._notify(updateType, {movieData, popupOffsetY});
     } catch(err) {
-      console.log(err)
       throw new Error('Can\'t delete a comment');
     }
   };
