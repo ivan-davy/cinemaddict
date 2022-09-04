@@ -142,7 +142,6 @@ export default class CommentsView extends AbstractStatefulView {
       if (this._state.userComment.emotion && this._state.userComment.comment) {
         this._callback.formSubmit(CommentsView.parseStateToComment(this._state.userComment));
         this._state.userComment = DEFAULT_STATE;
-        //this.unsetFormSubmitHandler();
       }
     }
   };
@@ -151,7 +150,6 @@ export default class CommentsView extends AbstractStatefulView {
     if (evt.target.tagName === 'BUTTON') {
       const toBeDeleted = this.#comments.slice().find((comment) => comment.id === evt.target.id);
       this._callback.deleteComment(toBeDeleted);
-      this.unsetFormSubmitHandler();
     }
   };
 

@@ -36,8 +36,8 @@ export default class PopupPresenter {
   async init(movie, offsetY = 0) {
     this.#movie = movie;
     this.#comments = await this.#commentsModel.init(this.#movie.id);
-    this.purgeAllGlobalListeners();
     if (this.#containerComponent.isPopupOpen()) {
+      this.purgeAllGlobalListeners();
       this.#containerComponent.closeAllPopups();
       this.#containerComponent.allowOverflow(this.#mainElement);
     }
@@ -115,6 +115,7 @@ export default class PopupPresenter {
         popupOffsetY: this.#containerComponent.element.scrollTop
       }
     );
+    this.purgeAllGlobalListeners();
   };
 
   #historyClickHandler = () => {
@@ -126,6 +127,7 @@ export default class PopupPresenter {
         popupOffsetY: this.#containerComponent.element.scrollTop
       }
     );
+    this.purgeAllGlobalListeners();
   };
 
   #favoriteClickHandler = () => {
@@ -137,6 +139,7 @@ export default class PopupPresenter {
         popupOffsetY: this.#containerComponent.element.scrollTop
       }
     );
+    this.purgeAllGlobalListeners();
   };
 
   #formSubmitHandler = (comment) => {
@@ -149,6 +152,7 @@ export default class PopupPresenter {
         popupOffsetY: this.#containerComponent.element.scrollTop
       },
     );
+    this.purgeAllGlobalListeners();
   };
 
   #deleteCommentHandler = (comment) => {
@@ -161,6 +165,7 @@ export default class PopupPresenter {
         popupOffsetY: this.#containerComponent.element.scrollTop
       },
     );
+    this.purgeAllGlobalListeners();
   };
 }
 

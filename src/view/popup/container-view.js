@@ -45,7 +45,6 @@ export default class ContainerView extends AbstractView {
 
   #closeKeydownHandler = (evt) => {
     this._callback.closeKeydown(evt);
-    this.unsetCloseKeydownHandler();
   };
 
   unsetCloseKeydownHandler = () => {
