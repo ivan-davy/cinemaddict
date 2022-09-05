@@ -2,7 +2,7 @@ import {getCommentPrettyDate} from '../../utility/date-time-format';
 import AbstractStatefulView from '../../framework/view/abstract-stateful-view';
 import he from 'he';
 
-const USERNAME = 'xXx_KEKSUS_xXx';
+const USERNAME = 'KEKS';
 const SHAKE_CLASS_NAME = 'shake';
 const SHAKE_ANIMATION_TIMEOUT = 600;
 
