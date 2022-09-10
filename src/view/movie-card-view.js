@@ -1,5 +1,7 @@
 import {getPrettyYear} from '../utility/date-time-format.js';
 import AbstractView from '../framework/view/abstract-view';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 
 const MAX_DESCRIPTION_LENGTH = 140;
 
@@ -7,6 +9,9 @@ const createFilmCardTemplate = (movie) => {
   const {poster, title, totalRating, runtime} = movie.filmInfo;
   const releaseYear = getPrettyYear(movie.filmInfo.release.date);
   const genre = movie.filmInfo.genre[0];
+
+  dayjs.extend(duration);
+  const time = dayjs.duration(runtime, 'm').format('H[h] m[m]');
 
   let description = movie.filmInfo.description;
   if (description.length > MAX_DESCRIPTION_LENGTH) {
@@ -32,7 +37,7 @@ const createFilmCardTemplate = (movie) => {
       <p class="film-card__rating">${totalRating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${releaseYear}</span>
-        <span class="film-card__duration">${runtime}m</span>
+        <span class="film-card__duration">${time}</span>
         <span class="film-card__genre">${genre}</span>
       </p>
       <img src=${poster} alt=${title} class="film-card__poster">

@@ -11,7 +11,7 @@ export default class ContainerView extends AbstractView {
     return createPopupContainerTemplate();
   }
 
-  isPopupOpen = () => document.contains(document.querySelector('.film-details'));
+  getIsPopupOpen = () => document.contains(document.querySelector('.film-details'));
 
   closeAllPopups = () => {
     document.querySelector('.film-details').remove();

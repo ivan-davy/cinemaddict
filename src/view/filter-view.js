@@ -14,7 +14,7 @@ const createFilterItemTemplate = (filter, activeFilter) => {
   const isFilterActive = name !== 'all';
   const counterSpanTemplate = `<span class="main-navigation__item-count">${count}</span>`;
 
-  return `<a href="#${name}" id="${name}" class="main-navigation__item ${isActiveClass}">${FILTER_UI_NAMES[name]} ${isFilterActive ? counterSpanTemplate : ''}`;
+  return `<a href="#${name}" id="${name}" class="main-navigation__item ${isActiveClass}">${FILTER_UI_NAMES[name]} ${isFilterActive ? counterSpanTemplate : ''}</a>`;
 };
 
 const createFilterTemplate = (filters, activeFilter) => {
@@ -50,6 +50,9 @@ export default class FilterView extends AbstractView {
     evt.preventDefault();
     if (evt.target.tagName === 'A') {
       this._callback.filterTypeChange(evt.target.id);
+    }
+    if (evt.target.tagName === 'SPAN') {
+      this._callback.filterTypeChange(evt.target.parentElement.id);
     }
   };
 }

@@ -1,7 +1,7 @@
 import {render, replace, remove} from '../framework/render.js';
 import FilterView from '../view/filter-view.js';
-import {FILTER_TYPES, movieFilters} from '../utility/filter-logic';
-import {UPDATE_TYPES} from '../utility/actions-updates-methods';
+import {FilterType, movieFilters} from '../utility/filter-logic';
+import {UpdateType} from '../utility/actions-updates-methods';
 
 export default class FilterPresenter {
   #filterContainer = null;
@@ -23,24 +23,24 @@ export default class FilterPresenter {
 
     return [
       {
-        type: FILTER_TYPES.ALL,
+        type: FilterType.ALL,
         name: 'all',
-        count: movieFilters[FILTER_TYPES.ALL](movies).length,
+        count: movieFilters[FilterType.ALL](movies).length,
       },
       {
-        type: FILTER_TYPES.WATCHLIST,
+        type: FilterType.WATCHLIST,
         name: 'watchlist',
-        count: movieFilters[FILTER_TYPES.WATCHLIST](movies).length,
+        count: movieFilters[FilterType.WATCHLIST](movies).length,
       },
       {
-        type: FILTER_TYPES.WATCHED,
+        type: FilterType.WATCHED,
         name: 'alreadyWatched',
-        count: movieFilters[FILTER_TYPES.WATCHED](movies).length,
+        count: movieFilters[FilterType.WATCHED](movies).length,
       },
       {
-        type: FILTER_TYPES.FAVORITE,
+        type: FilterType.FAVORITE,
         name: 'favorite',
-        count: movieFilters[FILTER_TYPES.FAVORITE](movies).length,
+        count: movieFilters[FilterType.FAVORITE](movies).length,
       }
     ];
   }
@@ -69,6 +69,6 @@ export default class FilterPresenter {
     if (this.#filtersModel.filter === filterType) {
       return;
     }
-    this.#filtersModel.setFilter(UPDATE_TYPES.MAJOR, filterType);
+    this.#filtersModel.setFilter(UpdateType.MAJOR, filterType);
   };
 }

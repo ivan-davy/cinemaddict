@@ -1,6 +1,6 @@
 import MovieCardView from '../view/movie-card-view';
 import {remove, render, replace} from '../framework/render';
-import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates-methods';
+import {UpdateType, UserAction} from '../utility/actions-updates-methods';
 
 export default class MoviePresenter {
   #movieContainerElement = null;
@@ -49,8 +49,8 @@ export default class MoviePresenter {
 
   #watchlistClickHandler = () => {
     this.#updateMovieDataHandler(
-      USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.MINOR,
+      UserAction.UPDATE,
+      UpdateType.MINOR,
       {
         movieData: {...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist}},
         popupOffsetY: this.#popupPresenter.getPopupOffsetY()
@@ -60,8 +60,8 @@ export default class MoviePresenter {
 
   #historyClickHandler = () => {
     this.#updateMovieDataHandler(
-      USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.MINOR,
+      UserAction.UPDATE,
+      UpdateType.MINOR,
       {
         movieData: {...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched}},
         popupOffsetY: this.#popupPresenter.getPopupOffsetY()
@@ -71,8 +71,8 @@ export default class MoviePresenter {
 
   #favoriteClickHandler = () => {
     this.#updateMovieDataHandler(
-      USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.MINOR,
+      UserAction.UPDATE,
+      UpdateType.MINOR,
       {
         movieData: {...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite}},
         popupOffsetY: this.#popupPresenter.getPopupOffsetY()

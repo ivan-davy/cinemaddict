@@ -2,7 +2,7 @@ import {remove, render, replace} from '../framework/render';
 import InfoView from '../view/popup/info-view.js';
 import ContainerView from '../view/popup/container-view';
 import CommentsView from '../view/popup/comments-view';
-import {UPDATE_TYPES, USER_ACTIONS} from '../utility/actions-updates-methods';
+import {UpdateType, UserAction} from '../utility/actions-updates-methods';
 
 export default class PopupPresenter {
   #movie = null;
@@ -36,7 +36,7 @@ export default class PopupPresenter {
   async init(movie, offsetY = 0) {
     this.#movie = movie;
     this.#comments = await this.#commentsModel.init(this.#movie.id);
-    if (this.#containerComponent.isPopupOpen()) {
+    if (this.#containerComponent.getIsPopupOpen()) {
       this.purgeGlobalListeners();
       this.#containerComponent.closeAllPopups();
       this.#containerComponent.allowOverflow(this.#mainElement);
@@ -76,21 +76,12 @@ export default class PopupPresenter {
 
   }
 
-  /*setSubmittingState = () => {
-    this.#commentsComponent.setSubmittingState();
-  };
-
-  setDeletingState = (commentId) => {
-    console.log(commentId)
-    this.#commentsComponent.setDeletingState(null, commentId);
-  };*/
-
   destroy = () => {
     this.purgeGlobalListeners();
     remove(this.#containerComponent);
   };
 
-  isPopupOpen = () => this.#containerComponent.isPopupOpen();
+  getIsPopupOpen = () => this.#containerComponent.getIsPopupOpen();
 
   getPopupOffsetY = () => this.#containerComponent.element.scrollTop;
 
@@ -120,8 +111,8 @@ export default class PopupPresenter {
 
   #watchlistClickHandler = () => {
     this.#updateMovieDataHandler(
-      USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.MINOR,
+      UserAction.UPDATE,
+      UpdateType.MINOR,
       {
         movieData: {...this.#movie, userDetails: {...this.#movie.userDetails, watchlist: !this.#movie.userDetails.watchlist}},
         popupOffsetY: this.#containerComponent.element.scrollTop
@@ -132,8 +123,8 @@ export default class PopupPresenter {
 
   #historyClickHandler = () => {
     this.#updateMovieDataHandler(
-      USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.MINOR,
+      UserAction.UPDATE,
+      UpdateType.MINOR,
       {
         movieData: {...this.#movie, userDetails: {...this.#movie.userDetails, alreadyWatched: !this.#movie.userDetails.alreadyWatched}},
         popupOffsetY: this.#containerComponent.element.scrollTop
@@ -144,8 +135,8 @@ export default class PopupPresenter {
 
   #favoriteClickHandler = () => {
     this.#updateMovieDataHandler(
-      USER_ACTIONS.UPDATE,
-      UPDATE_TYPES.MINOR,
+      UserAction.UPDATE,
+      UpdateType.MINOR,
       {
         movieData: {...this.#movie, userDetails: {...this.#movie.userDetails, favorite: !this.#movie.userDetails.favorite}},
         popupOffsetY: this.#containerComponent.element.scrollTop
@@ -156,8 +147,8 @@ export default class PopupPresenter {
 
   #formSubmitHandler = (comment) => {
     this.#updateCommentDataHandler(
-      USER_ACTIONS.ADD,
-      UPDATE_TYPES.MINOR,
+      UserAction.ADD,
+      UpdateType.MINOR,
       {
         movieData: this.#movie,
         commentData: comment,
@@ -169,8 +160,8 @@ export default class PopupPresenter {
 
   #deleteCommentHandler = (comment) => {
     this.#updateCommentDataHandler(
-      USER_ACTIONS.DELETE,
-      UPDATE_TYPES.MINOR,
+      UserAction.DELETE,
+      UpdateType.MINOR,
       {
         movieData: this.#movie,
         commentData: comment,

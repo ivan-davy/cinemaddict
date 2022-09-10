@@ -1,5 +1,7 @@
 import {getPrettyDate} from '../../utility/date-time-format';
 import AbstractView from '../../framework/view/abstract-view';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 
 const SHAKE_CLASS_NAME = 'shake';
 const SHAKE_ANIMATION_TIMEOUT = 600;
@@ -10,6 +12,8 @@ const createInfoTemplate = (movie) => {
   const actors = movie.filmInfo.actors.join(', ');
   const releaseDate = getPrettyDate(movie.filmInfo.release.date);
   const country = movie.filmInfo.release.releaseCountry;
+  dayjs.extend(duration);
+  const time = dayjs.duration(runtime, 'm').format('H[h] m[m]');
   let genres = '';
   for (const genre of movie.filmInfo.genre) {
     genres += (`<span class="film-details__genre">${genre}</span>\n`);
@@ -61,7 +65,7 @@ const createInfoTemplate = (movie) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${runtime}m</td>
+                <td class="film-details__cell">${time}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>

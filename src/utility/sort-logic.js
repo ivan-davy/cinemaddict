@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-const SORT_TYPES = {
+const SortType = {
   DEFAULT: 'default',
   DATE_DOWN: 'date-down',
   RATING_DOWN: 'rating-down',
@@ -48,6 +48,6 @@ const sortCommentsDown = (movieA, movieB) => {
   }
 };
 
-export {SORT_TYPES, sortDateDown, sortRatingDown, sortCommentsDown};
+export {SortType, sortDateDown, sortRatingDown, sortCommentsDown};
 
 

@@ -1,5 +1,5 @@
 import Observable from '../framework/observable';
-import {UPDATE_TYPES} from '../utility/actions-updates-methods';
+import {UpdateType} from '../utility/actions-updates-methods';
 
 
 export default class MoviesModel extends Observable {
@@ -19,7 +19,7 @@ export default class MoviesModel extends Observable {
       this.#movies = [];
     }
 
-    this._notify(UPDATE_TYPES.INIT, null);
+    this._notify(UpdateType.INIT, null);
   };
 
   get movies() {

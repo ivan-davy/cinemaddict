@@ -1,5 +1,5 @@
 import ApiService from '../framework/api-service';
-import {HTTP_METHODS} from '../utility/actions-updates-methods';
+import {HTTPMethod} from '../utility/actions-updates-methods';
 
 
 export default class CommentApiService extends ApiService {
@@ -11,7 +11,7 @@ export default class CommentApiService extends ApiService {
   addComment = async (comment, movieId) => {
     const response = await this._load({
       url: `comments/${movieId}`,
-      method: HTTP_METHODS.POST,
+      method: HTTPMethod.POST,
       body: JSON.stringify(this.#adaptCommentToServer(comment)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
@@ -20,7 +20,7 @@ export default class CommentApiService extends ApiService {
 
   deleteComment = async (commentId) => await this._load({
     url: `comments/${commentId}`,
-    method: HTTP_METHODS.DELETE,
+    method: HTTPMethod.DELETE,
   });
 
   #adaptCommentToServer = (comment) => comment;

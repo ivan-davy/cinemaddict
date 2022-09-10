@@ -35,7 +35,7 @@ canRepeat определяет возможность повторения эл�
 больше длины передаваемого массива, то размер выборки уменьшается до его длины.
 Если переданное значение quantity некорректно, функция вернет undefined */
 
-const getRandomSample = (iterable, sampleSize, canRepeat = false) => {
+const getRandomSampleItems = (iterable, sampleSize, canRepeat = false) => {
   if (sampleSize >= 1) {
     if (canRepeat) {
       const sample = [];
@@ -59,4 +59,4 @@ const getRandomSample = (iterable, sampleSize, canRepeat = false) => {
   }
 };
 
-export {getRandomInteger, getRandomFloat, getRandomItem, getRandomSample};
+export {getRandomInteger, getRandomFloat, getRandomItem, getRandomSampleItems};

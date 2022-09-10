@@ -1,5 +1,5 @@
 import ApiService from '../framework/api-service';
-import {HTTP_METHODS} from '../utility/actions-updates-methods';
+import {HTTPMethod} from '../utility/actions-updates-methods';
 
 
 export default class MovieApiService extends ApiService {
@@ -11,7 +11,7 @@ export default class MovieApiService extends ApiService {
   updateMovie = async (movie) => {
     const response = await this._load({
       url: `movies/${movie.id}`,
-      method: HTTP_METHODS.PUT,
+      method: HTTPMethod.PUT,
       body: JSON.stringify(this.#adaptMovieToServer(movie)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });

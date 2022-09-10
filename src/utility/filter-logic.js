@@ -1,4 +1,4 @@
-const FILTER_TYPES = {
+const FilterType = {
   ALL: 'all',
   WATCHLIST: 'watchlist',
   WATCHED: 'alreadyWatched',
@@ -6,10 +6,10 @@ const FILTER_TYPES = {
 };
 
 const movieFilters = {
-  [FILTER_TYPES.ALL]: (movies) => movies,
-  [FILTER_TYPES.WATCHLIST]: (movies) => movies.filter((movie) => movie.userDetails.watchlist),
-  [FILTER_TYPES.WATCHED]: (movies) => movies.filter((movie) => movie.userDetails.alreadyWatched),
-  [FILTER_TYPES.FAVORITE]: (movies) => movies.filter((movie) => movie.userDetails.favorite)
+  [FilterType.ALL]: (movies) => movies,
+  [FilterType.WATCHLIST]: (movies) => movies.filter((movie) => movie.userDetails.watchlist),
+  [FilterType.WATCHED]: (movies) => movies.filter((movie) => movie.userDetails.alreadyWatched),
+  [FilterType.FAVORITE]: (movies) => movies.filter((movie) => movie.userDetails.favorite)
 };
 
-export {FILTER_TYPES, movieFilters};
+export {FilterType, movieFilters};

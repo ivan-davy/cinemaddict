@@ -1,20 +1,20 @@
-const USER_ACTIONS = {
+const UserAction = {
   UPDATE: 'UPDATE',
   ADD: 'ADD',
   DELETE: 'DELETE',
 };
 
-const UPDATE_TYPES = {
+const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT'
 };
 
-const HTTP_METHODS = {
+const HTTPMethod = {
   GET: 'GET',
   PUT: 'PUT',
   POST: 'POST',
   DELETE: 'DELETE'
 };
 
-export {UPDATE_TYPES, USER_ACTIONS, HTTP_METHODS};
+export {UpdateType, UserAction, HTTPMethod};
