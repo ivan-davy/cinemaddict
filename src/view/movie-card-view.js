@@ -15,7 +15,7 @@ const createFilmCardTemplate = (movie) => {
 
   let description = movie.filmInfo.description;
   if (description.length > MAX_DESCRIPTION_LENGTH) {
-    description = description.substring(0, 140).concat('…');
+    description = description.substring(0, MAX_DESCRIPTION_LENGTH).concat('…');
   }
 
   let commentsQty;

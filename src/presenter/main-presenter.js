@@ -291,9 +291,10 @@ export default class MainPresenter {
 
   #renderTopRatedList = () => {
     let doNotShow = false;
+
     this.topRatedMovies = this.moviesModel.movies.slice().sort(sortRatingDown);
     if (this.topRatedMovies.length) {
-      if (this.topRatedMovies[0].filmInfo.totalRating === this.topRatedMovies[this.topRatedMovies.length - 1].filmInfo.totalRating) {
+      if (this.topRatedMovies[0].filmInfo.totalRating === 0) {
         doNotShow = true;
       }
     }
